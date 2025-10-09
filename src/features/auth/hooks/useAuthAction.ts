@@ -6,15 +6,26 @@ import {
   registerSuccess,
   registerFailure,
   logoutFailure,
-  logout as logoutAction
+  logout as logoutAction,
+  otpSuccess,
+  otpFailure
 } from "@/store/slices/authSlice";
 import {
   useLazyGetCsrfCookieQuery,
   useLoginMutation,
   useRegisterMutation,
   useLogoutMutation,
+  useVerifyEmailMutation,
+  useResendCodeMutation,
 } from "../services/authApi";
-import { LoginRequest, RegisterRequest, RequestFailure, RegisterSuccess } from "../types";
+import {
+  LoginRequest,
+  RegisterRequest,
+  RequestFailure,
+  RegisterSuccess,
+  VerifyEmailRequest,
+  ResendCodeRequest,
+} from "../types";
 import { useAppDispatch } from "@/store/hooks";
 import { useNavigate } from "react-router-dom";
 import { removeAllCookies } from "@/shared/utils/cookies";
@@ -25,6 +36,8 @@ export const useAuthActions = () => {
   const [login] = useLoginMutation();
   const [register] = useRegisterMutation();
   const [logout] = useLogoutMutation();
+  const [verifyEmail] = useVerifyEmailMutation();
+  const [resendCode] = useResendCodeMutation();
   const navigate = useNavigate();
   const isUnverifiedResponse = (payload: RequestFailure): boolean | string => {
     if (!payload) return false;
@@ -96,9 +109,39 @@ export const useAuthActions = () => {
     }
   }
 
+  const handleVerifyOTP = async (payload: VerifyEmailRequest): Promise<boolean> => {
+    try {
+      const response = await verifyEmail(payload).unwrap();
+
+      if (response.data.user && response.data.token) {
+        // Store the token in localStorage for persistence
+        localStorage.setItem("auth_token", response.data.token);
+        dispatch(otpSuccess(response));
+
+        navigate("/", { replace: true });
+        return true;
+      }
+      return false;
+    } catch (error: unknown) {
+      dispatch(otpFailure(error as RequestFailure));
+      return false;
+    }
+  }
+
+  const handleResendOTP = async (payload: ResendCodeRequest): Promise<boolean> => {
+    try {
+      const response = await resendCode(payload).unwrap();
+      return Boolean(response.status === 'success');
+    } catch {
+      return false;
+    }
+  }
+
   return {
     handleSignIn,
     handleSignUp,
-    handleSignOut
+    handleSignOut,
+    handleVerifyOTP,
+    handleResendOTP
   }
 }

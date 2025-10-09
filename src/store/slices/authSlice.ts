@@ -73,14 +73,6 @@ const authSlice = createSlice({
     },
 
     // Simplified OTP verification
-    // Unified naming: otpStart, otpSuccess, otpFailure
-    otpStart: (state, action: PayloadAction<string | null>) => {
-      state.otpEmail = action.payload;
-      state.otpVerified = false;
-      state.isLoading = true;
-      state.error = null;
-    },
-
     otpSuccess: (state, action: PayloadAction<VerifyEmailResponse>) => {
       state.isAuthenticated = true;
       state.currentUser = action.payload.data.user;
@@ -91,9 +83,9 @@ const authSlice = createSlice({
       state.otpVerified = true;
     },
 
-    otpFailure: (state, action: PayloadAction<string>) => {
+    otpFailure: (state, action: PayloadAction<RequestFailure>) => {
       state.isLoading = false;
-      state.error = action.payload;
+      state.error = action.payload.message;
       state.otpVerified = false;
     },
 
@@ -134,7 +126,6 @@ export const {
   registerStart,
   registerSuccess,
   registerFailure,
-  otpStart,
   otpSuccess,
   otpFailure,
   logout,
