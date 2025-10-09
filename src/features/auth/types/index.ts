@@ -48,6 +48,11 @@ export interface LoginResponse {
   status: string;
 }
 
+export interface LoginResponseFailure {
+  message: string;
+  status: string;
+}
+
 export interface RegisterRequest {
   firstName: string;
   lastName: string;
@@ -107,22 +112,22 @@ export interface ResetPasswordResponse {
   message: string;
 }
 
-export interface updateProfileRequest {
+export interface UpdateProfileRequest {
   userId: number;
   data: Partial<User>;
 }
 
-export interface updateProfileResponse {
+export interface UpdateProfileResponse {
   data: User;
   message: string;
   status: string;
 }
 
-export interface deleteUserAccountRequest {
+export interface DeleteUserAccountRequest {
   userId: number;
 }
 
-export interface deleteUserAccountResponse {
+export interface DeleteUserAccountResponse {
   data: User;
   message: string;
   status: string;

@@ -8,14 +8,14 @@ import {
   VerifyEmailRequest,
   ResendCodeResponse,
   VerifyEmailResponse,
-  updateProfileRequest,
+  UpdateProfileRequest,
   ResetPasswordRequest,
   ResetPasswordResponse,
-  updateProfileResponse,
+  UpdateProfileResponse,
   ForgetPasswordRequest,
   ForgetPasswordResponse,
-  deleteUserAccountResponse,
-  deleteUserAccountRequest,
+  DeleteUserAccountResponse,
+  DeleteUserAccountRequest,
 } from './../types/index';
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RootState } from "@store/store";
@@ -145,7 +145,7 @@ export const authApi = createApi({
       keepUnusedDataFor: 600, // cache for 10 minutes
     }),
 
-    updateProfile: builder.mutation<updateProfileResponse, updateProfileRequest>({
+    updateProfile: builder.mutation<UpdateProfileResponse, UpdateProfileRequest>({
       query: ({ userId, data }) => ({
         url: `/users/${userId}`,
         method: "PUT",
@@ -158,7 +158,7 @@ export const authApi = createApi({
     }),
 
     // Delete user account
-    deleteAccount: builder.mutation<deleteUserAccountResponse, deleteUserAccountRequest>({
+    deleteAccount: builder.mutation<DeleteUserAccountResponse, DeleteUserAccountRequest>({
       query: ({ userId }) => ({
         url: `/users/${userId}`,
         method: "DELETE",
@@ -171,3 +171,16 @@ export const authApi = createApi({
     })
   })
 })
+
+export const {
+  useLazyGetCsrfCookieQuery,
+  useLoginMutation,
+  useRegisterMutation,
+  useVerifyEmailMutation,
+  useResendCodeMutation,
+  useForgetPasswordMutation,
+  useResetPasswordMutation,
+  useGetCurrentUserQuery,
+  useUpdateProfileMutation,
+  useDeleteAccountMutation,
+} = authApi;
