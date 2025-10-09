@@ -121,6 +121,7 @@ export interface ResetPasswordRequest {
 
 export interface ResetPasswordResponse {
   message: string;
+  status: string;
 }
 
 export interface UpdateProfileRequest {
