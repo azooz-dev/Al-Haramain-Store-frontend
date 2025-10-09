@@ -4,22 +4,27 @@ import {
   loginFailure,
   registerStart,
   registerSuccess,
-  registerFailure
+  registerFailure,
+  logoutFailure,
+  logout as logoutAction
 } from "@/store/slices/authSlice";
 import {
   useLazyGetCsrfCookieQuery,
   useLoginMutation,
   useRegisterMutation,
+  useLogoutMutation,
 } from "../services/authApi";
 import { LoginRequest, RegisterRequest, RequestFailure, RegisterSuccess } from "../types";
 import { useAppDispatch } from "@/store/hooks";
 import { useNavigate } from "react-router-dom";
+import { removeAllCookies } from "@/shared/utils/cookies";
 
 export const useAuthActions = () => {
   const dispatch = useAppDispatch();
   const [triggerCsrf] = useLazyGetCsrfCookieQuery();
   const [login] = useLoginMutation();
   const [register] = useRegisterMutation();
+  const [logout] = useLogoutMutation();
   const navigate = useNavigate();
   const isUnverifiedResponse = (payload: RequestFailure): boolean | string => {
     if (!payload) return false;
@@ -79,9 +84,21 @@ export const useAuthActions = () => {
     }
   }
 
+  const handleSignOut = async () => {
+    try {
+      await logout().unwrap();
+    } catch (error) {
+      dispatch(logoutFailure(error as RequestFailure));
+    } finally {
+      removeAllCookies();
+      localStorage.removeItem("auth_token");
+      dispatch(logoutAction());
+    }
+  }
 
   return {
     handleSignIn,
-    handleSignUp
+    handleSignUp,
+    handleSignOut
   }
 }

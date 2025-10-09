@@ -74,6 +74,11 @@ export interface RegisterSuccess {
   email?: string;
 }
 
+export interface LogoutResponse {
+  message: string;
+  status: string;
+}
+
 export interface VerifyEmailRequest {
   code: string;
   email: string;

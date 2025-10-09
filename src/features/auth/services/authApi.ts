@@ -16,6 +16,7 @@ import {
   ForgetPasswordResponse,
   DeleteUserAccountResponse,
   DeleteUserAccountRequest,
+  LogoutResponse,
 } from './../types/index';
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RootState } from "@store/store";
@@ -98,6 +99,13 @@ export const authApi = createApi({
       }),
     }),
 
+    logout: builder.mutation<LogoutResponse, void>({
+      query: () => ({
+        url: "/logout",
+        method: "POST",
+      })
+    }),
+
     // Verify Email
     verifyEmail: builder.mutation<VerifyEmailResponse, VerifyEmailRequest>({
       query: (data) => ({
@@ -176,6 +184,7 @@ export const {
   useLazyGetCsrfCookieQuery,
   useLoginMutation,
   useRegisterMutation,
+  useLogoutMutation,
   useVerifyEmailMutation,
   useResendCodeMutation,
   useForgetPasswordMutation,

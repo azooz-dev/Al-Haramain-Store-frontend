@@ -97,13 +97,20 @@ const authSlice = createSlice({
       state.otpVerified = false;
     },
 
-    // Logout action
+    // Logout actions
     logout: (state) => {
       state.isAuthenticated = false;
       state.currentUser = null;
       state.token = null;
       state.isLoading = false;
       state.error = null;
+      state.otpEmail = null;
+      state.otpVerified = false;
+    },
+
+    logoutFailure: (state, action: PayloadAction<RequestFailure>) => {
+      state.error = action.payload.message;
+      state.isLoading = false;
       state.otpEmail = null;
       state.otpVerified = false;
     },
@@ -131,6 +138,7 @@ export const {
   otpSuccess,
   otpFailure,
   logout,
+  logoutFailure,
   clearError,
   setAuthLoading
 } = authSlice.actions;
