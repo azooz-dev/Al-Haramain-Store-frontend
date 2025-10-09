@@ -29,8 +29,9 @@ export interface AuthState {
   currentUser: User | null;
   isLoading: boolean;
   error: string | null;
-  otpSent: boolean;
+  otpEmail: boolean | null;
   otpVerified: boolean;
+  token: string | null;
 }
 
 export interface LoginRequest {
