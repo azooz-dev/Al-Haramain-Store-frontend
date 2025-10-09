@@ -105,3 +105,24 @@ export interface ResetPasswordRequest {
 export interface ResetPasswordResponse {
   message: string;
 }
+
+export interface updateProfileRequest {
+  userId: number;
+  data: Partial<User>;
+}
+
+export interface updateProfileResponse {
+  data: User;
+  message: string;
+  status: string;
+}
+
+export interface deleteUserAccountRequest {
+  userId: number;
+}
+
+export interface deleteUserAccountResponse {
+  data: User;
+  message: string;
+  status: string;
+}
