@@ -1,4 +1,4 @@
-import { LoginResponse, LoginResponseFailure, RegisterResponse, VerifyEmailResponse } from './../../features/auth/types/index';
+import { LoginResponse, RequestFailure, RegisterResponse, VerifyEmailResponse } from './../../features/auth/types/index';
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { User } from "@/features/auth/types";
 
@@ -42,7 +42,7 @@ const authSlice = createSlice({
       state.otpVerified = false;
     },
 
-    loginFailure: (state, action: PayloadAction<LoginResponseFailure>) => {
+    loginFailure: (state, action: PayloadAction<RequestFailure>) => {
       state.isAuthenticated = false;
       state.currentUser = null;
       state.isLoading = false;
@@ -65,8 +65,11 @@ const authSlice = createSlice({
       state.otpVerified = false;
     },
 
-    registerFailure: (state, action: PayloadAction<string>) => {
-      state.error = action.payload;
+    registerFailure: (state, action: PayloadAction<RequestFailure>) => {
+      state.error = action.payload.message;
+      state.isLoading = false;
+      state.otpEmail = null;
+      state.otpVerified = false;
     },
 
     // Simplified OTP verification

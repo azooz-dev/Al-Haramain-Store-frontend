@@ -48,7 +48,7 @@ export interface LoginResponse {
   status: string;
 }
 
-export interface LoginResponseFailure {
+export interface RequestFailure {
   message: string;
   status: string;
 }
@@ -66,6 +66,12 @@ export interface RegisterResponse {
   data: User;
   message: string;
   status: string;
+}
+
+export interface RegisterSuccess {
+  success: boolean;
+  requiresOTP?: boolean;
+  email?: string;
 }
 
 export interface VerifyEmailRequest {

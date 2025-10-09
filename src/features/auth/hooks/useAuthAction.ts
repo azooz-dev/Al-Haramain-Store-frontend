@@ -1,13 +1,17 @@
 import {
   loginStart,
   loginSuccess,
-  loginFailure
+  loginFailure,
+  registerStart,
+  registerSuccess,
+  registerFailure
 } from "@/store/slices/authSlice";
 import {
   useLazyGetCsrfCookieQuery,
   useLoginMutation,
+  useRegisterMutation,
 } from "../services/authApi";
-import { LoginRequest, LoginResponseFailure } from "../types";
+import { LoginRequest, RegisterRequest, RequestFailure, RegisterSuccess } from "../types";
 import { useAppDispatch } from "@/store/hooks";
 import { useNavigate } from "react-router-dom";
 
@@ -15,8 +19,9 @@ export const useAuthActions = () => {
   const dispatch = useAppDispatch();
   const [triggerCsrf] = useLazyGetCsrfCookieQuery();
   const [login] = useLoginMutation();
+  const [register] = useRegisterMutation();
   const navigate = useNavigate();
-  const isUnverifiedResponse = (payload: LoginResponseFailure): boolean | string => {
+  const isUnverifiedResponse = (payload: RequestFailure): boolean | string => {
     if (!payload) return false;
 
     const message = payload.message;
@@ -44,16 +49,39 @@ export const useAuthActions = () => {
       navigate("/", { replace: true });
       return true;
     } catch (error: unknown) {
-      if (isUnverifiedResponse(error as LoginResponseFailure)) {
+      if (isUnverifiedResponse(error as RequestFailure)) {
         navigate("/verify-otp", { replace: true, state: { email: payload.email } });
         return true;
       }
-      dispatch(loginFailure(error as LoginResponseFailure));
+      dispatch(loginFailure(error as RequestFailure));
       return false;
     }
   }
 
+  const handleSignUp = async (payload: RegisterRequest): Promise<RegisterSuccess> => {
+    try {
+      dispatch(registerStart());
+
+      await triggerCsrf().unwrap();
+
+      const response = await register(payload).unwrap();
+      if (response.data) {
+        // Store user data but don't authenticate yet - they need OTP verification
+        dispatch(registerSuccess({ data: response.data, message: response.message, status: response.status }));
+        // Redirect to OTP verification page
+        navigate("/verify-otp", { replace: true, state: { email: response.data.email } });
+        return { success: true, requiresOTP: true, email: response.data.email };
+      }
+      return { success: false, requiresOTP: false };
+    } catch (error: unknown) {
+      dispatch(registerFailure(error as RequestFailure));
+      return { success: false };
+    }
+  }
+
+
   return {
-    handleSignIn
+    handleSignIn,
+    handleSignUp
   }
 }
