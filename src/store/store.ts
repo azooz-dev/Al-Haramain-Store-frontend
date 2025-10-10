@@ -10,6 +10,7 @@ import offersSlice from './slices/offersSlice';
 import productsSlice from './slices/productSlice';
 import favoritesSlice from './slices/favoritesSlice';
 import categoriesSlice from './slices/categoriesSlice';
+import { authApi } from '@/features/auth/services/authApi';
 
 const persistConfig = {
   key: 'root',
@@ -18,6 +19,7 @@ const persistConfig = {
 };
 
 const rootReducer = combineReducers({
+  // Slices
   auth: authSlice,
   cart: cartSlice,
   favorites: favoritesSlice,
@@ -26,6 +28,9 @@ const rootReducer = combineReducers({
   ui: uiSlice,
   user: userSlice,
   offersSlice,
+
+  // API reducers
+  [authApi.reducerPath]: authApi.reducer,
 });
 
 // Persisted reducer
@@ -39,7 +44,7 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"],
       },
-    }),
+    }).concat(authApi.middleware),
 });
 
 // Persistor

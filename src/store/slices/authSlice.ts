@@ -46,7 +46,7 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.currentUser = null;
       state.isLoading = false;
-      state.error = action.payload.message;
+      state.error = action.payload.data.message;
     },
 
     // Registration actions
@@ -66,7 +66,7 @@ const authSlice = createSlice({
     },
 
     registerFailure: (state, action: PayloadAction<RequestFailure>) => {
-      state.error = action.payload.message;
+      state.error = action.payload.data.message;
       state.isLoading = false;
       state.otpEmail = null;
       state.otpVerified = false;
@@ -85,7 +85,7 @@ const authSlice = createSlice({
 
     otpFailure: (state, action: PayloadAction<RequestFailure>) => {
       state.isLoading = false;
-      state.error = action.payload.message;
+      state.error = action.payload.data.message;
       state.otpVerified = false;
     },
 
@@ -101,7 +101,7 @@ const authSlice = createSlice({
     },
 
     logoutFailure: (state, action: PayloadAction<RequestFailure>) => {
-      state.error = action.payload.message;
+      state.error = action.payload.data.message;
       state.isLoading = false;
       state.otpEmail = null;
       state.otpVerified = false;

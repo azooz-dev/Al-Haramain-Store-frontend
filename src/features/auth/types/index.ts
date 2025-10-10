@@ -49,8 +49,10 @@ export interface LoginResponse {
 }
 
 export interface RequestFailure {
-  message: string;
-  status: string;
+  data: {
+    message: string;
+    status: string;
+  };
 }
 
 export interface RegisterRequest {

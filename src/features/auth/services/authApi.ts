@@ -33,7 +33,7 @@ const getCookieValue = (name: string): string | null => {
 };
 
 const rawBaseQuery = fetchBaseQuery({
-  baseUrl: `${APP_CONFIG.apiBaseUrl}/api`,
+  baseUrl: APP_CONFIG.apiBaseUrl,
   credentials: "include",
   prepareHeaders: (headers) => {    
     // Add CSRF token if present (from meta tag or cookie)
@@ -84,7 +84,7 @@ export const authApi = createApi({
     // Login
     login: builder.mutation<LoginResponse, LoginRequest>({
       query: (credentials) => ({
-        url: "/login",
+        url: "/api/login",
         method: "POST",
         body: credentials,
       }),
@@ -93,7 +93,7 @@ export const authApi = createApi({
     // Register
     register: builder.mutation<RegisterResponse, RegisterRequest>({
       query: (userData) => ({
-        url: "/register",
+        url: "/api/register",
         method: "POST",
         body: userData,
       }),
@@ -101,7 +101,7 @@ export const authApi = createApi({
 
     logout: builder.mutation<LogoutResponse, void>({
       query: () => ({
-        url: "/logout",
+        url: "/api/logout",
         method: "POST",
       })
     }),
@@ -109,7 +109,7 @@ export const authApi = createApi({
     // Verify Email
     verifyEmail: builder.mutation<VerifyEmailResponse, VerifyEmailRequest>({
       query: (data) => ({
-        url: "/users/email/verify-code",
+        url: "/api/users/email/verify-code",
         method: "POST",
         body: data
       }),
@@ -118,7 +118,7 @@ export const authApi = createApi({
     // Resend verification code
     resendCode: builder.mutation<ResendCodeResponse, ResendCodeRequest>({
       query: (data) => ({
-        url: "/users/email/resend-code",
+        url: "/api/users/email/resend-code",
         method: "POST",
         body: data,
       })
@@ -127,7 +127,7 @@ export const authApi = createApi({
     // Forget password
     forgetPassword: builder.mutation<ForgetPasswordResponse, ForgetPasswordRequest>({
       query: (data) => ({
-        url: "/forget-password",
+        url: "/api/forget-password",
         method: "POST",
         body: data
       })
@@ -136,7 +136,7 @@ export const authApi = createApi({
     // Reset password
     resetPassword: builder.mutation<ResetPasswordResponse, ResetPasswordRequest>({
       query: (data) => ({
-        url: `/reset-password?${data.token}`,
+        url: `/api/reset-password?${data.token}`,
         method: "POST",
         body: {
           email: data.email,
@@ -148,14 +148,14 @@ export const authApi = createApi({
 
     // Get current user
     getCurrentUser: builder.query<{ data: User }, void>({
-      query: () => "/user",
+      query: () => "/api/user",
       providesTags: [{ type: "User", id: "CURRENT" }],
       keepUnusedDataFor: 600, // cache for 10 minutes
     }),
 
     updateProfile: builder.mutation<UpdateProfileResponse, UpdateProfileRequest>({
       query: ({ userId, data }) => ({
-        url: `/users/${userId}`,
+        url: `/api/users/${userId}`,
         method: "PUT",
         body: data
       }),
@@ -168,7 +168,7 @@ export const authApi = createApi({
     // Delete user account
     deleteAccount: builder.mutation<DeleteUserAccountResponse, DeleteUserAccountRequest>({
       query: ({ userId }) => ({
-        url: `/users/${userId}`,
+        url: `/api/users/${userId}`,
         method: "DELETE",
       }),
 

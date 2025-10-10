@@ -1,10 +1,25 @@
 import React from "react";
 import { Button } from "@shared/components/ui/button";
 import { useApp } from "@/shared/contexts/AppContext";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useAppSelector } from "@/store/hooks";
+import { selectIsAuthenticated } from "@/store/slices/authSlice";
 
 export const Header: React.FC = () => {
   const { isRTL, toggleTheme, toggleLanguage } = useApp();
+	const navigate = useNavigate();
+	const { handleSignOut } = useAuth();
+	const isAuthenticated = useAppSelector(selectIsAuthenticated);
+
+	const handleLogout = (e: React.MouseEvent<HTMLButtonElement>) => {
+		if (e.target.innerHTML === "Logout") {
+		handleSignOut();
+		navigate("/signin");
+		} else {
+			navigate("/signin");
+		}
+	}
 
 	return (
 		<header className="sticky top-0 z-40 bg-card border-b border-border">
@@ -48,6 +63,15 @@ export const Header: React.FC = () => {
 								title={isRTL ? "تغيير المظهر" : "Toggle theme"}
 							>
 								<span className="text-sm font-medium">{isRTL ? "🌙" : "☀️"}</span>
+							</Button>
+
+							<Button
+								variant="ghost"
+								size="sm"
+								onClick={handleLogout}
+								className="h-9 px-3 rounded-full hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors"
+							>
+								{isAuthenticated ? "Logout" : "Login"}
 							</Button>
 						</div>
 					</div>

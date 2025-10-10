@@ -1,6 +1,7 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 import { Layout } from "../components/layout/layout";
+import { SignInPage } from "@/features/auth/components/SignInPage";
 
 // Create a simple home page component
 const HomePage: React.FC = () => {
@@ -21,6 +22,10 @@ const router = createBrowserRouter([
         <HomePage />
       </Layout>
     ),
+  },
+  {
+    path: "/signin",
+    element: <SignInPage />,
   },
   {
     path: "*",
