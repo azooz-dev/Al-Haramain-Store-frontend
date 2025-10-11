@@ -1,0 +1,36 @@
+{
+  "menu": {
+    "home": "Home",
+    "products": "Products",
+    "categories": "Categories",
+    "offers": "Offers",
+    "cart": "Cart",
+    "favorites": "Favorites",
+    "orders": "Orders",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout",
+    "login": "Login"
+  },
+  "breadcrumbs": {
+    "home": "Home",
+    "products": "Products",
+    "category": "Category",
+    "product": "Product",
+    "cart": "Cart",
+    "checkout": "Checkout",
+    "profile": "Profile",
+    "settings": "Settings"
+  },
+  "language": {
+    "changeToArabic": "Change language to Arabic",
+    "changeToEnglish": "Change language to English",
+    "arabic": "عربي",
+    "english": "EN"
+  },
+  "theme": {
+    "toggleTheme": "Toggle theme",
+    "lightMode": "Light mode",
+    "darkMode": "Dark mode"
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "buttons": {
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "createAccount": "Create Account",
+    "forgotPassword": "Forgot password?",
+    "resetPassword": "Reset Password",
+    "setNewPassword": "Set New Password",
+    "sendResetLink": "Send Reset Link",
+    "backToSignIn": "Back to Sign In",
+    "signInHere": "Sign in here",
+    "signUpHere": "Sign up here",
+    "login": "Login",
+    "logout": "Logout",
+    "resendCode": "Resend Code",
+    "tryDifferentEmail": "Try different email",
+    "rememberPassword": "Remember password?",
+    "agreeToTerms": "Agree to Terms and Conditions",
+    "termsOfService": "Terms of Service",
+    "privacyPolicy": "Privacy Policy"
+  },
+  "labels": {
+    "email": "Email",
+    "password": "Password",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "phone": "Phone",
+    "confirmPassword": "Confirm Password",
+    "newPassword": "New Password",
+    "confirmNewPassword": "Confirm New Password",
+    "rememberMe": "Remember me"
+  },
+  "placeholders": {
+    "enterEmail": "Enter your email",
+    "enterPassword": "Enter your password",
+    "enterFirstName": "Enter your first name",
+    "enterLastName": "Enter your last name",
+    "enterPhone": "Enter your phone number",
+    "enterConfirmPassword": "Enter your password confirmation",
+    "enterNewPassword": "Enter New Password",
+    "enterConfirmNewPassword": "Enter Confirm New Password",
+    "enterEmailReset": "Enter email"
+  },
+  "messages": {
+    "loading": "Loading...",
+    "success": "Operation completed successfully",
+    "error": "An error occurred",
+    "verifying": "Verifying...",
+    "sending": "Sending...",
+    "welcomeBack": "Welcome back! Please sign in to your account",
+    "joinCommunity": "Join Al-Haramain and discover authentic Islamic products",
+    "welcomeToAlHaramain": "Welcome Back to Al-Haramain",
+    "discoverPremium": "Discover premium Islamic products crafted with devotion and authenticity",
+    "joinOurCommunity": "Join Our Community",
+    "experienceFinest": "Experience the finest collection of authentic Islamic products and join thousands of satisfied customers",
+    "dontHaveAccount": "Don't have an account?",
+    "alreadyHaveAccount": "Already have an account?",
+    "orSignInWith": "Or sign in with",
+    "orSignUpWith": "Or sign up with",
+    "didntReceiveCode": "Didn't receive the code?",
+    "resendAvailableIn": "Resend available in",
+    "newCodeSent": "New code sent! Please check your email",
+    "emailSent": "Email sent!",
+    "passwordResetInstructions": "We have sent password reset instructions to your email",
+    "passwordResetComplete": "Password reset complete",
+    "passwordResetSuccessfully": "Password reset successfully",
+    "pleaseEnterEmail": "Please enter your email to reset your password",
+    "attemptOf": "Attempt {{current}} of {{total}}",
+    "tooManyAttempts": "Too many attempts"
+  },
+  "navigation": {
+    "home": "Home",
+    "products": "Products",
+    "categories": "Categories",
+    "offers": "Offers",
+    "cart": "Cart",
+    "favorites": "Favorites",
+    "orders": "Orders",
+    "profile": "Profile",
+    "settings": "Settings"
+  },
+  "social": {
+    "google": "Google",
+    "facebook": "Facebook"
+  },
+  "security": {
+    "securityNotice": "Security Notice:",
+    "verificationCodeValid": "The verification code is valid for 10 minutes only. Never share this code with anyone.",
+    "emailVerification": "Email Verification",
+    "enterVerificationCode": "Enter the 6-digit verification code sent to your email"
+  },
+  "branding": {
+    "alHaramain": "Al-Haramain"
+  }
+}

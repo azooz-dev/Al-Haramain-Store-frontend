@@ -1,0 +1,37 @@
+{
+  "signIn": {
+    "title": "Sign In",
+    "subtitle": "Welcome back! Please sign in to your account",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot password?",
+    "signIn": "Sign In",
+    "orSignInWith": "Or sign in with",
+    "dontHaveAccount": "Don't have an account?",
+    "signUpHere": "Sign up here"
+  },
+  "signUp": {
+    "title": "Create Account",
+    "subtitle": "Join Al-Haramain and discover authentic Islamic products"
+  },
+  "forgotPassword": {
+    "title": "Reset Password",
+    "subtitle": "Please enter your email to reset your password"
+  },
+  "resetPassword": {
+    "title": "Set New Password",
+    "subtitle": "Set your new password"
+  },
+  "otpVerification": {
+    "title": "Email Verification",
+    "subtitle": "Enter the 6-digit verification code sent to your email"
+  },
+  "success": {
+    "emailSent": "Email sent!",
+    "passwordReset": "Password reset complete",
+    "emailVerified": "Email verified successfully"
+  }
+}

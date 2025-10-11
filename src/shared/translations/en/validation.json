@@ -1,0 +1,37 @@
+{
+  "required": "This field is required",
+  "email": {
+    "required": "Email is required",
+    "invalid": "Please enter a valid email address"
+  },
+  "password": {
+    "required": "Password is required",
+    "minLength": "Password must be at least {{min}} characters",
+    "mismatch": "Passwords do not match"
+  },
+  "firstName": {
+    "required": "First name is required"
+  },
+  "lastName": {
+    "required": "Last name is required"
+  },
+  "phone": {
+    "required": "Phone is required",
+    "invalid": "Please enter a valid phone number"
+  },
+  "confirmPassword": {
+    "required": "Confirm password is required",
+    "mismatch": "Password and confirm password do not match"
+  },
+  "terms": {
+    "required": "You must agree to the terms and conditions"
+  },
+  "otp": {
+    "required": "OTP is required",
+    "invalid": "OTP is invalid",
+    "expired": "OTP has expired"
+  },
+  "verificationAttempts": {
+    "required": "Verification attempts are required"
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "buttons": {
+    "submit": "إرسال",
+    "cancel": "إلغاء",
+    "save": "حفظ",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "back": "رجوع",
+    "next": "التالي",
+    "previous": "السابق",
+    "signIn": "تسجيل الدخول",
+    "signUp": "تسجيل حساب جديد",
+    "createAccount": "إنشاء حساب",
+    "forgotPassword": "هل نسيت كلمة المرور؟",
+    "resetPassword": "إعادة تعيين كلمة المرور",
+    "setNewPassword": "تعيين كلمة المرور الجديدة",
+    "sendResetLink": "إرسال رابط إعادة التعيين",
+    "backToSignIn": "العودة إلى تسجيل الدخول",
+    "signInHere": "تسجيل الدخول هنا",
+    "signUpHere": "تسجيل حساب جديد",
+    "login": "تسجيل الدخول",
+    "logout": "تسجيل الخروج",
+    "resendCode": "إرسال رمز جديد",
+    "tryDifferentEmail": "حاول بريد إلكتروني آخر",
+    "rememberPassword": "هل تذكرت كلمة المرور؟",
+    "agreeToTerms": "أوافق على الشروط والأحكام",
+    "termsOfService": "الشروط والأحكام",
+    "privacyPolicy": "سياسة الخصوصية"
+  },
+  "labels": {
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "firstName": "الاسم الأول",
+    "lastName": "الاسم الأخير",
+    "phone": "الهاتف",
+    "confirmPassword": "تأكيد كلمة المرور",
+    "newPassword": "كلمة المرور الجديدة",
+    "confirmNewPassword": "تأكيد كلمة المرور الجديدة",
+    "rememberMe": "تذكرني"
+  },
+  "placeholders": {
+    "enterEmail": "أدخل البريد الإلكتروني",
+    "enterPassword": "أدخل كلمة المرور",
+    "enterFirstName": "أدخل اسمك الأول",
+    "enterLastName": "أدخل اسمك الأخير",
+    "enterPhone": "أدخل رقم هاتفك",
+    "enterConfirmPassword": "أدخل تأكيد كلمة المرور",
+    "enterNewPassword": "أدخل كلمة المرور الجديدة",
+    "enterConfirmNewPassword": "أدخل تأكيد كلمة المرور الجديدة",
+    "enterEmailReset": "أدخل البريد الإلكتروني"
+  },
+  "messages": {
+    "loading": "جاري التحميل...",
+    "success": "تمت العملية بنجاح",
+    "error": "حدث خطأ",
+    "verifying": "جاري التحقق...",
+    "sending": "جاري الإرسال...",
+    "welcomeBack": "مرحباً بعودتك! يرجى تسجيل الدخول إلى حسابك",
+    "joinCommunity": "انضم إلى الحرمين واكتشف المنتجات الإسلامية الأصيلة",
+    "welcomeToAlHaramain": "مرحباً بعودتك إلى الحرمين",
+    "discoverPremium": "اكتشف المنتجات الإسلامية المتميزة المصنوعة بإخلاص وأصالة",
+    "joinOurCommunity": "انضم إلى مجتمعنا",
+    "experienceFinest": "استمتع بأفضل مجموعة من المنتجات الإسلامية الأصيلة وانضم إلى آلاف العملاء الراضين",
+    "dontHaveAccount": "ليس لديك حساب؟",
+    "alreadyHaveAccount": "لديك حساب؟",
+    "orSignInWith": "أو تسجيل الدخول ب",
+    "orSignUpWith": "أو إنشاء حساب باستخدام",
+    "didntReceiveCode": "لم تستلم الرمز؟",
+    "resendAvailableIn": "يمكنك طلب رمز جديد بعد",
+    "newCodeSent": "تم إرسال رمز جديد! يرجى مراجعة بريدك الإلكتروني",
+    "emailSent": "تم إرسال البريد الإلكتروني!",
+    "passwordResetInstructions": "لقد أرسلنا تعليمات إعادة تعيين كلمة المرور إلى بريدك الإلكتروني",
+    "passwordResetComplete": "تم إعادة تعيين كلمة المرور",
+    "passwordResetSuccessfully": "تم إعادة تعيين كلمة المرور بنجاح",
+    "pleaseEnterEmail": "يرجى إدخال بريدك الإلكتروني لإعادة تعيين كلمة المرور",
+    "attemptOf": "محاولة {{current}} من {{total}}",
+    "tooManyAttempts": "عدد محاولات مكثفة"
+  },
+  "navigation": {
+    "home": "الرئيسية",
+    "products": "المنتجات",
+    "categories": "الفئات",
+    "offers": "العروض",
+    "cart": "السلة",
+    "favorites": "المفضلة",
+    "orders": "الطلبات",
+    "profile": "الملف الشخصي",
+    "settings": "الإعدادات"
+  },
+  "social": {
+    "google": "جوجل",
+    "facebook": "فيسبوك"
+  },
+  "security": {
+    "securityNotice": "ملاحظة أمنية:",
+    "verificationCodeValid": "رمز التحقق صالح لمدة 10 دقائق فقط. لا تشارك هذا الرمز مع أي شخص آخر.",
+    "emailVerification": "التحقق من البريد الإلكتروني",
+    "enterVerificationCode": "أدخل رمز التحقق المكون من 6 أرقام المرسل إلى بريدك الإلكتروني"
+  },
+  "branding": {
+    "alHaramain": "الحرمين"
+  }
+}

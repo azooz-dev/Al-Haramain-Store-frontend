@@ -1,0 +1,36 @@
+{
+  "menu": {
+    "home": "الرئيسية",
+    "products": "المنتجات",
+    "categories": "الفئات",
+    "offers": "العروض",
+    "cart": "السلة",
+    "favorites": "المفضلة",
+    "orders": "الطلبات",
+    "profile": "الملف الشخصي",
+    "settings": "الإعدادات",
+    "logout": "تسجيل الخروج",
+    "login": "تسجيل الدخول"
+  },
+  "breadcrumbs": {
+    "home": "الرئيسية",
+    "products": "المنتجات",
+    "category": "الفئة",
+    "product": "المنتج",
+    "cart": "السلة",
+    "checkout": "الدفع",
+    "profile": "الملف الشخصي",
+    "settings": "الإعدادات"
+  },
+  "language": {
+    "changeToArabic": "تغيير اللغة إلى العربية",
+    "changeToEnglish": "تغيير اللغة إلى الإنجليزية",
+    "arabic": "عربي",
+    "english": "EN"
+  },
+  "theme": {
+    "toggleTheme": "تغيير المظهر",
+    "lightMode": "الوضع النهاري",
+    "darkMode": "الوضع الليلي"
+  }
+}
