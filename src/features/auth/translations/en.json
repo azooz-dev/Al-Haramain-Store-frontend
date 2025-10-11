@@ -15,19 +15,62 @@
   },
   "signUp": {
     "title": "Create Account",
-    "subtitle": "Join Al-Haramain and discover authentic Islamic products"
+    "subtitle": "Join Al-Haramain and discover authentic Islamic products",
+    "firstName": "First Name",
+    "firstNamePlaceholder": "Enter your first name",
+    "lastName": "Last Name",
+    "lastNamePlaceholder": "Enter your last name",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+    "phone": "Phone Number",
+    "phonePlaceholder": "Enter your phone number",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "Confirm your password",
+    "terms": "I agree to the",
+    "privacyPolicy": "Privacy Policy",
+    "createAccount": "Create Account",
+    "orSignUpWith": "Or sign up with",
+    "alreadyHaveAccount": "Already have an account?",
+    "signInHere": "Sign in here"
   },
-  "forgotPassword": {
+  "forgetPassword": {
     "title": "Reset Password",
-    "subtitle": "Please enter your email to reset your password"
+    "subtitle": "Please enter your email to reset your password",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+    "sendResetLink": "Send Reset Link",
+    "rememberPassword": "Remember password?",
+    "signIn": "Sign In",
+    "backToSignIn": "Back to Sign In",
+    "tryDifferentEmail": "Try different email"
   },
   "resetPassword": {
     "title": "Set New Password",
-    "subtitle": "Set your new password"
+    "subtitle": "Set your new password",
+    "newPassword": "New Password",
+    "newPasswordPlaceholder": "Enter New Password",
+    "confirmNewPassword": "Confirm New Password",
+    "confirmNewPasswordPlaceholder": "Enter Confirm New Password",
+    "setNewPassword": "Set New Password",
+    "rememberPassword": "Remember password?",
+    "backToSignIn": "Back to Sign In"
   },
-  "otpVerification": {
+  "otp": {
     "title": "Email Verification",
-    "subtitle": "Enter the 6-digit verification code sent to your email"
+    "subtitle": "Enter the 6-digit verification code sent to your email",
+    "verifying": "Verifying...",
+    "verificationAttempts": "Attempt {{attempts}} of 3",
+    "tooManyAttempts": "Too many attempts",
+    "didNotReceiveCode": "Didn't receive the code?",
+    "sending": "Sending...",
+    "resendCode": "Resend Code",
+    "resendAvailable": "Resend available in {{time}}",
+    "newCodeSent": "New code sent! Please check your email",
+    "backToSignIn": "Back to Sign In",
+    "securityNotice": "Security Notice:",
+    "securityNoticeSubtitle": "The verification code is valid for 10 minutes only. Never share this code with anyone."
   },
   "success": {
     "emailSent": "Email sent!",

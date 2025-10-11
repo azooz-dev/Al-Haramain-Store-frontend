@@ -10,6 +10,7 @@ import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Shield, Mail, AlertCircle, RotateCcw, Timer, ArrowLeft, Badge } from "lucide-react";
 import { useNavigation } from "@/shared/hooks/useNavigation";
+import { useSharedTranslations, useFeatureTranslations } from "@/shared/hooks/useTranslation";
 
 export const OTPPage: React.FC = () => {
   const {
@@ -21,37 +22,20 @@ export const OTPPage: React.FC = () => {
   const { isRTL } = useApp();
   const location = useLocation();
   const email = location.state?.email;
-  const { language } = useApp();
+  const { t: validationT } = useSharedTranslations("validation");
+  const { t: authT } = useFeatureTranslations("auth");
   const inputOTPRef = useRef<HTMLInputElement[]>([]);
   const { navigateToSignIn } = useNavigation();
   const [resendTimer, setResendTimer] = useState(60);
   const [canResend, setCanResend] = useState(false);
   const [otpDigits, setOtpDigits] = useState<string[]>(Array(6).fill(''));
   const [resendSuccess, setResendSuccess] = useState(false);
-  const messages = {
-    en: {
-      otpRequired: "OTP is required",
-      otpInvalid: "OTP is invalid",
-      otpExpired: "OTP has expired",
-      otpResend: "OTP has been sent to your email",
-      verificationAttemptsRequired: "Verification attempts are required",
-    },
-    ar: {
-      otpRequired: "الكود المرسل هو مطلوب",
-      otpInvalid: "الكود المرسل غير صالح",
-      otpExpired: "الكود المرسل لا يزال صالح",
-      otpResend: "تم إرسال الكود المرسل إلى بريدك الإلكتروني",
-      verificationAttemptsRequired: "عدد المحاولات مطلوب",
-    }
-  };
-
-  const t = messages[language] || messages.en;
 
   const formSchema = z.object({
-    otp: z.string().nonempty(t.otpRequired),
+    otp: z.string().nonempty(validationT("otp.required")),
     isVerifying: z.boolean(),
+    verificationAttempts: z.number().int().positive(validationT("verificationAttempts.required")),
     isResending: z.boolean(),
-    verificationAttempts: z.number().int().positive(t.verificationAttemptsRequired),
   });
   
   const form = useForm<z.infer<typeof formSchema>>({
@@ -232,7 +216,7 @@ export const OTPPage: React.FC = () => {
 
             <div className="space-y-2">
               <CardTitle className="text-2xl bg-gradient-to-r from-amber-600 to-orange-600 dark:from-amber-400 dark:to-orange-400 bg-clip-text text-transparent">
-                {isRTL ? 'التحقق من البريد الإلكتروني' : 'Email Verification'}
+                {authT("otp.title")}
               </CardTitle>
               
               <div className="flex items-center justify-center gap-2">
@@ -244,7 +228,7 @@ export const OTPPage: React.FC = () => {
               
               <p className="text-sm text-muted-foreground">
                 {isRTL 
-                  ? 'أدخل رمز التحقق المكون من 6 أرقام المرسل إلى بريدك الإلكتروني'
+                  ? authT("otp.subtitle")
                   : 'Enter the 6-digit verification code sent to your email'
                 }
               </p>
@@ -290,7 +274,7 @@ export const OTPPage: React.FC = () => {
                   <div className="flex items-center justify-center gap-2 text-sm p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
                     <div className="w-4 h-4 border-2 border-amber-600 border-t-transparent rounded-full animate-spin" />
                     <span className="text-amber-600 dark:text-amber-400">
-                      {isRTL ? 'جاري التحقق...' : 'Verifying...'}
+                      {authT("otp.verifying")}
                     </span>
                   </div>
                 </div>
@@ -305,7 +289,7 @@ export const OTPPage: React.FC = () => {
                         <AlertCircle className="w-4 h-4 text-amber-500" />
                         <span className="text-amber-600 dark:text-amber-400">
                           {isRTL 
-                            ? `محاولة ${form.getValues("verificationAttempts")} من 3`
+                            ? authT("otp.verificationAttempts", { attempts: form.getValues("verificationAttempts") })
                             : `Attempt ${form.getValues("verificationAttempts")} of 3`
                           }
                         </span>
@@ -314,7 +298,7 @@ export const OTPPage: React.FC = () => {
                       <>
                         <AlertCircle className="w-4 h-4 text-red-500" />
                         <span className="text-red-600 dark:text-red-400">
-                          {isRTL ? 'عدد محاولات مكثفة' : 'Too many attempts'}
+                          {authT("otp.tooManyAttempts")}
                         </span>
                       </>
                     )}
@@ -328,7 +312,7 @@ export const OTPPage: React.FC = () => {
             <div className="space-y-3">
               <div className="text-center">
                 <p className="text-sm text-muted-foreground">
-                  {isRTL ? 'لم تستلم الرمز؟' : "Didn't receive the code?"}
+                  {authT("otp.didNotReceiveCode")}
                 </p>
               </div>
 
@@ -342,12 +326,12 @@ export const OTPPage: React.FC = () => {
                   {form.getValues("isResending") ? (
                     <div className="flex items-center gap-2">
                       <div className="w-4 h-4 border-2 border-amber-600 border-t-transparent rounded-full animate-spin" />
-                      <span>{isRTL ? 'جاري الإرسال...' : 'Sending...'}</span>
+                      <span>{authT("otp.sending")}</span>
                     </div>
                   ) : (
                     <div className="flex items-center gap-2">
                       <RotateCcw className="w-4 h-4" />
-                      <span>{isRTL ? 'إرسال رمز جديد' : 'Resend Code'}</span>
+                      <span>{authT("otp.resendCode")}</span>
                     </div>
                   )}
                 </Button>
@@ -357,8 +341,8 @@ export const OTPPage: React.FC = () => {
                     <Timer className="w-4 h-4" />
                     <span>
                       {isRTL 
-                        ? `يمكنك طلب رمز جديد بعد ${formatTimer(resendTimer)}`
-                        : `Resend available in ${formatTimer(resendTimer)}`
+                        ? authT("otp.resendAvailable", { time: formatTimer(resendTimer) })
+                        : authT("otp.resendAvailable", { time: formatTimer(resendTimer) })
                       }
                     </span>
                   </div>
@@ -371,7 +355,7 @@ export const OTPPage: React.FC = () => {
                   <div className="flex items-center justify-center gap-2 text-sm p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
                     <span className="text-green-600 dark:text-green-400">
                       {isRTL 
-                        ? 'تم إرسال رمز جديد! يرجى مراجعة بريدك الإلكتروني'
+                        ? authT("otp.newCodeSent")
                         : 'New code sent! Please check your email'
                       }
                     </span>
@@ -388,7 +372,7 @@ export const OTPPage: React.FC = () => {
             >
               <ArrowLeft className={`w-4 h-4 ${isRTL ? 'rotate-180' : ''}`} />
               <span className="ml-2">
-                {isRTL ? 'العودة إلى تسجيل الدخول' : 'Back to Sign In'}
+                {authT("otp.backToSignIn")}
               </span>
             </Button>
           </CardContent>
@@ -402,12 +386,12 @@ export const OTPPage: React.FC = () => {
             </div>
             <div className="text-xs text-muted-foreground">
               <p className="mb-1 font-medium">
-                {isRTL ? 'ملاحظة أمنية:' : 'Security Notice:'}
+                {authT("otp.securityNotice")}
               </p>
               <p>
                 {isRTL 
-                  ? 'رمز التحقق صالح لمدة 10 دقائق فقط. لا تشارك هذا الرمز مع أي شخص آخر.'
-                  : 'The verification code is valid for 10 minutes only. Never share this code with anyone.'
+                  ? authT("otp.securityNoticeSubtitle")
+                  : authT("otp.securityNoticeSubtitle")
                 }
               </p>
             </div>

@@ -11,11 +11,13 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useNavigation } from "@/shared/hooks/useNavigation";
+import { useSharedTranslations, useFeatureTranslations } from "@/shared/hooks/useTranslation";
 
 export const ResetPasswordPage: React.FC = () => {
   const { handleResetPassword, isLoading, error, handleClearError, handleSetAuthLoading } = useAuth();
   const { isRTL } = useApp();
-  const { language } = useApp();
+  const { t: validationT } = useSharedTranslations("validation");
+  const { t: authT } = useFeatureTranslations("auth");
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
   const email = searchParams.get("email");
@@ -25,32 +27,11 @@ export const ResetPasswordPage: React.FC = () => {
   const { navigateToForgetPassword, navigateToSignIn } = useNavigation();
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const messages = {
-    en: {
-      passwordRequired: "Password is required",
-      passwordInvalid: "Password is invalid",
-      passwordMinLength: "Password must be at least 8 characters",
-      confirmPasswordRequired: "Confirm password is required",
-      confirmPasswordInvalid: "Confirm password is invalid",
-      passwordMismatch: "Password and confirm password do not match",
-    },
-    ar: {
-      passwordRequired: "كلمة المرور مطلوبة",
-      passwordInvalid: "كلمة المرور غير صالحة",
-      passwordMinLength: "يجب أن يكون كلمة المرور على الأقل 8 أحرف",
-      confirmPasswordRequired: "يجب أن يكون كلمة المرور المؤكدة مطلوبة",
-      confirmPasswordInvalid: "يجب أن يكون كلمة المرور المؤكدة غير صالحة",
-      passwordMismatch: "يجب أن يكون كلمة المرور وكلمة المرور المؤكدة متطابقتين",
-    }
-  }
-
-  const t = messages[language] || messages.en;
-
   const formSchema = z.object({
-    password: z.string().min(8, t.passwordMinLength).nonempty(t.passwordRequired),
-    confirmPassword: z.string().min(8, t.passwordMinLength).nonempty(t.confirmPasswordRequired),
+    password: z.string().min(8, validationT("password.minLength")).nonempty(validationT("password.required")),
+    confirmPassword: z.string().min(8, validationT("password.minLength")).nonempty(validationT("confirmPassword.required")),
   }).refine((data) => data.password === data.confirmPassword, {
-    message: t.passwordMismatch,
+    message: validationT("password.mismatch"),
     path: ["confirmPassword"],
   });
 
@@ -92,9 +73,9 @@ export const ResetPasswordPage: React.FC = () => {
                   <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
                     <CheckCircle className="w-8 h-8 text-green-600" />
                   </div>
-                  <CardTitle className="text-2xl">{isRTL ? 'تم إعادة تعيين كلمة المرور' : 'Password reset complete'}</CardTitle>
+                  <CardTitle className="text-2xl">{authT("resetPassword.title")}</CardTitle>
                   <p className="text-muted-foreground">
-                    {isRTL ? 'تم إعادة تعيين كلمة المرور بنجاح' : 'Password reset successfully'}
+                    {authT("resetPassword.subtitle")}
                   </p>
                 </CardHeader>
                 
@@ -109,7 +90,7 @@ export const ResetPasswordPage: React.FC = () => {
                     onClick={navigateToSignIn}
                     className="w-full h-12 bg-amber-600 hover:bg-amber-700"
                   >
-                    {isRTL ? 'العودة إلى تسجيل الدخول' : 'Back to Sign In'}
+                    {authT("resetPassword.backToSignIn")}
                     {isRTL ? (
                       <ArrowLeft className="h-4 w-4 ml-2" />
                     ) : (
@@ -138,7 +119,7 @@ export const ResetPasswordPage: React.FC = () => {
                     <span className="text-white text-sm">AH</span>
                   </div>
                 </div>
-                <CardTitle className="text-2xl">{isRTL ? 'تعيين كلمة المرور الجديدة' : 'Set New Password'}</CardTitle>
+                <CardTitle className="text-2xl">{authT("resetPassword.title")}</CardTitle>
                 <p className="text-muted-foreground">
                   {email && `Email: ${String(email)}`}
                 </p>
@@ -153,13 +134,13 @@ export const ResetPasswordPage: React.FC = () => {
                   )}
 
                   <div className="space-y-2">
-                    <Label htmlFor="password">{isRTL ? 'كلمة المرور الجديدة' : 'New Password'}</Label>
+                    <Label htmlFor="password">{authT("resetPassword.newPassword")}</Label>
                     <div className="relative">
                       <Lock className={`h-4 w-4 absolute top-1/2 transform -translate-y-1/2 text-muted-foreground ${isRTL ? 'right-3' : 'left-3'}`} />
                       <Input
                         id="password"
                         type={showPassword ? 'text' : 'password'}
-                        placeholder={isRTL ? 'أدخل كلمة المرور الجديدة' : 'Enter New Password'}
+                        placeholder={authT("resetPassword.newPasswordPlaceholder")}
                         {...form.register("password")}
                         className={`dark:bg-[#121212] ${isRTL ? 'pr-10 pl-10 text-right' : 'pl-10 pr-10'} h-12`}
                         required
@@ -187,13 +168,13 @@ export const ResetPasswordPage: React.FC = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="confirmPassword">{isRTL ? 'تأكيد كلمة المرور الجديدة' : 'Confirm New Password'}</Label>
+                    <Label htmlFor="confirmPassword">{authT("resetPassword.confirmNewPassword")}</Label>
                     <div className="relative">
                       <Lock className={`h-4 w-4 absolute top-1/2 transform -translate-y-1/2 text-muted-foreground ${isRTL ? 'right-3' : 'left-3'}`} />
                       <Input
                         id="confirmPassword"
                         type={showConfirmPassword ? 'text' : 'password'}
-                        placeholder={isRTL ? 'أدخل تأكيد كلمة المرور الجديدة' : 'Enter Confirm New Password'}
+                        placeholder={authT("resetPassword.confirmNewPasswordPlaceholder")}
                         {...form.register("confirmPassword")}
                         className={`dark:bg-[#121212] ${isRTL ? 'pr-10 pl-10 text-right' : 'pl-10 pr-10'} h-12`}
                         required
@@ -228,7 +209,7 @@ export const ResetPasswordPage: React.FC = () => {
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                     ) : (
                       <>
-                        {isRTL ? 'تعيين كلمة المرور الجديدة' : 'Set New Password'}
+                        {authT("resetPassword.setNewPassword")}
                         {isRTL ? (
                           <ArrowLeft className="h-4 w-4 ml-2" />
                         ) : (
@@ -240,13 +221,13 @@ export const ResetPasswordPage: React.FC = () => {
                 </form>
 
                 <div className="text-center">
-                  <span className="text-sm text-muted-foreground">{isRTL ? 'هل تذكرت كلمة المرور؟' : 'Remember password?'} </span>
+                  <span className="text-sm text-muted-foreground">{authT("resetPassword.rememberPassword")} </span>
                   <Button 
                     variant="link" 
                     className="p-0 text-sm text-amber-600 hover:text-amber-700"
                     onClick={navigateToSignIn}
                   >
-                    {isRTL ? 'العودة إلى تسجيل الدخول' : 'Back to Sign In'}
+                    {authT("resetPassword.backToSignIn")}
                   </Button>
                 </div>
               </CardContent>

@@ -12,50 +12,27 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useNavigation } from "@/shared/hooks/useNavigation";
 import { ImageWithFallback } from "@shared/components/common/ImageWithFallback";
+import { useSharedTranslations, useFeatureTranslations } from "@/shared/hooks/useTranslation";
 
 export const SignUpPage: React.FC = () => {
   const { isLoading, error, handleSignUp } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false);
   const { isRTL } = useApp();
-  const { language } = useApp();
   const { navigateToSignIn } = useNavigation();
-
-  const messages = {
-    en: {
-      firstNameRequired: "First name is required",
-      lastNameRequired: "Last name is required",
-      emailRequired: "Email is required",
-      emailInvalid: "Email is invalid",
-      phoneRequired: "Phone is required",
-      passwordRequired: "Password is required",
-      passwordMin: "Password must be at least 8 characters",
-      termsRequired: "You must agree to the terms and conditions"
-    },
-    ar: {
-      firstNameRequired: "الاسم الأول مطلوب",
-      lastNameRequired: "الاسم الأخير مطلوب",
-      emailRequired: "البريد الإلكتروني مطلوب",
-      emailInvalid: "البريد الإلكتروني غير صالح",
-      phoneRequired: "الهاتف مطلوب",
-      passwordRequired: "كلمة المرور مطلوبة",
-      passwordMin: "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل",
-      termsRequired: "يجب أن توافق على الشروط والأحكام",
-    }
-  };
-
-  const t = messages[language] || messages.en;
+  const { t: validationT } = useSharedTranslations("validation");
+  const { t: authT } = useFeatureTranslations("auth");
 
   const formSchema = z.object({
-    firstName: z.string().nonempty(t.firstNameRequired),
-    lastName: z.string().nonempty(t.lastNameRequired),
-    email: z.string().nonempty(t.emailRequired).email(t.emailInvalid),
-    phone: z.string().nonempty(t.phoneRequired),
-    password: z.string().nonempty(t.passwordRequired).min(8, t.passwordMin),
-    password_confirmation: z.string().nonempty(t.passwordRequired).min(8, t.passwordMin),
-    terms: z.boolean().refine((data) => data, { message: t.termsRequired })
+    firstName: z.string().nonempty(validationT("firstName.required")),
+    lastName: z.string().nonempty(validationT("lastName.required")),
+    email: z.string().nonempty(validationT("email.required")).email(validationT("email.invalid")),
+    phone: z.string().nonempty(validationT("phone.required")),
+    password: z.string().nonempty(validationT("password.required")).min(8, validationT("password.minLength")),
+    password_confirmation: z.string().nonempty(validationT("password.required")).min(8, validationT("password.minLength")),
+    terms: z.boolean().refine((data) => data, { message: validationT("terms.required") })
   }).refine((data) => data.password === data.password_confirmation, {
-    message: isRTL ? "كلمات المرور غير متطابقة" : "Passwords do not match",
+    message: validationT("password.mismatch"),
     path: ["password_confirmation"],
   });
 
@@ -92,7 +69,7 @@ export const SignUpPage: React.FC = () => {
                     <span className="text-white text-sm">AH</span>
                   </div>
                 </div>
-                <CardTitle className="text-2xl">{isRTL ? 'إنشاء حساب' : 'Create Account'}</CardTitle>
+                <CardTitle className="text-2xl">{authT("signUp.title")}</CardTitle>
                 <p className="text-muted-foreground">
                   {isRTL ? "انضم إلى الحرمين واكتشف المنتجات الإسلامية الأصيلة" : "Join Al-Haramain and discover authentic Islamic products"}
                 </p>
@@ -108,13 +85,13 @@ export const SignUpPage: React.FC = () => {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="firstName">{isRTL ? 'الاسم الأول' : 'First Name'} *</Label>
+                      <Label htmlFor="firstName">{authT("signUp.firstName")} *</Label>
                       <div className="relative">
                         <User className={`h-4 w-4 absolute top-1/2 transform -translate-y-1/2 text-muted-foreground ${isRTL ? 'right-3' : 'left-3'}`} />
                         <Input
                           id="firstName"
                           type="text"
-                          placeholder={isRTL ? 'أدخل اسمك الأول' : 'Enter your first name'}
+                          placeholder={authT("signUp.firstNamePlaceholder")}
                           {...form.register("firstName")}
                           className={`dark:bg-[#121212] ${isRTL ? 'pr-10 text-right' : 'pl-10'} h-12`}
                           required
@@ -127,13 +104,13 @@ export const SignUpPage: React.FC = () => {
                       )}
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="lastName">{isRTL ? 'الاسم الأخير' : 'Last Name'} *</Label>
+                      <Label htmlFor="lastName">{authT("signUp.lastName")} *</Label>
                       <div className="relative">
                         <User className={`h-4 w-4 absolute top-1/2 transform -translate-y-1/2 text-muted-foreground ${isRTL ? 'right-3' : 'left-3'}`} />
                         <Input
                           id="lastName"
                           type="text"
-                          placeholder={isRTL ? 'أدخل اسمك الأخير' : 'Enter your last name'}
+                          placeholder={authT("signUp.lastNamePlaceholder")}
                           {...form.register("lastName")}
                           className={`dark:bg-[#121212] ${isRTL ? 'pr-10 text-right' : 'pl-10'} h-12`}
                           required
@@ -148,13 +125,13 @@ export const SignUpPage: React.FC = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="email">{isRTL ? 'البريد الإلكتروني' : 'Email'} *</Label>
+                    <Label htmlFor="email">{authT("signUp.email")} *</Label>
                     <div className="relative">
                       <Mail className={`h-4 w-4 absolute top-1/2 transform -translate-y-1/2 text-muted-foreground ${isRTL ? 'right-3' : 'left-3'}`} />
                       <Input
                         id="email"
                         type="email"
-                        placeholder={isRTL ? 'أدخل البريد الإلكتروني' : 'Enter your email'}
+                        placeholder={authT("signUp.emailPlaceholder")}
                         {...form.register("email")}
                         className={`dark:bg-[#121212] ${isRTL ? 'pr-10 text-right' : 'pl-10'} h-12`}
                         required
@@ -168,13 +145,13 @@ export const SignUpPage: React.FC = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="phone">{isRTL ? 'الهاتف' : 'Phone'}</Label>
+                    <Label htmlFor="phone">{authT("signUp.phone")}</Label>
                     <div className="relative">
                       <Phone className={`h-4 w-4 absolute top-1/2 transform -translate-y-1/2 text-muted-foreground ${isRTL ? 'right-3' : 'left-3'}`} />
                       <Input
                         id="phone"
                         type="tel"
-                        placeholder={isRTL ? 'أدخل رقم هاتفك' : 'Enter your phone number'}
+                        placeholder={authT("signUp.phonePlaceholder")}
                         {...form.register("phone")}
                         className={`dark:bg-[#121212] ${isRTL ? 'pr-10 text-right' : 'pl-10'} h-12`}
                       />
@@ -187,13 +164,13 @@ export const SignUpPage: React.FC = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="password">{isRTL ? 'كلمة المرور' : 'Password'} *</Label>
+                    <Label htmlFor="password">{authT("signUp.password")} *</Label>
                     <div className="relative">
                       <Lock className={`h-4 w-4 absolute top-1/2 transform -translate-y-1/2 text-muted-foreground ${isRTL ? 'right-3' : 'left-3'}`} />
                       <Input
                         id="password"
                         type={showPassword ? 'text' : 'password'}
-                        placeholder={isRTL ? 'أدخل كلمة المرور' : 'Enter your password'}
+                        placeholder={authT("signUp.passwordPlaceholder")}
                         {...form.register("password")}
                         className={`dark:bg-[#121212] ${isRTL ? 'pr-10 pl-10 text-right' : 'pl-10 pr-10'} h-12`}
                         required
@@ -220,13 +197,13 @@ export const SignUpPage: React.FC = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="confirmPassword">{isRTL ? 'تأكيد كلمة المرور' : 'Confirm Password'} *</Label>
+                    <Label htmlFor="confirmPassword">{authT("signUp.confirmPassword")} *</Label>
                     <div className="relative">
                       <Lock className={`h-4 w-4 absolute top-1/2 transform -translate-y-1/2 text-muted-foreground ${isRTL ? 'right-3' : 'left-3'}`} />
                       <Input
                         id="confirmPassword"
                         type={showPasswordConfirmation ? 'text' : 'password'}
-                        placeholder={isRTL ? 'أدخل تأكيد كلمة المرور' : 'Enter your password confirmation'}
+                        placeholder={authT("signUp.confirmPasswordPlaceholder")}
                         {...form.register("password_confirmation")}
                         className={`dark:bg-[#121212] ${isRTL ? 'pr-10 pl-10 text-right' : 'pl-10 pr-10'} h-12`}
                         required
@@ -262,13 +239,13 @@ export const SignUpPage: React.FC = () => {
                         className="mt-1 rounded border-gray-300"
                       />
                       <label htmlFor="terms" className={`text-sm text-muted-foreground leading-relaxed ${isRTL ? 'text-right' : 'text-left'}`}>
-                        {isRTL ? 'أوافق على الشروط والأحكام' : 'Agree to Terms and Conditions'}{' '}
+                        {authT("signUp.terms")}{' '}
                         <Button variant="link" className="p-0 text-sm text-amber-600 hover:text-amber-700">
-                          {isRTL ? 'الشروط والأحكام' : 'Terms of Service'}
+                          {authT("signUp.terms")}
                         </Button>{' '}
                         {isRTL ? '' : 'and'}{' '}
                         <Button variant="link" className="p-0 text-sm text-amber-600 hover:text-amber-700">
-                          {isRTL ? 'سياسة الخصوصية' : 'Privacy Policy'}
+                          {authT("signUp.privacyPolicy")}
                         </Button>
                       </label>
                     </div>
@@ -288,7 +265,7 @@ export const SignUpPage: React.FC = () => {
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                     ) : (
                       <>
-                        {isRTL ? 'إنشاء حساب' : 'Create Account'}
+                        {authT("signUp.createAccount")}
                         {isRTL ? (
                           <ArrowLeft className="h-4 w-4 ml-2" />
                         ) : (
@@ -303,7 +280,7 @@ export const SignUpPage: React.FC = () => {
                   <div className="relative">
                     <Separator />
                     <span className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-card px-4 text-sm text-muted-foreground">
-                      {isRTL ? 'أو إنشاء حساب باستخدام' : 'Or sign up with'}
+                      {authT("signUp.orSignUpWith")}
                     </span>
                   </div>
 
@@ -326,13 +303,13 @@ export const SignUpPage: React.FC = () => {
                   </div>
 
                   <div className="text-center">
-                    <span className="text-sm text-muted-foreground">{isRTL ? 'لديك حساب؟' : 'Already have an account?'} </span>
+                    <span className="text-sm text-muted-foreground">{authT("signUp.alreadyHaveAccount")} </span>
                     <Button 
                       variant="link" 
                       className="p-0 text-sm text-amber-600 hover:text-amber-700"
                       onClick={navigateToSignIn}
                     >
-                      {isRTL ? 'تسجيل الدخول هنا' : 'Sign in here'}
+                      {authT("signUp.signInHere")}
                     </Button>
                   </div>
                 </div>

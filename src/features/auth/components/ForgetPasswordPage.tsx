@@ -10,6 +10,7 @@ import { useNavigation } from "@/shared/hooks/useNavigation";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useSharedTranslations, useFeatureTranslations } from "@/shared/hooks/useTranslation";
 
 export const ForgetPasswordPage: React.FC = () => {
   const [isSuccess, setIsSuccess] = useState(false);
@@ -17,22 +18,12 @@ export const ForgetPasswordPage: React.FC = () => {
   const { handleForgetPassword, isLoading, error, handleClearError } = useAuth();
   const { isRTL } = useApp();
   const { navigateToSignIn } = useNavigation();
+  const { t: validationT } = useSharedTranslations("validation");
+  const { t: authT } = useFeatureTranslations("auth");
 
-  const messages = {
-    en: {
-      emailRequired: "Email is required",
-      emailInvalid: "Invalid email address",
-    },
-    ar: {
-      emailRequired: "البريد الإلكتروني مطلوب",
-      emailInvalid: "البريد الإلكتروني غير صالح",
-    }
-  };
-  const { language } = useApp();
-  const t = messages[language] || messages.en;
 
   const formSchema = z.object({
-    email: z.string().email(t.emailInvalid).nonempty(t.emailRequired),
+    email: z.string().min(1, validationT("email.required")).email(validationT("email.invalid")),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -42,12 +33,17 @@ export const ForgetPasswordPage: React.FC = () => {
 
   useEffect(() => {
     handleClearError();
-  }, []);
+  }, [handleClearError]);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    const response = await handleForgetPassword(data);
-    setSuccessMessage(response.message);
-    setIsSuccess(response.status === "success");
+    try {
+      const response = await handleForgetPassword(data);
+      setSuccessMessage(response.message);
+      setIsSuccess(response.status === "success");
+    } catch (error) {
+      // Error is handled by the auth hook and will be displayed
+      console.error("Forget password error:", error);
+    }
   }
 
   if (isSuccess) {
@@ -62,9 +58,9 @@ export const ForgetPasswordPage: React.FC = () => {
                   <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
                     <CheckCircle className="w-8 h-8 text-green-600" />
                   </div>
-                  <CardTitle className="text-2xl">{isRTL ? 'تم إرسال البريد الإلكتروني!' : 'Email sent!'}</CardTitle>
+                  <CardTitle className="text-2xl">{authT("success.emailSent")}</CardTitle>
                   <p className="text-muted-foreground">
-                    {isRTL ? 'لقد أرسلنا تعليمات إعادة تعيين كلمة المرور إلى بريدك الإلكتروني' : 'We have sent password reset instructions to your email'}
+                    {successMessage}
                   </p>
                 </CardHeader>
 
@@ -80,7 +76,7 @@ export const ForgetPasswordPage: React.FC = () => {
                       onClick={navigateToSignIn}
                       className="w-full h-12 bg-amber-600 hover:bg-amber-700"
                     >
-                      {isRTL ? 'العودة إلى تسجيل الدخول' : 'Back to Sign In'}
+                      {authT("forgetPassword.backToSignIn")}
                       {isRTL ? (
                         <ArrowLeft className="h-4 w-4 ml-2" />
                       ) : (
@@ -96,7 +92,7 @@ export const ForgetPasswordPage: React.FC = () => {
                       }}
                       className="w-full h-12"
                     >
-                      {isRTL ? 'حاول بريد إلكتروني آخر' : 'Try different email'}
+                      {authT("forgetPassword.tryDifferentEmail")}
                     </Button>
                   </div>
                 </CardContent>
@@ -121,9 +117,9 @@ export const ForgetPasswordPage: React.FC = () => {
                     <span className="text-white text-sm">AH</span>
                   </div>
                 </div>
-                <CardTitle className="text-2xl">{isRTL ? 'إعادة تعيين كلمة المرور' : 'Reset Password'}</CardTitle>
+                <CardTitle className="text-2xl">{authT("forgetPassword.title")}</CardTitle>
                 <p className="text-muted-foreground">
-                  {isRTL ? 'يرجى إدخال بريدك الإلكتروني لإعادة تعيين كلمة المرور' : 'Please enter your email to reset your password'}
+                  {authT("forgetPassword.subtitle")}
                 </p>
               </CardHeader>
               
@@ -136,18 +132,17 @@ export const ForgetPasswordPage: React.FC = () => {
                   )}
 
                   <div className="space-y-2">
-                    <Label htmlFor="email">{isRTL ? 'البريد الإلكتروني' : 'Email'}</Label>
+                    <Label htmlFor="email">{authT("forgetPassword.email")}</Label>
                     <div className="relative">
                       <Mail className={`h-4 w-4 absolute top-1/2 transform -translate-y-1/2 text-muted-foreground ${isRTL ? 'right-3' : 'left-3'}`} />
                       <Input
                         id="email"
                         type="email"
-                        placeholder={isRTL ? 'أدخل البريد الإلكتروني' : 'Enter email'}
+                        placeholder={authT("forgetPassword.emailPlaceholder")}
                         {...form.register("email")}
                         className={`dark:bg-[#121212] ${isRTL ? 'pr-10 text-right' : 'pl-10'} h-12`}
                         required
-                        onError={(e: React.ChangeEvent<HTMLInputElement>) => form.setError("email", { message: e.target.value })}
-                        />
+                      />
                     </div>
                     {form.formState.errors.email && (
                       <p className={`text-red-500 text-sm ${isRTL ? 'text-right' : 'text-left'}`}>{form.formState.errors.email.message}</p>
@@ -163,7 +158,7 @@ export const ForgetPasswordPage: React.FC = () => {
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                     ) : (
                       <>
-                        {isRTL ? 'إرسال رابط إعادة التعيين' : 'Send Reset Link'}
+                        {authT("forgetPassword.sendResetLink")}
                         {isRTL ? (
                           <ArrowLeft className="h-4 w-4 ml-2" />
                         ) : (
@@ -175,13 +170,13 @@ export const ForgetPasswordPage: React.FC = () => {
                 </form>
 
                 <div className="text-center">
-                  <span className="text-sm text-muted-foreground">{isRTL ? 'هل تذكرت كلمة المرور؟' : 'Remember password?'} </span>
+                  <span className="text-sm text-muted-foreground">{authT("forgetPassword.rememberPassword")} </span>
                   <Button 
                     variant="link" 
                     className="p-0 text-sm text-amber-600 hover:text-amber-700"
                     onClick={navigateToSignIn}
                   >
-                    {isRTL ? 'تسجيل الدخول' : 'Sign In'}
+                    {authT("forgetPassword.signIn")}
                   </Button>
                 </div>
               </CardContent>

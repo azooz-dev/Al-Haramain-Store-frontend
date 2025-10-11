@@ -15,19 +15,62 @@
   },
   "signUp": {
     "title": "إنشاء حساب",
-    "subtitle": "انضم إلى الحرمين واكتشف المنتجات الإسلامية الأصيلة"
+    "subtitle": "انضم إلى الحرمين واكتشف المنتجات الإسلامية الأصيلة",
+    "firstName": "الاسم الأول",
+    "firstNamePlaceholder": "أدخل اسمك الأول",
+    "lastName": "الاسم الأخير",
+    "lastNamePlaceholder": "أدخل اسمك الأخير",
+    "email": "البريد الإلكتروني",
+    "emailPlaceholder": "أدخل بريدك الإلكتروني",
+    "phone": "رقم الهاتف",
+    "phonePlaceholder": "أدخل رقم هاتفك",
+    "password": "كلمة المرور",
+    "passwordPlaceholder": "أدخل كلمة المرور",
+    "confirmPassword": "تأكيد كلمة المرور",
+    "confirmPasswordPlaceholder": "أكد كلمة المرور",
+    "terms": "أوافق على",
+    "privacyPolicy": "سياسة الخصوصية",
+    "createAccount": "إنشاء حساب",
+    "orSignUpWith": "أو التسجيل ب",
+    "alreadyHaveAccount": "لديك حساب بالفعل؟",
+    "signInHere": "تسجيل الدخول هنا"
   },
-  "forgotPassword": {
+  "forgetPassword": {
     "title": "إعادة تعيين كلمة المرور",
-    "subtitle": "يرجى إدخال بريدك الإلكتروني لإعادة تعيين كلمة المرور"
+    "subtitle": "يرجى إدخال بريدك الإلكتروني لإعادة تعيين كلمة المرور",
+    "email": "البريد الإلكتروني",
+    "emailPlaceholder": "أدخل بريدك الإلكتروني",
+    "sendResetLink": "إرسال رابط إعادة التعيين",
+    "rememberPassword": "تذكر كلمة المرور؟",
+    "signIn": "تسجيل الدخول",
+    "backToSignIn": "العودة إلى تسجيل الدخول",
+    "tryDifferentEmail": "جرب بريد إلكتروني مختلف"
   },
   "resetPassword": {
-    "title": "تعيين كلمة المرور الجديدة",
-    "subtitle": "قم بتعيين كلمة المرور الجديدة"
+    "title": "تعيين كلمة مرور جديدة",
+    "subtitle": "قم بتعيين كلمة المرور الجديدة",
+    "newPassword": "كلمة المرور الجديدة",
+    "newPasswordPlaceholder": "أدخل كلمة المرور الجديدة",
+    "confirmNewPassword": "تأكيد كلمة المرور الجديدة",
+    "confirmNewPasswordPlaceholder": "أدخل تأكيد كلمة المرور الجديدة",
+    "setNewPassword": "تعيين كلمة مرور جديدة",
+    "rememberPassword": "تذكر كلمة المرور؟",
+    "backToSignIn": "العودة إلى تسجيل الدخول"
   },
-  "otpVerification": {
+  "otp": {
     "title": "التحقق من البريد الإلكتروني",
-    "subtitle": "أدخل رمز التحقق المكون من 6 أرقام المرسل إلى بريدك الإلكتروني"
+    "subtitle": "أدخل رمز التحقق المكون من 6 أرقام المرسل إلى بريدك الإلكتروني",
+    "verifying": "جاري التحقق...",
+    "verificationAttempts": "المحاولة {{attempts}} من 3",
+    "tooManyAttempts": "محاولات كثيرة جداً",
+    "didNotReceiveCode": "لم تستلم الكود؟",
+    "sending": "جاري الإرسال...",
+    "resendCode": "إعادة إرسال الكود",
+    "resendAvailable": "إعادة الإرسال متاحة خلال {{time}}",
+    "newCodeSent": "تم إرسال كود جديد! يرجى التحقق من بريدك الإلكتروني",
+    "backToSignIn": "العودة إلى تسجيل الدخول",
+    "securityNotice": "إشعار أمني:",
+    "securityNoticeSubtitle": "رمز التحقق صالح لمدة 10 دقائق فقط. لا تشارك هذا الرمز مع أي شخص."
   },
   "success": {
     "emailSent": "تم إرسال البريد الإلكتروني!",
