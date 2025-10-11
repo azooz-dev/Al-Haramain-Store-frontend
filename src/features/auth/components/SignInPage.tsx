@@ -17,45 +17,28 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useNavigation } from "@/shared/hooks/useNavigation";
+import { useFeatureTranslations, useSharedTranslations } from "@/shared/hooks/useTranslation";
 
 export const SignInPage: React.FC = () => {
   const { isLoading, error, handleSignIn, handleClearError } = useAuth();
   const { isRTL } = useApp();
   const [showPassword, setShowPassword] = useState(false);
-  const { language } = useApp();
   const { navigateToForgetPassword, navigateToSignUp } = useNavigation();
+  const { t: validationT } = useSharedTranslations("validation");
+  const { t: authT } = useFeatureTranslations("auth");
 
   useEffect(() => {
     handleClearError();
   }, []);
 
-  // Define translations for validation messages
-  const messages = {
-    en: {
-      emailRequired: "Email is required",
-      emailInvalid: "Email is invalid",
-      passwordRequired: "Password is required",
-      passwordMin: "Password must be at least 8 characters"
-    },
-    ar: {
-      emailRequired: "البريد الإلكتروني مطلوب",
-      emailInvalid: "البريد الإلكتروني غير صالح",
-      passwordRequired: "كلمة المرور مطلوبة",
-      passwordMin: "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل"
-    }
-  };
-
-  // Pick current translation
-  const t = messages[language] || messages.en;
-
   // Create form schema with translated validation messages
   const formSchema = z.object({
     email: z.string()
-      .nonempty(t.emailRequired)
-      .email(t.emailInvalid),
+      .nonempty(validationT("email.required"))
+      .email(validationT("email.invalid")),
     password: z.string()
-      .nonempty(t.passwordRequired)
-      .min(8, t.passwordMin)
+      .nonempty(validationT("password.required"))
+      .min(8, validationT("password.minLength", { min: 8 }))
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -101,9 +84,9 @@ export const SignInPage: React.FC = () => {
                     <span className="text-white text-sm">AH</span>
                   </div>
                 </div>
-                <CardTitle className="text-2xl">{isRTL ? 'تسجيل الدخول' : 'Sign In'}</CardTitle>
+                <CardTitle className="text-2xl">{authT("signIn.title")}</CardTitle>
                 <p className="text-muted-foreground">
-                  {isRTL ? 'مرحباً بعودتك! يرجى تسجيل الدخول إلى حسابك' : 'Welcome back! Please sign in to your account'}
+                  {authT("signIn.subtitle")}
                 </p>
               </CardHeader>
               
@@ -116,13 +99,13 @@ export const SignInPage: React.FC = () => {
                   )}
 
                   <div className="space-y-2">
-                    <Label htmlFor="email">{isRTL ? 'البريد الإلكتروني' : 'Email'}</Label>
+                    <Label htmlFor="email">{authT("signIn.email")}</Label>
                     <div className="relative">
                       <Mail className={`h-4 w-4 absolute top-1/2 transform -translate-y-1/2 text-muted-foreground ${isRTL ? 'right-3' : 'left-3'}`} />
                       <Input
                         id="email"
                         type="email"
-                        placeholder={isRTL ? 'أدخل البريد الإلكتروني' : 'Enter your email'}
+                        placeholder={authT("signIn.emailPlaceholder")}
                         {...form.register("email")}
                         className={`dark:bg-[#121212] ${isRTL ? 'pr-10 text-right' : 'pl-10'} h-12`}
                         required
@@ -135,13 +118,13 @@ export const SignInPage: React.FC = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="password">{isRTL ? 'كلمة المرور' : 'Password'}</Label>
+                    <Label htmlFor="password">{authT("signIn.password")}</Label>
                     <div className="relative">
                       <Lock className={`h-4 w-4 absolute top-1/2 transform -translate-y-1/2 text-muted-foreground ${isRTL ? 'right-3' : 'left-3'}`} />
                       <Input
                         id="password"
                         type={showPassword ? 'text' : 'password'}
-                        placeholder={isRTL ? 'أدخل كلمة المرور' : 'Enter your password'}
+                        placeholder={authT("signIn.passwordPlaceholder")}
                         {...form.register("password")}
                         className={`dark:bg-[#121212] ${isRTL ? 'pr-10 pl-10 text-right' : 'pl-10 pr-10'} h-12`}
                         required
@@ -169,7 +152,7 @@ export const SignInPage: React.FC = () => {
                   <div className="flex items-center justify-between">
                     <label className={`flex items-center space-x-2 text-sm ${isRTL ? 'flex-row-reverse space-x-reverse' : ''}`}>
                       <input type="checkbox" className="rounded border-gray-300 mr-2" />
-                      <span>{isRTL ? 'تذكرني' : 'Remember me'}</span>
+                      <span>{authT("signIn.rememberMe")}</span>
                     </label>
                     <Button 
                       type='button'
@@ -177,7 +160,7 @@ export const SignInPage: React.FC = () => {
                       className="p-0 text-sm text-amber-600 hover:text-amber-700"
                       onClick={navigateToForgetPassword}
                     >
-                      {isRTL ? 'هل نسيت كلمة المرور؟' : 'Forgot password?'}
+                      {authT("signIn.forgotPassword")}
                     </Button>
                   </div>
 
@@ -190,7 +173,7 @@ export const SignInPage: React.FC = () => {
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                     ) : (
                       <>
-                        {isRTL ? 'تسجيل الدخول' : 'Sign In'}
+                        {authT("signIn.signIn")}
                         {isRTL ? (
                           <ArrowLeft className="h-4 w-4 ml-2" />
                         ) : (
@@ -205,7 +188,7 @@ export const SignInPage: React.FC = () => {
                   <div className="relative">
                     <Separator />
                     <span className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-card px-4 text-sm text-muted-foreground">
-                      {isRTL ? 'أو تسجيل الدخول ب' : 'Or sign in with'}
+                      {authT("signIn.orSignInWith")}
                     </span>
                   </div>
 
@@ -228,13 +211,13 @@ export const SignInPage: React.FC = () => {
                   </div>
 
                   <div className="text-center">
-                    <span className="text-sm text-muted-foreground">{isRTL ? 'ليس لديك حساب؟' : 'Don\'t have an account?'} </span>
+                    <span className="text-sm text-muted-foreground">{authT("signIn.dontHaveAccount")} </span>
                     <Button 
                       variant="link" 
                       className="p-0 text-sm text-amber-600 hover:text-amber-700"
                       onClick={navigateToSignUp}
                     >
-                      {isRTL ? 'تسجيل حساب جديد' : 'Sign up here'}
+                      {authT("signIn.signUpHere")}
                     </Button>
                   </div>
                 </div>

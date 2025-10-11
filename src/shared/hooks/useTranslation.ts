@@ -164,7 +164,8 @@ export const preloadCriticalTranslations = async (language: string): Promise<voi
   const promises = [
     loadSharedTranslations('validation', language),
     loadSharedTranslations('common', language),
-    loadSharedTranslations('navigation', language)
+    loadSharedTranslations('navigation', language),
+    loadSharedTranslations('errors', language)
   ];
   await Promise.all(promises);
 };
