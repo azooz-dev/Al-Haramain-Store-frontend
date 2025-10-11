@@ -4,6 +4,7 @@ import { Layout } from "../components/layout/layout";
 import { SignInPage } from "@/features/auth/components/SignInPage";
 import { SignUpPage } from "@/features/auth/components/SignUpPage";
 import { OTPPage } from "@/features/auth/components/OTPPage";
+import { ForgetPasswordPage } from "@/features/auth/components/ForgetPasswordPage";
 
 // Create a simple home page component
 const HomePage: React.FC = () => {
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
   {
     path: "/verify-otp",
     element: <OTPPage />,
+  },
+  {
+    path: "/forget-password",
+    element: <ForgetPasswordPage />,
   },
   {
     path: "*",
