@@ -5,6 +5,7 @@ import { SignInPage } from "@/features/auth/components/SignInPage";
 import { SignUpPage } from "@/features/auth/components/SignUpPage";
 import { OTPPage } from "@/features/auth/components/OTPPage";
 import { ForgetPasswordPage } from "@/features/auth/components/ForgetPasswordPage";
+import { ResetPasswordPage } from "@/features/auth/components/ResetPasswordPage";
 
 // Create a simple home page component
 const HomePage: React.FC = () => {
@@ -41,6 +42,10 @@ const router = createBrowserRouter([
   {
     path: "/forget-password",
     element: <ForgetPasswordPage />,
+  },
+  {
+    path: "/reset-password",
+    element: <ResetPasswordPage />,
   },
   {
     path: "*",

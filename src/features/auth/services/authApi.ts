@@ -17,6 +17,7 @@ import {
   DeleteUserAccountResponse,
   DeleteUserAccountRequest,
   LogoutResponse,
+  RequestFailure,
 } from './../types/index';
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RootState } from "@store/store";
@@ -72,7 +73,7 @@ const baseQueryWithLocale: typeof rawBaseQuery = async (args, api, extra) => {
   
   // Handle error responses and ensure they have the correct structure
   if (result.error) {
-    const error = result.error as any;
+    const error = result.error as RequestFailure;
     if (error.data && typeof error.data === 'object') {
       // Ensure the error has the correct structure
       result.error = {
@@ -156,11 +157,7 @@ export const authApi = createApi({
       query: (data) => ({
         url: `/api/reset-password?${data.token}`,
         method: "POST",
-        body: {
-          email: data.email,
-          password: data.password,
-          password_confirmation: data.password_confirmation
-        },
+        body: data,
       }),
     }),
 
