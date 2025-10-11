@@ -1,4 +1,4 @@
-import { LoginResponse, RequestFailure, RegisterResponse, VerifyEmailResponse } from './../../features/auth/types/index';
+import { LoginResponse, RegisterResponse, VerifyEmailResponse, ProcessedError } from './../../features/auth/types/index';
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { User } from "@/features/auth/types";
 
@@ -42,13 +42,12 @@ const authSlice = createSlice({
       state.otpVerified = false;
     },
 
-    loginFailure: (state, action: PayloadAction<RequestFailure>) => {
+    loginFailure: (state, action: PayloadAction<ProcessedError>) => {
       state.isAuthenticated = false;
       state.currentUser = null;
       state.isLoading = false;
       state.error = action.payload.data.message;
     },
-
     // Registration actions
     registerStart: (state) => {
       state.isLoading = true;
@@ -65,7 +64,7 @@ const authSlice = createSlice({
       state.otpVerified = false;
     },
 
-    registerFailure: (state, action: PayloadAction<RequestFailure>) => {
+    registerFailure: (state, action: PayloadAction<ProcessedError>) => {
       state.error = action.payload.data.message;
       state.isLoading = false;
       state.otpEmail = null;
@@ -83,7 +82,7 @@ const authSlice = createSlice({
       state.otpVerified = true;
     },
 
-    otpFailure: (state, action: PayloadAction<RequestFailure>) => {
+    otpFailure: (state, action: PayloadAction<ProcessedError>) => {
       state.isLoading = false;
       state.error = action.payload.data.message;
       state.otpVerified = false;
@@ -100,7 +99,7 @@ const authSlice = createSlice({
       state.otpVerified = false;
     },
 
-    logoutFailure: (state, action: PayloadAction<RequestFailure>) => {
+    logoutFailure: (state, action: PayloadAction<ProcessedError>) => {
       state.error = action.payload.data.message;
       state.isLoading = false;
       state.otpEmail = null;

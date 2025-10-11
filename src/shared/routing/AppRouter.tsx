@@ -2,6 +2,8 @@ import React from "react";
 import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 import { Layout } from "../components/layout/layout";
 import { SignInPage } from "@/features/auth/components/SignInPage";
+import { SignUpPage } from "@/features/auth/components/SignUpPage";
+import { OTPPage } from "@/features/auth/components/OTPPage";
 
 // Create a simple home page component
 const HomePage: React.FC = () => {
@@ -26,6 +28,14 @@ const router = createBrowserRouter([
   {
     path: "/signin",
     element: <SignInPage />,
+  },
+  {
+    path: "/signup",
+    element: <SignUpPage />,
+  },
+  {
+    path: "/verify-otp",
+    element: <OTPPage />,
   },
   {
     path: "*",

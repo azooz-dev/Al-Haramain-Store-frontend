@@ -9,7 +9,8 @@ import {
   logout as logoutAction,
   otpSuccess,
   otpFailure,
-  setAuthLoading
+  setAuthLoading,
+  clearError
 } from "@/store/slices/authSlice";
 import {
   useLazyGetCsrfCookieQuery,
@@ -32,10 +33,11 @@ import {
   ForgetPasswordResponse,
   ResetPasswordRequest,
   ResetPasswordResponse,
+  ProcessedError,
 } from "../types";
 import { useAppDispatch } from "@/store/hooks";
 import { useNavigate } from "react-router-dom";
-import { removeAllCookies } from "@/shared/utils/cookies";
+import { extractErrorMessage } from "@/shared/utils/extractErrorMessage";
 
 export const useAuthActions = () => {
   const dispatch = useAppDispatch();
@@ -51,8 +53,9 @@ export const useAuthActions = () => {
   const isUnverifiedResponse = (payload: RequestFailure): boolean | string => {
     if (!payload) return false;
 
-    const message = payload.message;
-    const status = payload.status;
+    const error = extractErrorMessage(payload);
+    const message = error.data.message;
+    const status = error.data.status;
 
     if (!message || status !== "error") return false;
 
@@ -62,6 +65,7 @@ export const useAuthActions = () => {
   const handleSignIn = async (payload: LoginRequest): Promise<boolean> => {
     try {
       // Dispatch csrf cookie
+      dispatch(clearError());
       dispatch(loginStart());
       await triggerCsrf().unwrap();
 
@@ -76,17 +80,21 @@ export const useAuthActions = () => {
       navigate("/", { replace: true });
       return true;
     } catch (error: unknown) {
-      if (isUnverifiedResponse(error as RequestFailure)) {
-        navigate("/verify-otp", { replace: true, state: { email: payload.email } });
-        return true;
+      if ((error as RequestFailure).status === 403) {
+        if (isUnverifiedResponse(error as RequestFailure)) {
+          navigate("/verify-otp", { replace: true, state: { email: payload.email } });
+          return true;
+        }
       }
-      dispatch(loginFailure(error as RequestFailure));
+      const errorData = extractErrorMessage(error as RequestFailure);
+      dispatch(loginFailure(errorData as ProcessedError));
       return false;
     }
   }
 
   const handleSignUp = async (payload: RegisterRequest): Promise<RegisterSuccess> => {
     try {
+      dispatch(clearError());
       dispatch(registerStart());
 
       await triggerCsrf().unwrap();
@@ -101,7 +109,7 @@ export const useAuthActions = () => {
       }
       return { success: false, requiresOTP: false };
     } catch (error: unknown) {
-      dispatch(registerFailure(error as RequestFailure));
+      dispatch(registerFailure(error as ProcessedError));
       return { success: false };
     }
   }
@@ -110,15 +118,14 @@ export const useAuthActions = () => {
     try {
       await logout().unwrap();
     } catch (error) {
-      dispatch(logoutFailure(error as RequestFailure));
+      dispatch(logoutFailure(error as ProcessedError));
     } finally {
-      removeAllCookies();
       localStorage.removeItem("auth_token");
       dispatch(logoutAction());
     }
   }
 
-  const handleVerifyOTP = async (payload: VerifyEmailRequest): Promise<boolean> => {
+  const handleVerifyEmail = async (payload: VerifyEmailRequest): Promise<boolean> => {
     try {
       const response = await verifyEmail(payload).unwrap();
 
@@ -132,7 +139,7 @@ export const useAuthActions = () => {
       }
       return false;
     } catch (error: unknown) {
-      dispatch(otpFailure(error as RequestFailure));
+      dispatch(otpFailure(error as ProcessedError));
       return false;
     }
   }
@@ -148,6 +155,7 @@ export const useAuthActions = () => {
 
   const handleForgetPassword = async (payload: ForgetPasswordRequest): Promise<ForgetPasswordResponse> => {
     try {
+      dispatch(clearError());
       dispatch(setAuthLoading(true));
 
       const response = await forgetPassword(payload).unwrap();
@@ -156,12 +164,17 @@ export const useAuthActions = () => {
 
       return response.status === "success" ? response : { message: "Failed to forget password", status: "error" };
     } catch (error: unknown) {
-      return { message: (error as RequestFailure).message, status: "error" };
+      const errorData = extractErrorMessage(error as RequestFailure);
+      return { 
+        message: errorData.data.message, 
+        status: "error" 
+      };
     }
   }
 
   const handleResetPassword = async (payload: ResetPasswordRequest): Promise<ResetPasswordResponse> => {
     try {
+      dispatch(clearError());
       dispatch(setAuthLoading(true));
       const response = await resetPassword(payload).unwrap();
 
@@ -169,17 +182,31 @@ export const useAuthActions = () => {
 
       return response.status === "success" ? response : { message: "Failed to reset password", status: "error" };
     } catch (error: unknown) {
-      return { message: (error as RequestFailure).message, status: "error" };
+      const errorData = extractErrorMessage(error as RequestFailure);
+      return { 
+        message: errorData.data.message, 
+        status: "error" 
+      };
     }
+  }
+
+  const handleClearError = () => {
+    dispatch(clearError());
+  }
+
+  const handleSetAuthLoading = (loading: boolean) => {
+    dispatch(setAuthLoading(loading));
   }
 
   return {
     handleSignIn,
     handleSignUp,
     handleSignOut,
-    handleVerifyOTP,
+    handleVerifyEmail,
     handleResendOTP,
     handleForgetPassword,
-    handleResetPassword
+    handleResetPassword,
+    handleClearError,
+    handleSetAuthLoading
   }
 }

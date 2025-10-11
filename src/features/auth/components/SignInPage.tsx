@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {  useEffect, useState } from "react";
 import { Eye, EyeOff, Mail, Lock, ArrowRight, ArrowLeft } from "lucide-react";
 import { Button } from "@shared/components/ui/button";
 import {
@@ -19,11 +19,16 @@ import { z } from 'zod';
 import { useNavigate } from "react-router-dom";
 
 export const SignInPage: React.FC = () => {
-  const { isLoading, error, handleSignIn } = useAuth();
+  const { isLoading, error, handleSignIn, handleClearError } = useAuth();
   const { isRTL } = useApp();
   const [showPassword, setShowPassword] = useState(false);
   const { language } = useApp();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    handleClearError();
+  }, []);
+
   // Define translations for validation messages
   const messages = {
     en: {
@@ -170,7 +175,7 @@ export const SignInPage: React.FC = () => {
                       type='button'
                       variant="link" 
                       className="p-0 text-sm text-amber-600 hover:text-amber-700"
-                      onClick={() => navigate('/forgot-password')}
+                      onClick={() => navigate('/forget-password')}
                     >
                       {isRTL ? 'هل نسيت كلمة المرور؟' : 'Forgot password?'}
                     </Button>

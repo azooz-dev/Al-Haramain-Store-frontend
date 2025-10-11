@@ -49,9 +49,17 @@ export interface LoginResponse {
 }
 
 export interface RequestFailure {
+  status: number;
+  data: {
+    message: string | { [key: string]: string[] };
+    status: string;
+  };
+}
+
+export interface ProcessedError {
   data: {
     message: string;
-    status: string;
+    status: 'error';
   };
 }
 

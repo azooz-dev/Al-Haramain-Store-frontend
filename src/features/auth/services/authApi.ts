@@ -35,6 +35,7 @@ const getCookieValue = (name: string): string | null => {
 const rawBaseQuery = fetchBaseQuery({
   baseUrl: APP_CONFIG.apiBaseUrl,
   credentials: "include",
+  validateStatus: (response) => response.status >= 200 && response.status < 300,
   prepareHeaders: (headers) => {    
     // Add CSRF token if present (from meta tag or cookie)
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute("content") ||
@@ -67,7 +68,24 @@ const baseQueryWithLocale: typeof rawBaseQuery = async (args, api, extra) => {
     (args.headers = new Headers(args.headers as HeadersInit)).set("X-locale", language);
   }
 
-  return rawBaseQuery(args, api, extra);
+  const result = await rawBaseQuery(args, api, extra);
+  
+  // Handle error responses and ensure they have the correct structure
+  if (result.error) {
+    const error = result.error as any;
+    if (error.data && typeof error.data === 'object') {
+      // Ensure the error has the correct structure
+      result.error = {
+        status: error.status || 500,
+        data: {
+          message: error.data.message || 'An error occurred',
+          status: error.data.status || 'error'
+        }
+      };
+    }
+  }
+
+  return result;
 }
 
 export const authApi = createApi({

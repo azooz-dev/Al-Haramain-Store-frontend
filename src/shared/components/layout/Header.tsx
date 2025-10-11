@@ -15,7 +15,7 @@ export const Header: React.FC = () => {
 	const handleLogout = (e: React.MouseEvent<HTMLButtonElement>) => {
 		if (e.target.innerHTML === "Logout") {
 		handleSignOut();
-		navigate("/signin");
+		navigate("/");
 		} else {
 			navigate("/signin");
 		}
