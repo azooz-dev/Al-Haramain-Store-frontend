@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui
 import { Label } from "@/shared/components/ui/label";
 import { useApp } from "@/shared/contexts/AppContext";
 import { useAuth } from "../hooks/useAuth";
-import { useNavigate } from "react-router-dom";
+import { useNavigation } from "@/shared/hooks/useNavigation";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -16,7 +16,7 @@ export const ForgetPasswordPage: React.FC = () => {
   const [successMessage, setSuccessMessage] = useState<string>("");
   const { handleForgetPassword, isLoading, error, handleClearError } = useAuth();
   const { isRTL } = useApp();
-  const navigate = useNavigate();
+  const { navigateToSignIn } = useNavigation();
 
   const messages = {
     en: {
@@ -77,7 +77,7 @@ export const ForgetPasswordPage: React.FC = () => {
 
                   <div className="space-y-3">
                     <Button 
-                      onClick={() => navigate("/signin")}
+                      onClick={navigateToSignIn}
                       className="w-full h-12 bg-amber-600 hover:bg-amber-700"
                     >
                       {isRTL ? 'العودة إلى تسجيل الدخول' : 'Back to Sign In'}
@@ -179,7 +179,7 @@ export const ForgetPasswordPage: React.FC = () => {
                   <Button 
                     variant="link" 
                     className="p-0 text-sm text-amber-600 hover:text-amber-700"
-                    onClick={() => navigate("/signin")}
+                    onClick={navigateToSignIn}
                   >
                     {isRTL ? 'تسجيل الدخول' : 'Sign In'}
                   </Button>

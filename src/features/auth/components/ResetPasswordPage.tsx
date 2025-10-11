@@ -6,10 +6,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui
 import { Label } from "@/shared/components/ui/label";
 import { useApp } from "@/shared/contexts/AppContext";
 import { useAuth } from "../hooks/useAuth";
-import { useSearchParams, useNavigate } from "react-router-dom";
-import { z, ZodSchema } from "zod";
+import { useSearchParams } from "react-router-dom";
+import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useNavigation } from "@/shared/hooks/useNavigation";
 
 export const ResetPasswordPage: React.FC = () => {
   const { handleResetPassword, isLoading, error, handleClearError, handleSetAuthLoading } = useAuth();
@@ -21,7 +22,7 @@ export const ResetPasswordPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string>("");
-  const navigate = useNavigate();
+  const { navigateToForgetPassword, navigateToSignIn } = useNavigation();
   const [isSuccess, setIsSuccess] = useState(false);
 
   const messages = {
@@ -45,14 +46,15 @@ export const ResetPasswordPage: React.FC = () => {
 
   const t = messages[language] || messages.en;
 
-  const formSchema: ZodSchema<{ password: string; confirmPassword: string }> = z.object({
+  const formSchema = z.object({
     password: z.string().min(8, t.passwordMinLength).nonempty(t.passwordRequired),
-    confirmPassword: z.string().min(8, t.passwordMinLength).nonempty(t.confirmPasswordRequired).refine((val) => val === form.getValues("password"), {
-      message: t.passwordMismatch,
-    }),
+    confirmPassword: z.string().min(8, t.passwordMinLength).nonempty(t.confirmPasswordRequired),
+  }).refine((data) => data.password === data.confirmPassword, {
+    message: t.passwordMismatch,
+    path: ["confirmPassword"],
   });
 
-  const form = useForm<{ password: string; confirmPassword: string }>({
+  const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       password: "",
@@ -62,7 +64,7 @@ export const ResetPasswordPage: React.FC = () => {
 
   useEffect(() => {
     if (!token || !email) {
-      navigate("/forget-password");
+      navigateToForgetPassword();
     }
   }, [token, email]);
 
@@ -70,7 +72,7 @@ export const ResetPasswordPage: React.FC = () => {
     handleClearError();
   }, []);
 
-  const onSubmit = async (data: { password: string; confirmPassword: string }) => {
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
     handleSetAuthLoading(true);
     const response = await handleResetPassword({ password: data.password, password_confirmation: data.confirmPassword, token: token as string, email: email as string });
     setSuccessMessage(response.message);
@@ -104,7 +106,7 @@ export const ResetPasswordPage: React.FC = () => {
                   </div>
 
                   <Button 
-                    onClick={() => navigate("/signin")}
+                    onClick={navigateToSignIn}
                     className="w-full h-12 bg-amber-600 hover:bg-amber-700"
                   >
                     {isRTL ? 'العودة إلى تسجيل الدخول' : 'Back to Sign In'}
@@ -242,7 +244,7 @@ export const ResetPasswordPage: React.FC = () => {
                   <Button 
                     variant="link" 
                     className="p-0 text-sm text-amber-600 hover:text-amber-700"
-                    onClick={() => navigate("/signin")}
+                    onClick={navigateToSignIn}
                   >
                     {isRTL ? 'العودة إلى تسجيل الدخول' : 'Back to Sign In'}
                   </Button>

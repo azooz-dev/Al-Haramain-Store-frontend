@@ -7,8 +7,9 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { Shield, Mail, AlertCircle, RotateCcw, Timer, ArrowLeft, Badge } from "lucide-react";
+import { useNavigation } from "@/shared/hooks/useNavigation";
 
 export const OTPPage: React.FC = () => {
   const {
@@ -22,7 +23,7 @@ export const OTPPage: React.FC = () => {
   const email = location.state?.email;
   const { language } = useApp();
   const inputOTPRef = useRef<HTMLInputElement[]>([]);
-  const navigate = useNavigate();
+  const { navigateToSignIn } = useNavigation();
   const [resendTimer, setResendTimer] = useState(60);
   const [canResend, setCanResend] = useState(false);
   const [otpDigits, setOtpDigits] = useState<string[]>(Array(6).fill(''));
@@ -382,7 +383,7 @@ export const OTPPage: React.FC = () => {
             {/* Back Button */}
             <Button
               variant="ghost"
-              onClick={() => navigate("/signin")}
+              onClick={navigateToSignIn}
               className="w-full text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
             >
               <ArrowLeft className={`w-4 h-4 ${isRTL ? 'rotate-180' : ''}`} />

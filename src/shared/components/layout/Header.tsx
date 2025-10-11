@@ -1,23 +1,24 @@
 import React from "react";
 import { Button } from "@shared/components/ui/button";
 import { useApp } from "@/shared/contexts/AppContext";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useNavigation } from "@/shared/hooks/useNavigation";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useAppSelector } from "@/store/hooks";
 import { selectIsAuthenticated } from "@/store/slices/authSlice";
 
 export const Header: React.FC = () => {
   const { isRTL, toggleTheme, toggleLanguage } = useApp();
-	const navigate = useNavigate();
+	const { navigateToHome, navigateToSignIn } = useNavigation();
 	const { handleSignOut } = useAuth();
 	const isAuthenticated = useAppSelector(selectIsAuthenticated);
 
 	const handleLogout = (e: React.MouseEvent<HTMLButtonElement>) => {
-		if (e.target.innerHTML === "Logout") {
+		if ((e.target as HTMLButtonElement).innerHTML === "Logout") {
 		handleSignOut();
-		navigate("/");
+		navigateToHome();
 		} else {
-			navigate("/signin");
+			navigateToSignIn();
 		}
 	}
 
@@ -29,6 +30,7 @@ export const Header: React.FC = () => {
 						<Link
 							to="/"
 							className="flex items-center cursor-pointer group flex-shrink-0 gap-2 space-x-2 ml-2"
+							onClick={navigateToHome}
 						>
 							<div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-white text-lg group-hover:scale-105 transition-transform">
 								ح

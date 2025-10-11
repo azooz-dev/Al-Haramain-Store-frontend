@@ -36,8 +36,8 @@ import {
   ProcessedError,
 } from "../types";
 import { useAppDispatch } from "@/store/hooks";
-import { useNavigate } from "react-router-dom";
 import { extractErrorMessage } from "@/shared/utils/extractErrorMessage";
+import { useNavigation } from "@/shared/hooks/useNavigation";
 
 export const useAuthActions = () => {
   const dispatch = useAppDispatch();
@@ -49,7 +49,7 @@ export const useAuthActions = () => {
   const [resendCode] = useResendCodeMutation();
   const [forgetPassword] = useForgetPasswordMutation();
   const [resetPassword] = useResetPasswordMutation();
-  const navigate = useNavigate();
+  const { navigateToVerifyOTP, navigateToHome } = useNavigation();
   const isUnverifiedResponse = (payload: RequestFailure): boolean | string => {
     if (!payload) return false;
 
@@ -77,12 +77,12 @@ export const useAuthActions = () => {
         dispatch(loginSuccess({ data: response.data, message: response.message, status: response.status }));
       }
 
-      navigate("/", { replace: true });
+      navigateToHome();
       return true;
     } catch (error: unknown) {
       if ((error as RequestFailure).status === 403) {
         if (isUnverifiedResponse(error as RequestFailure)) {
-          navigate("/verify-otp", { replace: true, state: { email: payload.email } });
+          navigateToVerifyOTP(payload.email);
           return true;
         }
       }
@@ -104,7 +104,7 @@ export const useAuthActions = () => {
         // Store user data but don't authenticate yet - they need OTP verification
         dispatch(registerSuccess({ data: response.data, message: response.message, status: response.status }));
         // Redirect to OTP verification page
-        navigate("/verify-otp", { replace: true, state: { email: response.data.email } });
+        navigateToVerifyOTP(response.data.email);
         return { success: true, requiresOTP: true, email: response.data.email };
       }
       return { success: false, requiresOTP: false };
@@ -134,7 +134,7 @@ export const useAuthActions = () => {
         localStorage.setItem("auth_token", response.data.token);
         dispatch(otpSuccess(response));
 
-        navigate("/", { replace: true });
+        navigateToHome();
         return true;
       }
       return false;

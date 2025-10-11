@@ -16,14 +16,14 @@ import { ImageWithFallback } from "@/shared/components/common/ImageWithFallback"
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useNavigate } from "react-router-dom";
+import { useNavigation } from "@/shared/hooks/useNavigation";
 
 export const SignInPage: React.FC = () => {
   const { isLoading, error, handleSignIn, handleClearError } = useAuth();
   const { isRTL } = useApp();
   const [showPassword, setShowPassword] = useState(false);
   const { language } = useApp();
-  const navigate = useNavigate();
+  const { navigateToForgetPassword, navigateToSignUp } = useNavigation();
 
   useEffect(() => {
     handleClearError();
@@ -175,7 +175,7 @@ export const SignInPage: React.FC = () => {
                       type='button'
                       variant="link" 
                       className="p-0 text-sm text-amber-600 hover:text-amber-700"
-                      onClick={() => navigate('/forget-password')}
+                      onClick={navigateToForgetPassword}
                     >
                       {isRTL ? 'هل نسيت كلمة المرور؟' : 'Forgot password?'}
                     </Button>
@@ -232,7 +232,7 @@ export const SignInPage: React.FC = () => {
                     <Button 
                       variant="link" 
                       className="p-0 text-sm text-amber-600 hover:text-amber-700"
-                      onClick={() => navigate('/signup')}
+                      onClick={navigateToSignUp}
                     >
                       {isRTL ? 'تسجيل حساب جديد' : 'Sign up here'}
                     </Button>

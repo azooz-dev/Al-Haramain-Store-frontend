@@ -15,8 +15,8 @@ export const useNavigation = () => {
     navigate("/signup", { replace: true });
   }
 
-  const navigateToVerifyOTP = () => {
-    navigate("/verify-otp", { replace: true });
+  const navigateToVerifyOTP = (email: string) => {
+    navigate("/verify-otp", { replace: true, state: { email: email } });
   }
 
   const navigateToForgetPassword = () => {
@@ -32,6 +32,10 @@ export const useNavigation = () => {
     navigate(path, { replace: true });
   }
 
+  const navigateToHome = () => {
+    navigate("/", { replace: true });
+  }
+
   return {
     navigateTo,
     navigateToSignIn,
@@ -39,5 +43,6 @@ export const useNavigation = () => {
     navigateToVerifyOTP,
     navigateToForgetPassword,
     navigateToResetPassword,
+    navigateToHome,
   }
 }

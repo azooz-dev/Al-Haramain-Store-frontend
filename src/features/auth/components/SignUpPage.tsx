@@ -10,7 +10,7 @@ import { useAuth } from "../hooks/useAuth";
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useNavigate } from "react-router-dom";
+import { useNavigation } from "@/shared/hooks/useNavigation";
 import { ImageWithFallback } from "@shared/components/common/ImageWithFallback";
 
 export const SignUpPage: React.FC = () => {
@@ -19,7 +19,7 @@ export const SignUpPage: React.FC = () => {
   const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false);
   const { isRTL } = useApp();
   const { language } = useApp();
-  const navigate = useNavigate();
+  const { navigateToSignIn } = useNavigation();
 
   const messages = {
     en: {
@@ -330,7 +330,7 @@ export const SignUpPage: React.FC = () => {
                     <Button 
                       variant="link" 
                       className="p-0 text-sm text-amber-600 hover:text-amber-700"
-                      onClick={() => navigate('/signin')}
+                      onClick={navigateToSignIn}
                     >
                       {isRTL ? 'تسجيل الدخول هنا' : 'Sign in here'}
                     </Button>
