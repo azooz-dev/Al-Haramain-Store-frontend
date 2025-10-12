@@ -78,3 +78,44 @@ export interface PaginationData {
   totalItems: number,
   perPage: number
 }
+
+export interface ProductRequest {
+  page?: number;
+  category?: number;
+  search?: string;
+  sortBy?: string;
+  per_page?: number;
+}
+
+export interface ProductsResponse {
+  data: {
+    data: Product[];
+    current_page: number;
+    first_page_url: string;
+    from: number;
+    last_page: number;
+    last_page_url: string;
+    links: Array<Link>;
+    next_page_url: string | null;
+    path: string;
+    per_page: number;
+    prev_page_url: string | null;
+    to: number;
+    total: number;
+  }
+  message: string;
+  status: string;
+}
+
+export interface ProductResponse {
+  data: Product;
+  message: string;
+  status: string;
+}
+
+export interface Link {
+  url: string | null;
+  label: string;
+  page: number | null;
+  active: boolean;
+}
