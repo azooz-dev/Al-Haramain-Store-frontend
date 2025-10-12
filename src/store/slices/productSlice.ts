@@ -6,8 +6,8 @@ interface ProductsState {
   products: Product[];
   categories: Category[];
   featuredProducts: Product[];
-  isLoading: boolean;
-  error: string | null;
+  productsLoading: boolean;
+  productsError: string | null;
   searchQuery: string;
   selectedCategory: string | null;
   sortBy: 'price' | 'rating' | 'newest';
@@ -24,8 +24,8 @@ const initialState: ProductsState = {
   products: [],
   categories: [],
   featuredProducts: [],
-  isLoading: false,
-  error: null,
+  productsLoading: false,
+  productsError: null,
   searchQuery: "",
   selectedCategory: null,
   sortBy: "newest",
@@ -50,11 +50,11 @@ const productsSlice = createSlice({
     setFeaturedProducts: (state, action: PayloadAction<Product[]>) => {
       state.featuredProducts = action.payload;
     },
-    setIsLoading: (state, action: PayloadAction<boolean>) => {
-      state.isLoading = action.payload;
+    setProductsLoading: (state, action: PayloadAction<boolean>) => {
+      state.productsLoading = action.payload;
     },
-    setError: (state, action: PayloadAction<string | null>) => {
-      state.error = action.payload;
+    setProductsError: (state, action: PayloadAction<string | null>) => {
+      state.productsError = action.payload;
     },
     setSearchQuery: (state, action: PayloadAction<string>) => {
       state.searchQuery = action.payload;
@@ -100,8 +100,8 @@ export const {
   setProducts,
   setCategories,
   setFeaturedProducts,
-  setIsLoading,
-  setError,
+  setProductsLoading,
+  setProductsError,
   setSearchQuery,
   setSortBy,
   setSortOrder,
@@ -115,8 +115,8 @@ export const {
 export const selectProducts = (state: { products: ProductsState }) => state.products.products;
 export const selectCategories = (state: { products: ProductsState }) => state.products.categories;
 export const selectFeaturedProducts = (state: { products: ProductsState }) => state.products.featuredProducts;
-export const selectIsLoading = (state: { products: ProductsState }) => state.products.isLoading;
-export const selectError = (state: { products: ProductsState }) => state.products.error;
+export const selectProductsLoading = (state: { products: ProductsState }) => state.products.productsLoading;
+export const selectProductsError = (state: { products: ProductsState }) => state.products.productsError;
 export const selectSearchQuery = (state: { products: ProductsState }) => state.products.searchQuery;
 export const selectProductsByCategory = (category: string) => (state: { products: ProductsState }) => state.products.products.filter(product => product.categories?.some((cat: Category) => cat.identifier.toString() === category));
 export const selectSortBy = (state: { products: ProductsState }) => state.products.sortBy;
