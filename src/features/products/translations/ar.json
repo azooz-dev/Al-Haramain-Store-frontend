@@ -19,5 +19,36 @@
     "rating": "الأعلى تقييماً",
     "newest": "الأحدث أولاً",
     "oldest": "الأقدم أولاً"
+  },
+  "actions": {
+    "addToCart": "أضف إلى السلة",
+    "addingToCart": "جاري الإضافة..."
+  },
+  "details": {
+    "reviews": "تقييمات",
+    "sale": "تخفيض",
+    "description": "الوصف",
+    "freeShipping": "شحن مجاني",
+    "onAllOrders": "على جميع الطلبات",
+    "qualityGuarantee": "ضمان الجودة",
+    "oneYearWarranty": "ضمان لمدة سنة",
+    "freeReturns": "إرجاع مجاني",
+    "within30Days": "خلال 30 يوماً"
+  },
+  "image": {
+    "new": "جديد"
+  },
+  "imageSlider": {
+    "noImages": "لا توجد صور متاحة"
+  },
+  "info": {
+    "reviews": "تقييمات"
+  },
+  "listing": {
+    "noProductsFound": "لم يتم العثور على منتجات",
+    "noProductsFoundDescription": "لم نتمكن من العثور على أي منتجات تطابق معاييرك. جرب تعديل المرشحات أو مصطلحات البحث.",
+    "reloadPage": "إعادة تحميل الصفحة",
+    "viewProduct": "عرض المنتج",
+    "addToCart": "أضف إلى السلة"
   }
 }

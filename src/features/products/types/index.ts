@@ -24,6 +24,19 @@ export interface Product {
   available_colors: string[];
 }
 
+export interface TransformedProduct extends Product {
+  price: number;
+  amount_discount_price: number;
+  image: string;
+  rating: number;
+  reviewCount: number;
+  isNew: boolean;
+  discount: number;
+  categoryIds: number[];
+  firstColorId?: number;
+  firstVariantId?: number;
+}
+
 export interface ProductColor {
   id: number;
   color_code: string;

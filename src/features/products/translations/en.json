@@ -19,5 +19,36 @@
     "rating": "Highest Rated",
     "newest": "Newest First",
     "oldest": "Oldest First"
+  },
+  "actions": {
+    "addToCart": "Add to Cart",
+    "addingToCart": "Adding to Cart..."
+  },
+  "details": {
+    "reviews": "reviews",
+    "sale": "Sale",
+    "description": "Description",
+    "freeShipping": "Free Shipping",
+    "onAllOrders": "On all orders",
+    "qualityGuarantee": "Quality Guarantee",
+    "oneYearWarranty": "1 year warranty",
+    "freeReturns": "Free Returns",
+    "within30Days": "Within 30 days"
+  },
+  "image": {
+    "new": "New"
+  },
+  "imageSlider": {
+    "noImages": "No images available"
+  },
+  "info": {
+    "reviews": "reviews"
+  },
+  "listing": {
+    "noProductsFound": "No Products Found",
+    "noProductsFoundDescription": "We couldn't find any products matching your criteria. Try adjusting your filters or search terms.",
+    "reloadPage": "Reload Page",
+    "viewProduct": "View Product",
+    "addToCart": "Add to Cart"
   }
 }

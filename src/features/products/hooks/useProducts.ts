@@ -12,7 +12,7 @@ import {
   clearFilters,
   selectProducts,
 } from '@/store/slices/productSlice';
-import { Product } from "../types";
+import { Product, TransformedProduct } from "../types";
 
 const DEFAULT_PRICE_RANGE: [number, number] = [0, 10000];
 
@@ -26,7 +26,7 @@ export const useProductActions = () => {
     per_page: ProductsState.perPage,
   });
 
-  const transformApiProduct = useCallback((product: Product) => {
+  const transformApiProduct = useCallback((product: Product): TransformedProduct => {
     const primaryColor = product.colors?.[0];
     const primaryImage = primaryColor?.images?.[0];
     const primaryVariant = primaryColor?.variants?.[0];
@@ -47,8 +47,11 @@ export const useProductActions = () => {
       createdDate: product.createdDate,
       lastChange: product.lastChange,
       price: primaryVariant?.amount_discount_price
-        ? primaryVariant.amount_discount_price
-        : primaryVariant?.price,
+        ? parseFloat(primaryVariant.amount_discount_price)
+        : (primaryVariant?.price || 0),
+      amount_discount_price: primaryVariant?.amount_discount_price
+        ? parseFloat(primaryVariant.amount_discount_price)
+        : (primaryVariant?.price || 0),
       image: primaryImage?.image_url
         ? `/storage/${primaryImage.image_url}`
         : 'https://images.unsplash.com/photo-1607748862156-7c548e7e98f4?w=400&h=400&fit=crop',
@@ -61,10 +64,13 @@ export const useProductActions = () => {
       categoryIds: product.categories.map((category) => category.identifier),
       firstColorId: primaryColor?.id,
       firstVariantId: primaryVariant?.id,
+      total_images_count: product.total_images_count,
+      available_sizes: product.available_sizes,
+      available_colors: product.available_colors,
     }
   }, []);
 
-  const transformedProducts = useMemo(() => {
+  const transformedProducts = useMemo((): TransformedProduct[] => {
     if (!productsData?.data?.data) return [];
 
     const apiProducts = Array.isArray(productsData.data.data) ? productsData?.data?.data : Object.values(productsData.data.data);
