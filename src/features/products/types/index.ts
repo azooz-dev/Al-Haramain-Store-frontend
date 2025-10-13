@@ -14,11 +14,11 @@ export interface Product {
   colors: ProductColor[];
   reviews: Review[];
   categories: Category[];
-  createdDate: string;
-  lastChange: string;
   min_price: number;
   max_price: number;
   price_range: string;
+  createdDate: string;
+  lastChange: string;
   total_images_count: number;
   available_sizes: string[];
   available_colors: string[];
@@ -73,7 +73,6 @@ export interface Review {
 
 export interface PaginationData {
   currentPage: number,
-  itemsPerPage: number,
   totalPages: number,
   totalItems: number,
   perPage: number
@@ -81,9 +80,6 @@ export interface PaginationData {
 
 export interface ProductRequest {
   page?: number;
-  category?: number;
-  search?: string;
-  sortBy?: string;
   per_page?: number;
 }
 
