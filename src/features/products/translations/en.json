@@ -1,0 +1,23 @@
+{
+  "filter": {
+    "title": "Filters",
+    "clear": "Clear All",
+    "range": "Price Range",
+    "categories": "Categories"
+  },
+  "search": {
+    "placeholder": "Search products..."
+  },
+  "filters": {
+    "toggle": "Filters"
+  },
+  "sorting": {
+    "placeholder": "Sort by",
+    "featured": "Featured",
+    "priceLow": "Price: Low to High",
+    "priceHigh": "Price: High to Low",
+    "rating": "Highest Rated",
+    "newest": "Newest First",
+    "oldest": "Oldest First"
+  }
+}

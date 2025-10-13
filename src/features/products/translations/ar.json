@@ -1,0 +1,23 @@
+{
+  "filter": {
+    "title": "المرشحات",
+    "clear": "مسح الكل",
+    "range": "نطاق السعر",
+    "categories": "الفئات"
+  },
+  "search": {
+    "placeholder": "البحث في المنتجات..."
+  },
+  "filters": {
+    "toggle": "المرشحات"
+  },
+  "sorting": {
+    "placeholder": "ترتيب حسب",
+    "featured": "المميز",
+    "priceLow": "السعر: من الأقل للأعلى",
+    "priceHigh": "السعر: من الأعلى للأقل",
+    "rating": "الأعلى تقييماً",
+    "newest": "الأحدث أولاً",
+    "oldest": "الأقدم أولاً"
+  }
+}
