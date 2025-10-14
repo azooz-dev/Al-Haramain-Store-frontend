@@ -136,7 +136,7 @@ export const selectSearchQuery = (state: { products: ProductsState }) => state.p
 export const selectProductsByCategory =
 	(category: string) => (state: { products: ProductsState }) =>
 		state.products.products.filter((product) =>
-			product.categories?.some((cat: Category) => cat.identifier.toString() === category)
+			product.categories?.some((catId: number) => catId.toString() === category)
 		);
 export const selectSortBy = (state: { products: ProductsState }) => state.products.sortBy;
 export const selectCurrentPage = (state: { products: ProductsState }) => state.products.currentPage;
