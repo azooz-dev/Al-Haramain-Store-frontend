@@ -8,6 +8,7 @@ export interface Category {
 	slug: string;
 	en: CategoryTranslation;
 	ar: CategoryTranslation;
+	image: string;
 	createdDate: string;
 	lastChange: string;
 }

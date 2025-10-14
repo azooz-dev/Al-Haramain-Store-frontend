@@ -12,7 +12,7 @@ import favoritesSlice from "./slices/favoritesSlice";
 import categoriesSlice from "./slices/categoriesSlice";
 import { authApi } from "@/features/auth/services/authApi";
 import { productApi } from "@/features/products/services/productApi";
-import { categoryApi } from "@/features/products/services/categoryApi";
+import { categoryApi } from "@/features/categories/services/categoryApi";
 
 const persistConfig = {
 	key: "root",

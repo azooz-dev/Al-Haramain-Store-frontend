@@ -1,0 +1,15 @@
+{
+  "details": {
+    "errorTitle": "الفئة غير موجودة",
+    "errorDescription": "عذراً، لم نتمكن من العثور على الفئة التي تبحث عنها.",
+    "categoryNotFound": "الفئة غير موجودة",
+    "categoryNotFoundDescription": "الفئة التي تبحث عنها غير موجودة أو تم حذفها.",
+    "goBack": "العودة",
+    "highQuality": "جودة عالية",
+    "madeFromTheBestRawMaterials": "مصنوع من أفضل المواد الخام",
+    "carefullyDesigned": "مصمم بعناية",
+    "everyProductIsCarefullyDesignedForQualityAndBeauty": "كل منتج مصمم بعناية للجودة والجمال",
+    "fastShipping": "شحن سريع",
+    "weDeliverYourProductsQuicklyAndSafelyToYourDoorstep": "نقوم بتوصيل منتجاتك بسرعة وأمان إلى باب منزلك"
+  }
+}

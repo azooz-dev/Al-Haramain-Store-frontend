@@ -1,0 +1,15 @@
+{
+  "details": {
+    "errorTitle": "Category Not Found",
+    "errorDescription": "Sorry, we couldn't find the category you're looking for.",
+    "categoryNotFound": "Category Not Found",
+    "categoryNotFoundDescription": "The category you're looking for doesn't exist or has been removed.",
+    "goBack": "Go Back",
+    "highQuality": "High Quality",
+    "madeFromTheBestRawMaterials": "Made from the best raw materials",
+    "carefullyDesigned": "Carefully Designed",
+    "everyProductIsCarefullyDesignedForQualityAndBeauty": "Every product is carefully designed for quality and beauty",
+    "fastShipping": "Fast Shipping",
+    "weDeliverYourProductsQuicklyAndSafelyToYourDoorstep": "We deliver your products quickly and safely to your doorstep"
+  }
+}

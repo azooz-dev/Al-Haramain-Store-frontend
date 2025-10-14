@@ -8,6 +8,7 @@ import { ForgetPasswordPage } from "@/features/auth/components/ForgetPasswordPag
 import { ResetPasswordPage } from "@/features/auth/components/ResetPasswordPage";
 import { ProductDetailPage } from "@/features/products/components/pages/ProductDetailPage";
 import { ProductsPage } from "@/features/products/components/pages/ProductsPage";
+import { CategoryDetailsPage } from "@/features/categories/components/CategoryDetailsPage";
 
 // Create a simple home page component
 const HomePage: React.FC = () => {
@@ -48,6 +49,10 @@ const router = createBrowserRouter([
   {
     path: "/reset-password",
     element: <ResetPasswordPage />,
+  },
+  {
+    path: "/categories/:id",
+    element: <CategoryDetailsPage />,
   },
   {
     path: "/products/:slug/:id",

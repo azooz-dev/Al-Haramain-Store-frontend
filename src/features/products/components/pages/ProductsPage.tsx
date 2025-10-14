@@ -7,7 +7,7 @@ import { ProductViewToggle } from "../filters/ProductViewToggle";
 import { ProductsList } from "../listing/ProductsList";
 import { useProducts } from "../../hooks/useProducts";
 import { useFeatureTranslations } from "@/shared/hooks/useTranslation";
-import { useCategories } from "../../hooks/useCategories";
+import { useCategories } from "@/features/categories/hooks/useCategories";
 
 export const ProductsPage: React.FC = () => {
   const {
@@ -79,7 +79,7 @@ export const ProductsPage: React.FC = () => {
               selectedCategories={selectedCategories}
               priceRange={priceRange}
               priceMaxBound={priceMaxBound}
-              categories={Array.isArray(categories?.data?.data) ? categories.data.data : []}
+              categories={Array.isArray(categories) ? categories : []}
               onCategoryToggle={handleCategoryToggle}
               onPriceRangeChange={setSelectedPriceRange}
               onClearFilters={handleClearFilters}
