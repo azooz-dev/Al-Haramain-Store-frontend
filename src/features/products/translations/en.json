@@ -6,7 +6,8 @@
     "categories": "Categories"
   },
   "search": {
-    "placeholder": "Search products..."
+    "placeholder": "Search products...",
+    "activeFilters": "!"
   },
   "filters": {
     "toggle": "Filters"
@@ -33,7 +34,16 @@
     "qualityGuarantee": "Quality Guarantee",
     "oneYearWarranty": "1 year warranty",
     "freeReturns": "Free Returns",
-    "within30Days": "Within 30 days"
+    "within30Days": "Within 30 days",
+    "color": "Color",
+    "size": "Size",
+    "outOfStock": "Out of Stock",
+    "productNotFound": "Product Not Found",
+    "productNotFoundDescription": "The product you're looking for doesn't exist or has been removed.",
+    "goBack": "Go Back",
+    "discountPercentage": "% OFF",
+    "inStock": "in stock",
+    "inStockAr": "متوفر"
   },
   "image": {
     "new": "New"
@@ -42,7 +52,8 @@
     "noImages": "No images available"
   },
   "info": {
-    "reviews": "reviews"
+    "reviews": "reviews",
+    "saveAmount": "Save $"
   },
   "listing": {
     "noProductsFound": "No Products Found",
@@ -50,5 +61,9 @@
     "reloadPage": "Reload Page",
     "viewProduct": "View Product",
     "addToCart": "Add to Cart"
+  },
+  "pages": {
+    "ourProducts": "Our Products",
+    "ourProductsDescription": "Discover our amazing collection of products"
   }
 }

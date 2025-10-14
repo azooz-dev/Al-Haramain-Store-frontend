@@ -2,6 +2,7 @@ import React, { useState, useCallback } from "react";
 import { Card, CardContent } from "@shared/components/ui/card";
 import { useApp } from "@/shared/contexts/AppContext";
 import { usePrefetch } from "@/shared/hooks/usePrefetch";
+import { useNavigation } from "@/shared/hooks/useNavigation";
 import { ProductImage } from "../details/ProductImage";
 import { ProductInfo } from "../details/ProductInfo";
 import { ProductActions } from "../details/ProductActions";
@@ -17,6 +18,7 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(({
   const [isHovering, setIsHovering] = useState(false);
   const { isRTL } = useApp();
   const { prefetchProduct } = usePrefetch();
+  const { navigateToProductDetail } = useNavigation();
 
 
   const handleMouseEnter = useCallback(() => {
@@ -33,9 +35,9 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(({
   };
 
   const handleCardClick = useCallback(() => {
-    // Navigate to product detail page
-    window.location.href = `/products/${product.slug}`;
-  }, [product.slug]);
+    // Navigate to product detail page using React Router
+    navigateToProductDetail(product.slug, product.identifier);
+  }, [product.slug, product.identifier, navigateToProductDetail]);
 
   return (
     <Card 
@@ -63,6 +65,7 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(({
             rating={product.rating}
             reviews={product.reviewCount}
             price={product.price}
+            amount_discount_price={product.amount_discount_price}
           />
 
           <ProductActions

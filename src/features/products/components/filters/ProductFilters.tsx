@@ -5,12 +5,13 @@ import { Button } from '@/shared/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@shared/components/ui/card';
 import { useApp } from '@/shared/contexts/AppContext';
 import { useFeatureTranslations } from '@/shared/hooks/useTranslation';
+import { Category } from '../../types';
 
 interface ProductFiltersProps {
-  selectedCategories: number[];
+  selectedCategories?: number[];
   priceRange: [number, number];
   priceMaxBound: number;
-  categories: Array<{ id: number; slug: string; name: string; count: number }>;
+  categories: Category[];
   onCategoryToggle: (categoryId: number) => void;
   onPriceRangeChange: (range: [number, number]) => void;
   onClearFilters: () => void;
@@ -29,7 +30,7 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
   const { t: productT } = useFeatureTranslations("products");
 
     return (
-    <Card className="p-0">
+    <Card className="p-2">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg">
@@ -46,7 +47,32 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
         </div>
       </CardHeader>
       
-      <CardContent className="space-y-6">
+        <CardContent className="space-y-6">
+        {/* Categories Filter */}
+        <div>
+          <h3 className="font-medium mb-3">
+            {productT("filter.categories")}
+          </h3>
+          <div className="space-y-3 max-h-64 overflow-y-auto">
+            {categories.map((category) => (
+              <div key={category.identifier} className="flex items-center space-x-2">
+                <Checkbox
+                  id={`category-${category.identifier}`}
+                  checked={selectedCategories?.includes(category.identifier) || false}
+                  onCheckedChange={() => onCategoryToggle(category.identifier)}
+                  className={`${isRTL ? 'ml-2' : 'mr-2'}`}
+                />
+                <label
+                  htmlFor={`category-${category.identifier}`}
+                  className={`text-sm cursor-pointer ${isRTL ? 'text-right ' : 'text-left'}`}
+                >
+                  { isRTL ? category.ar.title : category.en.title}
+                </label>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Price Range Filter */}
         <div>
           <h3 className="font-medium mb-3">
@@ -64,31 +90,6 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
               <span>${priceRange[0]}</span>
               <span>${priceRange[1]}</span>
             </div>
-          </div>
-        </div>
-
-        {/* Categories Filter */}
-        <div>
-          <h3 className="font-medium mb-3">
-            {productT("filter.categories")}
-          </h3>
-          <div className="space-y-3 max-h-64 overflow-y-auto">
-            {categories.map((category) => (
-              <div key={category.id} className="flex items-center space-x-2">
-                <Checkbox
-                  id={`category-${category.id}`}
-                  checked={selectedCategories.includes(category.id)}
-                  onCheckedChange={() => onCategoryToggle(category.id)}
-                  className={`${isRTL ? 'ml-2' : ''}`}
-                />
-                <label
-                  htmlFor={`category-${category.id}`}
-                  className={`text-sm cursor-pointer ${isRTL ? 'text-right ' : 'text-left'}`}
-                >
-                  {category.name}
-                </label>
-              </div>
-            ))}
           </div>
         </div>
       </CardContent>

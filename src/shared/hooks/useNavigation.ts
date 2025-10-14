@@ -36,6 +36,14 @@ export const useNavigation = () => {
     navigate("/", { replace: true });
   }
 
+  const navigateToProductDetail = (slug: string, id: number) => {
+    navigate(`/products/${slug}/${id}`, { replace: true });
+  }
+
+  const navigateToProducts = () => {
+    navigate("/products", { replace: true });
+  }
+
   return {
     navigateTo,
     navigateToSignIn,
@@ -44,5 +52,7 @@ export const useNavigation = () => {
     navigateToForgetPassword,
     navigateToResetPassword,
     navigateToHome,
+    navigateToProductDetail,
+    navigateToProducts,
   }
 }

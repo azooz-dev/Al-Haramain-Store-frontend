@@ -6,10 +6,10 @@ interface ProductsState {
 	products: Product[];
 	categories: Category[];
 	featuredProducts: Product[];
-	productsLoading: boolean;
-	productsError: string | null;
+	isLoading: boolean;
+	error: string | null;
 	searchQuery: string;
-	selectedCategory: string | null;
+	selectedCategories: number[];
 	sortBy: "rating" | "newest" | "oldest" | "price-low" | "price-high" | "price-asc" | "price-desc";
 	// Pagination
 	currentPage: number;
@@ -23,10 +23,10 @@ const initialState: ProductsState = {
 	products: [],
 	categories: [],
 	featuredProducts: [],
-	productsLoading: false,
-	productsError: null,
+	isLoading: false,
+	error: null,
 	searchQuery: "",
-	selectedCategory: null,
+	selectedCategories: [],
 	sortBy: "newest",
 	currentPage: 1,
 	itemsPerPage: 6,
@@ -48,8 +48,20 @@ const productsSlice = createSlice({
 		setFeaturedProducts: (state, action: PayloadAction<Product[]>) => {
 			state.featuredProducts = action.payload;
 		},
-		setSelectedCategory: (state, action: PayloadAction<string | null>) => {
-			state.selectedCategory = action.payload;
+		setSelectedCategories: (state, action: PayloadAction<number[]>) => {
+			state.selectedCategories = action.payload;
+		},
+		toggleSelectedCategory: (state, action: PayloadAction<number>) => {
+			const categoryId = action.payload;
+			if (!state.selectedCategories) {
+				state.selectedCategories = [];
+			}
+			const index = state.selectedCategories.indexOf(categoryId);
+			if (index > -1) {
+				state.selectedCategories.splice(index, 1);
+			} else {
+				state.selectedCategories.push(categoryId);
+			}
 		},
 		setProductsLoading: (state, action: PayloadAction<boolean>) => {
 			state.isLoading = action.payload;
@@ -88,7 +100,7 @@ const productsSlice = createSlice({
 
 		clearFilters: (state) => {
 			state.searchQuery = "";
-			state.selectedCategory = null;
+			state.selectedCategories = [];
 			state.sortBy = "newest";
 			state.currentPage = 1;
 		},
@@ -99,7 +111,8 @@ export const {
 	setProducts,
 	setCategories,
 	setFeaturedProducts,
-	setSelectedCategory,
+	setSelectedCategories,
+	toggleSelectedCategory,
 	setProductsLoading,
 	setProductsError,
 	setSearchQuery,
@@ -115,8 +128,8 @@ export const selectProducts = (state: { products: ProductsState }) => state.prod
 export const selectCategories = (state: { products: ProductsState }) => state.products.categories;
 export const selectFeaturedProducts = (state: { products: ProductsState }) =>
 	state.products.featuredProducts;
-export const selectSelectedCategory = (state: { products: ProductsState }) =>
-	state.products.selectedCategory;
+export const selectSelectedCategories = (state: { products: ProductsState }) =>
+	state.products.selectedCategories || [];
 export const selectIsLoading = (state: { products: ProductsState }) => state.products.isLoading;
 export const selectError = (state: { products: ProductsState }) => state.products.error;
 export const selectSearchQuery = (state: { products: ProductsState }) => state.products.searchQuery;

@@ -9,6 +9,7 @@ import { Eye, ShoppingCart } from "lucide-react";
 import { TransformedProduct } from "../../types";
 import { Button } from "@/shared/components/ui/button";
 import { useFeatureTranslations } from "@/shared/hooks/useTranslation";
+import { useNavigation } from "@/shared/hooks/useNavigation";
 
 interface ProductsListProps {
   products: TransformedProduct[];
@@ -24,6 +25,7 @@ export const ProductsList: React.FC<ProductsListProps> = ({
 }) => {
   const { isRTL } = useApp();
   const { prefetchProduct } = usePrefetch();
+  const { navigateToProductDetail } = useNavigation();
   const { t: productT } = useFeatureTranslations('products');
 
   const handleCardHover = useCallback((product: TransformedProduct) => {
@@ -83,14 +85,14 @@ export const ProductsList: React.FC<ProductsListProps> = ({
       ) : (
         <div className="space-y-4">
           {products.map((product) => (
-            <Card key={product.identifier} className="group hover:shadow-lg transition-all duration-300">
+            <Card key={product.identifier} className="group hover:shadow-lg transition-all duration-300 p-2">
               <CardContent className="p-6">
                 <div className={`flex gap-4`}>
                   <div className="relative flex-shrink-0">
                     <ImageWithFallback
                       src={product.image}
                       alt={isRTL ? product.ar.title : product.en.title}
-                      className="w-24 h-24 object-cover rounded-lg"
+                      className="w-28 h-28 object-cover rounded-lg"
                     />
                   </div>
 
@@ -101,11 +103,11 @@ export const ProductsList: React.FC<ProductsListProps> = ({
 
                     <div className={`flex items-center gap-2 mb-4 ${isRTL ? 'flex-row-reverse justify-end' : ''}`}>
                       <span className="text-xl font-bold text-green-600">
-                        ${product.amount_discount_price ? product.amount_discount_price.toFixed(2) : product.price.toFixed(2)}
+                        ${product.amount_discount_price ? product.amount_discount_price.toFixed(2) : product.price}
                       </span>
                       {product.amount_discount_price && product.amount_discount_price !== product.price && (
-                        <span className="text-sm text-muted-foreground">
-                          - ${product.price.toFixed(2)}
+                        <span className="text-sm text-muted-foreground line-through">
+                          ${product.price}
                         </span>
                       )}
                     </div>
@@ -114,14 +116,14 @@ export const ProductsList: React.FC<ProductsListProps> = ({
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={() => false} // temporary disabled
+                        onClick={() => navigateToProductDetail(product.slug, product.identifier)}
                       >
                         <Eye className={`h-4 w-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />
                         {productT('listing.viewProduct')}
                       </Button>
                       <Button
                         size="sm"
-                        onClick={() => false} // temporary disabled
+                        onClick={() => navigateToProductDetail(product.slug, product.identifier)}
                       >
                         <ShoppingCart className={`h-4 w-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />
                         {productT('listing.addToCart')}

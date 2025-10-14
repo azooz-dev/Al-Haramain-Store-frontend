@@ -6,7 +6,8 @@
     "categories": "الفئات"
   },
   "search": {
-    "placeholder": "البحث في المنتجات..."
+    "placeholder": "البحث في المنتجات...",
+    "activeFilters": "!"
   },
   "filters": {
     "toggle": "المرشحات"
@@ -33,7 +34,16 @@
     "qualityGuarantee": "ضمان الجودة",
     "oneYearWarranty": "ضمان لمدة سنة",
     "freeReturns": "إرجاع مجاني",
-    "within30Days": "خلال 30 يوماً"
+    "within30Days": "خلال 30 يوماً",
+    "color": "اللون",
+    "size": "المقاس",
+    "outOfStock": "نفد المخزون",
+    "productNotFound": "المنتج غير موجود",
+    "productNotFoundDescription": "المنتج الذي تبحث عنه غير موجود أو تم حذفه.",
+    "goBack": "العودة",
+    "discountPercentage": "% خصم",
+    "inStock": "متوفر",
+    "inStockAr": "متوفر"
   },
   "image": {
     "new": "جديد"
@@ -42,7 +52,8 @@
     "noImages": "لا توجد صور متاحة"
   },
   "info": {
-    "reviews": "تقييمات"
+    "reviews": "تقييمات",
+    "saveAmount": "وفر $"
   },
   "listing": {
     "noProductsFound": "لم يتم العثور على منتجات",
@@ -50,5 +61,9 @@
     "reloadPage": "إعادة تحميل الصفحة",
     "viewProduct": "عرض المنتج",
     "addToCart": "أضف إلى السلة"
+  },
+  "pages": {
+    "ourProducts": "منتجاتنا",
+    "ourProductsDescription": "اكتشف مجموعتنا الرائعة من المنتجات"
   }
 }

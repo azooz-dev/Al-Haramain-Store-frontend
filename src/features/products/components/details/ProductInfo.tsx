@@ -46,24 +46,28 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
           ))}
         </div>
         <span className="text-sm text-gray-600 dark:text-gray-400">
-          {rating} ({reviews} {productT("info.reviews")})
+          {`${reviews} ${productT("info.reviews")}`}
         </span>
       </div>
 
       {/* Clean Price Display */}
       <div className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
-        <span className="text-lg font-semibold text-orange-600 dark:text-orange-400">
-          ${price}
-        </span>
-        {amount_discount_price && (
-          <>
-            <span className="text-sm text-gray-500 line-through">
-              ${amount_discount_price}
+          {amount_discount_price && amount_discount_price !== 0 ? (
+            <>
+              <span className="text-lg font-semibold text-orange-600 dark:text-orange-400">
+                ${amount_discount_price}
+              </span>
+              <span className="text-sm text-gray-500 line-through">
+              ${price}
             </span>
             <Badge variant="secondary" className="text-xs px-1.5 py-0.5 bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400 border-0">
-              Save ${(amount_discount_price - price).toFixed(2)}
+              {productT("info.saveAmount")}{(amount_discount_price - price).toFixed(2)}
             </Badge>
-          </>
+            </>
+        ) : (
+          <span className="text-lg font-semibold text-orange-600 dark:text-orange-400">
+            ${price}
+          </span>
         )}
       </div>
     </div>

@@ -49,7 +49,7 @@ export const ProductSearch: React.FC<ProductSearchProps> = ({
           <span className={`ml-2 px-2 py-1 text-xs rounded-full bg-primary text-primary-foreground ${
             isRTL ? 'mr-2 ml-0' : ''
           }`}>
-            !
+            {productT("search.activeFilters")}
           </span>
         )}
       </Button>

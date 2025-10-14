@@ -1,5 +1,5 @@
 import React from 'react';
-import { Badge } from 'lucide-react';
+import { Badge } from '@/shared/components/ui/badge';
 import { ImageWithFallback } from '@/shared/components/common/ImageWithFallback';
 import { useFeatureTranslations } from '@/shared/hooks/useTranslation';
 import { useApp } from '@/shared/contexts/AppContext';
@@ -40,7 +40,7 @@ export const ProductImage: React.FC<ProductImageProps> = React.memo(({
             discount ? (
               (discount > 0) && (
                 <Badge className="bg-red-500 text-white px-2 py-1 text-xs border-0">
-                  -{discount}%
+                  {`${Number(discount)}%-`}
                 </Badge>
               )
             ) : null

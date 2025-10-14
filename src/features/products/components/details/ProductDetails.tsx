@@ -1,22 +1,30 @@
 import React from "react";
 import { Star, Truck, Shield, RotateCcw } from 'lucide-react';
-import { Badge } from '@/shared/components/ui/badge';
 import { useApp } from "@/shared/contexts/AppContext";
-import { Product, ProductVariant } from "../../types";
+import { ProductVariant, TransformedProduct } from "../../types";
 import { useFeatureTranslations } from "@/shared/hooks/useTranslation";
+import { ColorSelector } from "../shared/ColorSelector";
+import { VariantSelector } from "../shared/VariantSelector";
 
 interface ProductDetailsProps {
-  product: Product;
+  product: TransformedProduct;
   selectedVariant: ProductVariant;
+  selectedColorId: number;
+  onColorSelect: (colorId: number) => void;
+  onVariantSelect: (variantId: number) => void;
 }
 
 export const ProductDetails: React.FC<ProductDetailsProps> = ({
   product,
   selectedVariant,
+  selectedColorId,
+  onColorSelect,
+  onVariantSelect,
 }) => {
   const { isRTL } = useApp();
   const { t: productT } = useFeatureTranslations("products");
 
+  console.log(product);
     return (
     <div className="space-y-6">
       {/* Product Title & Rating */}
@@ -24,7 +32,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
         <h1 className="text-3xl font-bold mb-2">
           {isRTL ? product.ar.title : product.en.title}
         </h1>
-        <div className="flex items-center gap-2 mb-4">
+        <div className="flex items-center gap-2 mb-4 mt-4">
           <div className="flex items-center">
             {[...Array(5)].map((_, i) => (
               <Star
@@ -36,29 +44,28 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
             ))}
           </div>
           <span className="text-sm text-muted-foreground">
-            4.8 ({product.reviews?.length || 0} {productT("details.reviews")})
+            {product.rating} ({product.reviewCount} {productT("details.reviews")})
           </span>
         </div>
-        
-        {/* Price Display */}
-        {selectedVariant && (
-          <div className="flex items-center gap-4">
-            <span className="text-3xl font-bold text-amber-600">
-              ${parseFloat(selectedVariant.amount_discount_price).toFixed(2) || selectedVariant.price.toFixed(2)}
-            </span>
-            {selectedVariant.amount_discount_price && selectedVariant.amount_discount_price !== selectedVariant.price.toFixed(2) && (
-              <span className="text-xl text-muted-foreground line-through">
-                ${selectedVariant.price.toFixed(2)}
-              </span>
-            )}
-            {selectedVariant.amount_discount_price && selectedVariant.amount_discount_price !== selectedVariant.price.toFixed(2) && (
-              <Badge variant="destructive" className="bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400">
-                {productT("details.sale")}
-              </Badge>
-            )}
-          </div>
-        )}
       </div>
+
+      {/* Color Selection */}
+      {product.colors && product.colors.length > 0 && (
+        <ColorSelector
+          colors={product.colors}
+          selectedColorId={selectedColorId}
+          onColorSelect={onColorSelect}
+        />
+      )}
+
+      {/* Variant Selection */}
+      {selectedVariant && (
+        <VariantSelector
+          variants={product.colors?.find(color => color.id === selectedColorId)?.variants || []}
+          selectedVariantId={selectedVariant.id}
+          onVariantSelect={onVariantSelect}
+        />
+      )}
 
       {/* Product Description */}
       <div>

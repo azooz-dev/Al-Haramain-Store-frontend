@@ -75,7 +75,7 @@ export const ProductImageSlider: React.FC<ProductImageSliderProps> = ({
                   className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/20 hover:bg-black/40 text-white backdrop-blur-sm"
                   onClick={prevImage}
                 >
-                  {isRTL ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+                  {isRTL ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                 </Button>
                 <Button
                   variant="ghost"
@@ -83,7 +83,7 @@ export const ProductImageSlider: React.FC<ProductImageSliderProps> = ({
                   className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/20 hover:bg-black/40 text-white backdrop-blur-sm"
                   onClick={nextImage}
                 >
-                  {isRTL ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                  {isRTL ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
                 </Button>
               </>
             )}
