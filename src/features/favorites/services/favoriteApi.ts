@@ -1,6 +1,12 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { APP_CONFIG } from "@/shared/config/config";
-import { FavoritesRequest, FavoriteResponse } from "../types";
+import {
+	FavoritesResponse,
+	FavoriteAddResponse,
+	FavoritesRemoveRequest,
+	FavoritesAddRequest,
+	FavoritesRemoveResponse,
+} from "../types";
 import { RootState } from "@store/store";
 import { getCookieValue } from "@/shared/utils/getCookieValue";
 
@@ -39,7 +45,7 @@ export const favoriteApi = createApi({
 	baseQuery: baseQuery,
 	tagTypes: ["Favorite"],
 	endpoints: (builder) => ({
-		getUserFavorites: builder.query<FavoriteResponse, number>({
+		getUserFavorites: builder.query<FavoritesResponse, number>({
 			query: (userId) => ({
 				url: `/users/${userId}/favorites`,
 				method: "GET",
@@ -54,7 +60,7 @@ export const favoriteApi = createApi({
 			keepUnusedDataFor: 300,
 		}),
 
-		addFavorite: builder.mutation<FavoriteResponse, FavoritesRequest>({
+		addFavorite: builder.mutation<FavoriteAddResponse, FavoritesAddRequest>({
 			query: ({ userId, productId, colorId, variantId }) => ({
 				url: `/users/${userId}/products/${productId}/colors/${colorId}/variants/${variantId}/favorites`,
 				method: "POST",
@@ -62,7 +68,7 @@ export const favoriteApi = createApi({
 			invalidatesTags: () => [{ type: "Favorite", id: "LIST" }],
 		}),
 
-		removeFavorite: builder.mutation<FavoriteResponse, { userId: number; favoriteId: number }>({
+		removeFavorite: builder.mutation<FavoritesRemoveResponse, FavoritesRemoveRequest>({
 			query: ({ userId, favoriteId }) => ({
 				url: `/users/${userId}/favorites/${favoriteId}`,
 				method: "DELETE",

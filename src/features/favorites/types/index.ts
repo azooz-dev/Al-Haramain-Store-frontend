@@ -23,17 +23,33 @@ export interface Favorite {
 	lastChange: string;
 }
 
-export interface FavoritesRequest {
+export interface FavoritesAddRequest {
 	userId: number;
 	productId: number;
 	colorId: number;
 	variantId: number;
 }
 
-export interface FavoriteResponse {
+export interface FavoritesResponse {
 	data: {
 		data: Favorite[];
 	};
+	message: string;
+	status: string;
+}
+
+export interface FavoritesRemoveRequest {
+	userId: number;
+	favoriteId: number;
+}
+
+export interface FavoritesRemoveResponse {
+	message: string;
+	status: string;
+}
+
+export interface FavoriteAddResponse {
+	data: Favorite;
 	message: string;
 	status: string;
 }

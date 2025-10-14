@@ -1,4 +1,4 @@
-import { Favorite } from "@/features/favorites/types";
+import { Favorite, FavoritesResponse } from "@/features/favorites/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface FavoritesState {
@@ -17,6 +17,11 @@ const favoritesSlice = createSlice({
 	name: "favorites",
 	initialState,
 	reducers: {
+		setFavorites: (state, action: PayloadAction<FavoritesResponse>) => {
+			state.isLoading = false;
+			state.error = null;
+			state.items = action.payload.data.data;
+		},
 		addToFavorites: (state, action: PayloadAction<Favorite>) => {
 			const isAlreadyExists = state.items.some(
 				(item) => item.product.identifier === action.payload.product.identifier
@@ -29,18 +34,6 @@ const favoritesSlice = createSlice({
 
 		removeFromFavorites: (state, action: PayloadAction<number>) => {
 			state.items = state.items.filter((item) => item.product.identifier !== action.payload);
-		},
-
-		toggleFavorite: (state, action: PayloadAction<Favorite>) => {
-			const existingIndex = state.items.findIndex(
-				(item) => item.product.identifier === action.payload.product.identifier
-			);
-
-			if (existingIndex >= 0) {
-				state.items.splice(existingIndex, 1);
-			} else {
-				state.items.unshift(action.payload);
-			}
 		},
 
 		clearAllFavorites: (state) => {
@@ -62,9 +55,9 @@ const favoritesSlice = createSlice({
 });
 
 export const {
+	setFavorites,
 	addToFavorites,
 	removeFromFavorites,
-	toggleFavorite,
 	clearAllFavorites,
 	loadFavoritesFromStorage,
 	setFavoritesLoading,
