@@ -13,7 +13,7 @@ interface FavoritesListProps {
   favorites: Favorite[];
   viewMode: "grid" | "list";
   searched: boolean;
-  onRemoveFromFavorites: (favoriteId: number) => void;
+  onRemoveFromFavorites: (favoriteId: number, userId: number) => void;
 }
 
 export const FavoritesList: React.FC<FavoritesListProps> = ({
@@ -75,6 +75,7 @@ export const FavoritesList: React.FC<FavoritesListProps> = ({
                     className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
                     onClick={() => onRemoveFromFavorites(
                       favorite.identifier,
+                      favorite.user.identifier
                     )}
                   >
                     <Trash2 className="h-4 w-4" />
@@ -139,6 +140,7 @@ export const FavoritesList: React.FC<FavoritesListProps> = ({
                       className="absolute -top-2 -right-2 opacity-0 group-hover:opacity-100 transition-opacity"
                       onClick={() => onRemoveFromFavorites(
                         favorite.identifier,
+                        favorite.user.identifier
                       )}
                     >
                       <Trash2 className="h-3 w-3" />

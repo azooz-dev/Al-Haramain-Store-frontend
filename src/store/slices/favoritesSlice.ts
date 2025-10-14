@@ -36,6 +36,18 @@ const favoritesSlice = createSlice({
 			state.items = state.items.filter((item) => item.product.identifier !== action.payload);
 		},
 
+		toggleFavorite: (state, action: PayloadAction<Favorite | number>) => {
+			const favoriteIsExists = state.items.some(
+				(item) => item.identifier === (action.payload as number)
+			);
+
+			if (favoriteIsExists) {
+				removeFromFavorites(action.payload as number);
+			} else {
+				addToFavorites(action.payload as Favorite);
+			}
+		},
+
 		clearAllFavorites: (state) => {
 			state.items = [];
 		},
@@ -57,6 +69,7 @@ const favoritesSlice = createSlice({
 export const {
 	setFavorites,
 	addToFavorites,
+	toggleFavorite,
 	removeFromFavorites,
 	clearAllFavorites,
 	loadFavoritesFromStorage,
@@ -65,13 +78,12 @@ export const {
 } = favoritesSlice.actions;
 
 // Selectors
-export const selectFavorites = (state: { favorites: FavoritesState }) => state.favorites.items;
-export const selectFavoritesCount = (state: { favorites: FavoritesState }) =>
-	state.favorites.items.length;
-export const selectIsFavorite = (state: { favorites: FavoritesState }, productId: number) =>
-	state.favorites.items.some((item) => item.product.identifier === productId);
-export const selectFavoritesLoading = (state: { favorites: FavoritesState }) =>
-	state.favorites.isLoading;
-export const selectFavoritesError = (state: { favorites: FavoritesState }) => state.favorites.error;
+export const selectFavoritesState = (state: { favorites: FavoritesState }) => state.favorites;
+export const selectFavorites = (state: FavoritesState) => state.items;
+export const selectFavoritesCount = (state: FavoritesState) => state.items.length;
+export const selectIsFavorite = (state: FavoritesState, productId: number) =>
+	state.items.some((item) => item.product.identifier === productId);
+export const selectFavoritesLoading = (state: FavoritesState) => state.isLoading;
+export const selectFavoritesError = (state: FavoritesState) => state.error;
 
 export default favoritesSlice.reducer;

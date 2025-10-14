@@ -14,7 +14,6 @@ import { useFeatureTranslations } from "@/shared/hooks/useTranslation";
 interface FavoritesFiltersProps {
   searchQuery: string;
   viewMode: "grid" | "list";
-  sortBy: "newest" | "oldest" | "price-low" | "price-high";
   onSearchChange: (query: string) => void;
   onViewModeChange: (mode: "grid" | "list") => void;
   onSortByChange: (sort: "newest" | "oldest" | "price-low" | "price-high") => void;
