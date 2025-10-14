@@ -143,6 +143,10 @@ export const useFavorite = () => {
 		[favorites?.data.data, isRTL]
 	);
 
+	const favoritesCount = useMemo(() => {
+		return favorites?.data.data?.length || 0;
+	}, [favorites?.data.data]);
+
 	return {
 		addFavorite,
 		removeFavorite,
@@ -150,5 +154,6 @@ export const useFavorite = () => {
 		toggleFavorite,
 		isFavorite: isFavoriteByProductId,
 		filteredAndSortedFavorites,
+		favoritesCount,
 	};
 };

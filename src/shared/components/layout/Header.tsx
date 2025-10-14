@@ -6,13 +6,16 @@ import { useNavigation } from "@/shared/hooks/useNavigation";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useAppSelector } from "@/store/hooks";
 import { selectIsAuthenticated } from "@/store/slices/authSlice";
+import { Badge } from "../ui/badge";
+import { Heart } from "lucide-react";
+import { useFavorite } from "@/features/favorites/hooks/useFavorite";
 
 export const Header: React.FC = () => {
   const { isRTL, toggleTheme, toggleLanguage } = useApp();
-	const { navigateToHome, navigateToSignIn } = useNavigation();
+	const { navigateToHome, navigateToSignIn, navigateToFavorites } = useNavigation();
 	const { handleSignOut } = useAuth();
 	const isAuthenticated = useAppSelector(selectIsAuthenticated);
-
+	const { favoritesCount } = useFavorite();
 	const handleLogout = (e: React.MouseEvent<HTMLButtonElement>) => {
 		if ((e.target as HTMLButtonElement).innerHTML === "Logout") {
 		handleSignOut();
@@ -65,6 +68,25 @@ export const Header: React.FC = () => {
 								title={isRTL ? "تغيير المظهر" : "Toggle theme"}
 							>
 								<span className="text-sm font-medium">{isRTL ? "🌙" : "☀️"}</span>
+							</Button>
+
+							<Button
+								variant="ghost"
+								size="sm"
+								onClick={() => navigateToFavorites()}
+								className="relative w-9 h-9 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+								title={isRTL ? "المفضلة" : "Favorites"}
+							>
+							<Heart className="h-4 w-4" />
+							{isAuthenticated && favoritesCount > 0 && (
+							<Badge
+								className={`absolute h-4 w-4 rounded-full bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs flex items-center justify-center p-0 shadow-lg ${
+									isRTL ? "-top-1 -left-1" : "-top-1 -right-1"
+								}`}
+							>
+							{favoritesCount > 99 ? "99+" : favoritesCount}
+							</Badge>
+							)}
 							</Button>
 
 							<Button

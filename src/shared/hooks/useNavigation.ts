@@ -47,6 +47,10 @@ export const useNavigation = () => {
 		navigate("/products", { replace: true });
 	};
 
+	const navigateToFavorites = () => {
+		navigate("/favorites", { replace: true });
+	};
+
 	return {
 		navigateTo,
 		navigateToSignIn,
@@ -57,5 +61,6 @@ export const useNavigation = () => {
 		navigateToHome,
 		navigateToProductDetail,
 		navigateToProducts,
+		navigateToFavorites,
 	};
 };

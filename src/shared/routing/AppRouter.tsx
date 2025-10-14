@@ -9,6 +9,7 @@ import { ResetPasswordPage } from "@/features/auth/components/ResetPasswordPage"
 import { ProductDetailPage } from "@/features/products/components/pages/ProductDetailPage";
 import { ProductsPage } from "@/features/products/components/pages/ProductsPage";
 import { CategoryDetailsPage } from "@/features/categories/components/CategoryDetailsPage";
+import { FavoritesPage } from "@/features/favorites/components/FavoritesPage";
 
 // Create a simple home page component
 const HomePage: React.FC = () => {
@@ -61,6 +62,10 @@ const router = createBrowserRouter([
   {
     path: "/products",
     element: <ProductsPage />,
+  },
+  {
+    path: "/favorites",
+    element: <FavoritesPage />,
   },
   {
     path: "*",

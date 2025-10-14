@@ -1,0 +1,52 @@
+{
+  "title": "My Favorites",
+  "description": "Your saved products and wishlist items",
+  "header": {
+    "title": "My Favorites",
+    "item": "item",
+    "items": "items",
+    "product": "product",
+    "products": "products",
+    "saved": "saved"
+  },
+  "emptyState": {
+    "title": "Sign in to view your favorites",
+    "description": "Please sign in to your account to access your saved products and create your personal wishlist.",
+    "signIn": "Sign In",
+    "browseProducts": "Browse Products",
+    "searched": {
+      "title": "No matching products found",
+      "description": "We couldn't find any products matching your search criteria. Try adjusting your search terms or browse our full collection.",
+      "button": "Browse All Products"
+    },
+    "empty": {
+      "title": "Your favorites list is empty",
+      "description": "Start building your wishlist by adding products you love. Browse our collection and save items for later.",
+      "button": "Start Shopping"
+    }
+  },
+  "list": {
+    "emptyList": "No favorites yet",
+    "addFavoriteProducts": "Add products to your favorites to see them here",
+    "noMatchingProducts": "No products match your search",
+    "trySearchingWithDifferentKeywords": "Try searching with different keywords or browse all products",
+    "viewProduct": "View",
+    "addToCart": "Add to Cart"
+  },
+  "actions": {
+    "bulkAddToCart": "Add All to Cart",
+    "clearAll": "Clear All"
+  },
+  "filters": {
+    "search": "Search favorites...",
+    "sort": "Sort by",
+    "newest": "Newest First",
+    "oldest": "Oldest First",
+    "priceLow": "Price: Low to High",
+    "priceHigh": "Price: High to Low"
+  },
+  "toggleButton": {
+    "add": "Add to Favorites",
+    "remove": "Remove from Favorites"
+  }
+}

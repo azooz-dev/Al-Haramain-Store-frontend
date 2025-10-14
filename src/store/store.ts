@@ -13,6 +13,7 @@ import categoriesSlice from "./slices/categoriesSlice";
 import { authApi } from "@/features/auth/services/authApi";
 import { productApi } from "@/features/products/services/productApi";
 import { categoryApi } from "@/features/categories/services/categoryApi";
+import { favoriteApi } from "@/features/favorites/services/favoriteApi";
 
 const persistConfig = {
 	key: "root",
@@ -34,6 +35,7 @@ const rootReducer = combineReducers({
 	// API reducers
 	[authApi.reducerPath]: authApi.reducer,
 	[productApi.reducerPath]: productApi.reducer,
+	[favoriteApi.reducerPath]: favoriteApi.reducer,
 	[categoryApi.reducerPath]: categoryApi.reducer,
 });
 
@@ -51,6 +53,7 @@ export const store = configureStore({
 		})
 			.concat(authApi.middleware)
 			.concat(productApi.middleware)
+			.concat(favoriteApi.middleware)
 			.concat(categoryApi.middleware),
 });
 
