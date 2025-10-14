@@ -22,3 +22,18 @@ export interface Favorite {
 	createdDate: string;
 	lastChange: string;
 }
+
+export interface FavoritesRequest {
+	userId: number;
+	productId: number;
+	colorId: number;
+	variantId: number;
+}
+
+export interface FavoriteResponse {
+	data: {
+		data: Favorite[];
+	};
+	message: string;
+	status: string;
+}
