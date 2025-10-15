@@ -3,6 +3,7 @@ import { ShoppingCart } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { ButtonSpinner } from "@/shared/components/ui/spinner";
 import { Product } from "../../types";
+import { FavoritesToggleButton } from "@/features/favorites/components/FavoritesToggleButton";
 import { useFeatureTranslations } from "@/shared/hooks/useTranslation";
 
 interface ProductActionsProps {
@@ -56,6 +57,16 @@ export const ProductActions: React.FC<ProductActionsProps> = ({
             : productT("actions.addToCart")
           }
         </Button>
+
+          <FavoritesToggleButton
+          productId={product.identifier}
+          colorId={product.colors?.[0]?.id}
+          variantId={product.colors?.[0]?.variants?.[0]?.id}
+          size="lg"
+          variant="outline"
+          className="w-full h-12"
+          showText={true}
+        />
       </div>
     </div>
   );

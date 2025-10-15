@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Product, Category } from "@/features/products/types";
+import { Product } from "@/features/products/types";
+import { Category } from "@/features/categories/types";
 import { PaginationData } from "@/features/products/types";
 
 interface ProductsState {
@@ -128,8 +129,11 @@ export const selectProducts = (state: { products: ProductsState }) => state.prod
 export const selectCategories = (state: { products: ProductsState }) => state.products.categories;
 export const selectFeaturedProducts = (state: { products: ProductsState }) =>
 	state.products.featuredProducts;
+// Create a constant empty array to avoid creating new references
+const EMPTY_CATEGORIES_ARRAY: number[] = [];
+
 export const selectSelectedCategories = (state: { products: ProductsState }) =>
-	state.products.selectedCategories || [];
+	state.products.selectedCategories || EMPTY_CATEGORIES_ARRAY;
 export const selectIsLoading = (state: { products: ProductsState }) => state.products.isLoading;
 export const selectError = (state: { products: ProductsState }) => state.products.error;
 export const selectSearchQuery = (state: { products: ProductsState }) => state.products.searchQuery;

@@ -1,4 +1,5 @@
 import { Favorite, FavoritesResponse } from "@/features/favorites/types";
+import { ProcessedError } from "@/shared/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface FavoritesState {
@@ -20,20 +21,21 @@ const favoritesSlice = createSlice({
 		setFavorites: (state, action: PayloadAction<FavoritesResponse>) => {
 			state.isLoading = false;
 			state.error = null;
-			state.items = action.payload.data.data;
+			state.items = action.payload.data.data ? Object.values(action.payload.data.data) : [];
 		},
 		addToFavorites: (state, action: PayloadAction<Favorite>) => {
 			const isAlreadyExists = state.items.some(
-				(item) => item.product.identifier === action.payload.product.identifier
+				(item) => item.product?.identifier === action.payload.product?.identifier
 			);
 
 			if (!isAlreadyExists) {
-				state.items.unshift(action.payload);
+				state.items.push(action.payload);
 			}
 		},
 
 		removeFromFavorites: (state, action: PayloadAction<number>) => {
-			state.items = state.items.filter((item) => item.product.identifier !== action.payload);
+			console.log("removeFromFavorites", state.items);
+			state.items = state.items.filter((item) => item.identifier !== action.payload);
 		},
 
 		toggleFavorite: (state, action: PayloadAction<Favorite | number>) => {
@@ -60,8 +62,8 @@ const favoritesSlice = createSlice({
 			state.isLoading = action.payload;
 		},
 
-		setFavoritesError: (state, action: PayloadAction<string | null>) => {
-			state.error = action.payload;
+		setFavoritesError: (state, action: PayloadAction<ProcessedError>) => {
+			state.error = action.payload.data.message;
 		},
 	},
 });
@@ -81,8 +83,6 @@ export const {
 export const selectFavoritesState = (state: { favorites: FavoritesState }) => state.favorites;
 export const selectFavorites = (state: FavoritesState) => state.items;
 export const selectFavoritesCount = (state: FavoritesState) => state.items.length;
-export const selectIsFavorite = (state: FavoritesState, productId: number) =>
-	state.items.some((item) => item.product.identifier === productId);
 export const selectFavoritesLoading = (state: FavoritesState) => state.isLoading;
 export const selectFavoritesError = (state: FavoritesState) => state.error;
 

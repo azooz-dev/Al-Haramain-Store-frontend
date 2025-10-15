@@ -8,14 +8,14 @@ import { useAppSelector } from "@/store/hooks";
 import { selectIsAuthenticated } from "@/store/slices/authSlice";
 import { Badge } from "../ui/badge";
 import { Heart } from "lucide-react";
-import { useFavorite } from "@/features/favorites/hooks/useFavorite";
+import { useFavorites } from "@/features/favorites/hooks/useFavorites";
 
 export const Header: React.FC = () => {
   const { isRTL, toggleTheme, toggleLanguage } = useApp();
 	const { navigateToHome, navigateToSignIn, navigateToFavorites } = useNavigation();
 	const { handleSignOut } = useAuth();
 	const isAuthenticated = useAppSelector(selectIsAuthenticated);
-	const { favoritesCount } = useFavorite();
+	const { favoritesCount } = useFavorites();
 	const handleLogout = (e: React.MouseEvent<HTMLButtonElement>) => {
 		if ((e.target as HTMLButtonElement).innerHTML === "Logout") {
 		handleSignOut();

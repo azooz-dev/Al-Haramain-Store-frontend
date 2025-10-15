@@ -8,52 +8,55 @@ import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
 	setFavorites as setFavoritesSlice,
+	addToFavorites,
+	removeFromFavorites,
 	setFavoritesError as setFavoritesErrorSlice,
-	setFavoritesLoading as setFavoritesLoadingSlice,
-	toggleFavorite as toggleFavoriteSlice,
-	selectIsFavorite,
-	selectFavoritesState,
+	setFavoritesLoading,
+	selectFavoritesLoading,
 } from "@/store/slices/favoritesSlice";
 import { FavoritesRemoveRequest, FavoritesAddRequest, Favorite } from "../types";
 import { RequestFailure } from "@/shared/types";
 import { extractErrorMessage } from "@/shared/utils/extractErrorMessage";
 import { useApp } from "@/shared/contexts/AppContext";
 
-export const useFavorite = () => {
+export const useFavorites = () => {
 	const { currentUser } = useAuth();
 	const { isRTL } = useApp();
 	const dispatch = useAppDispatch();
 	const [addFavoriteMutation] = useAddFavoriteMutation();
 	const [removeFavoriteMutation] = useRemoveFavoriteMutation();
-	const {
-		data: favorites,
-		isLoading: isLoadingFavorites,
-		error: favoritesError,
-	} = useGetUserFavoritesQuery(currentUser?.identifier as number);
+	const isLoadingFavorites = useAppSelector((state) => selectFavoritesLoading(state.favorites));
+	const { data: favorites, error: favoritesError } = useGetUserFavoritesQuery(
+		currentUser?.identifier as number,
+		{
+			skip: !currentUser?.identifier,
+			refetchOnMountOrArgChange: true, // Force refetch when component mounts or args change
+		}
+	);
 
 	useEffect(() => {
 		if (favorites) {
 			dispatch(setFavoritesSlice(favorites));
 		}
 		if (favoritesError) {
-			const errorMessage =
-				"message" in favoritesError
-					? favoritesError.message || "Failed to fetch favorites"
-					: "Failed to fetch favorites";
+			const error = extractErrorMessage(favoritesError as RequestFailure);
+			const errorMessage = error;
 			dispatch(setFavoritesErrorSlice(errorMessage));
 		}
 		if (isLoadingFavorites) {
-			dispatch(setFavoritesLoadingSlice(isLoadingFavorites));
+			dispatch(setFavoritesLoading(isLoadingFavorites));
 		}
 	}, [favorites, favoritesError, isLoadingFavorites, dispatch]);
 
-	const favoritesState = useAppSelector(selectFavoritesState);
-
+	const favoritesState = useAppSelector((state) => state.favorites);
 	const isFavoriteByProductId = useCallback(
 		(productId: number) => {
-			return selectIsFavorite(favoritesState, productId);
+			if (!favoritesState.items) return null;
+			return favoritesState.items?.find(
+				(favorite: Favorite) => favorite.product.identifier === productId
+			);
 		},
-		[favoritesState]
+		[favoritesState.items]
 	);
 
 	const addFavorite = useCallback(
@@ -61,16 +64,18 @@ export const useFavorite = () => {
 			try {
 				const response = await addFavoriteMutation(payload).unwrap();
 				if (response.status === "success") {
-					dispatch(toggleFavoriteSlice(response.data));
+					dispatch(addToFavorites(response.data));
+					isFavoriteByProductId(response.data.product.identifier);
 					return true;
 				}
 				return false;
 			} catch (error: unknown) {
-				dispatch(setFavoritesErrorSlice(extractErrorMessage(error as RequestFailure).data.message));
+				console.log("error", error);
+				dispatch(setFavoritesErrorSlice(extractErrorMessage(error as RequestFailure)));
 				return false;
 			}
 		},
-		[addFavoriteMutation, dispatch]
+		[addFavoriteMutation, dispatch, isFavoriteByProductId]
 	);
 
 	const removeFavorite = useCallback(
@@ -78,12 +83,12 @@ export const useFavorite = () => {
 			try {
 				const response = await removeFavoriteMutation(payload).unwrap();
 				if (response.status === "success") {
-					dispatch(toggleFavoriteSlice(payload.favoriteId));
+					dispatch(removeFromFavorites(payload.favoriteId));
 					return true;
 				}
 				return false;
 			} catch (error: unknown) {
-				dispatch(setFavoritesErrorSlice(extractErrorMessage(error as RequestFailure).data.message));
+				dispatch(setFavoritesErrorSlice(extractErrorMessage(error as RequestFailure)));
 				return false;
 			}
 		},
@@ -92,10 +97,11 @@ export const useFavorite = () => {
 
 	const toggleFavorite = useCallback(
 		async (payload: FavoritesAddRequest | FavoritesRemoveRequest) => {
-			if (isFavoriteByProductId((payload as FavoritesAddRequest).productId)) {
+			const isFavoriteExist = isFavoriteByProductId((payload as FavoritesAddRequest).productId);
+			if (isFavoriteExist && isFavoriteExist.identifier) {
 				await removeFavorite({
 					userId: (payload as FavoritesRemoveRequest).userId as number,
-					favoriteId: (payload as FavoritesRemoveRequest).favoriteId as number,
+					favoriteId: isFavoriteExist.identifier as number,
 				});
 			} else {
 				await addFavorite(payload as FavoritesAddRequest);
@@ -154,6 +160,7 @@ export const useFavorite = () => {
 		toggleFavorite,
 		isFavorite: isFavoriteByProductId,
 		filteredAndSortedFavorites,
+		setFavoritesLoading,
 		favoritesCount,
 	};
 };

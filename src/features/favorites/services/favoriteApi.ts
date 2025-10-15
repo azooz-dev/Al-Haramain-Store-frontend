@@ -65,7 +65,10 @@ export const favoriteApi = createApi({
 				url: `/users/${userId}/products/${productId}/colors/${colorId}/variants/${variantId}/favorites`,
 				method: "POST",
 			}),
-			invalidatesTags: () => [{ type: "Favorite", id: "LIST" }],
+			invalidatesTags: (_, __, { userId }) => [
+				{ type: "Favorite", id: "LIST" },
+				{ type: "Favorite", id: userId }, // Invalidate user-specific cache
+			],
 		}),
 
 		removeFavorite: builder.mutation<FavoritesRemoveResponse, FavoritesRemoveRequest>({
@@ -73,7 +76,10 @@ export const favoriteApi = createApi({
 				url: `/users/${userId}/favorites/${favoriteId}`,
 				method: "DELETE",
 			}),
-			invalidatesTags: () => [{ type: "Favorite", id: "LIST" }],
+			invalidatesTags: (_, __, { userId }) => [
+				{ type: "Favorite", id: "LIST" },
+				{ type: "Favorite", id: userId }, // Invalidate user-specific cache
+			],
 		}),
 	}),
 });

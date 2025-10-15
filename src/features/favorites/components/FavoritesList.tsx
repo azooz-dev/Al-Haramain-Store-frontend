@@ -13,7 +13,7 @@ interface FavoritesListProps {
   favorites: Favorite[];
   viewMode: "grid" | "list";
   searched: boolean;
-  onRemoveFromFavorites: (favoriteId: number, userId: number) => void;
+  onRemoveFromFavorites: (favoriteId: number) => void;
 }
 
 export const FavoritesList: React.FC<FavoritesListProps> = ({
@@ -27,7 +27,7 @@ export const FavoritesList: React.FC<FavoritesListProps> = ({
   const { navigateToProductDetail } = useNavigation();
   const url = APP_CONFIG.apiBaseUrl;
 
-  if (favorites.length === 0) {
+  if (favorites && favorites.length === 0 || !favorites) {
         return (
       <div className="text-center py-12">
         <div className={`text-muted-foreground ${isRTL ? 'text-right' : 'text-left'}`}>
@@ -55,7 +55,6 @@ export const FavoritesList: React.FC<FavoritesListProps> = ({
     );
   }
 
-  
   return (
     <>
       {viewMode === 'grid' ? (
@@ -65,7 +64,7 @@ export const FavoritesList: React.FC<FavoritesListProps> = ({
               <CardContent className="p-4">
                 <div className="relative">
                   <ImageWithFallback
-                    src={`${url}/storage/${favorite.product.image}`}
+                    src={`${url}/storage/${favorite.product.image.image_url}`}
                     alt={isRTL ? favorite.product.ar.title : favorite.product.en.title}
                     className="w-full  object-cover rounded-lg"
                   />
@@ -75,7 +74,6 @@ export const FavoritesList: React.FC<FavoritesListProps> = ({
                     className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
                     onClick={() => onRemoveFromFavorites(
                       favorite.identifier,
-                      favorite.user.identifier
                     )}
                   >
                     <Trash2 className="h-4 w-4" />
@@ -130,9 +128,9 @@ export const FavoritesList: React.FC<FavoritesListProps> = ({
                 <div className={`flex gap-4 ${isRTL ? '' : ''}`}>
                   <div className="relative flex-shrink-0">
                     <ImageWithFallback
-                      src={`${url}/storage/${favorite.product.image}`}
+                      src={`${url}/storage/${favorite.product.image.image_url}`}
                       alt={isRTL ? favorite.product.ar.title : favorite.product.en.title}
-                      className="w-24 h-24 object-cover rounded-lg"
+                      className="w-28 h-28 object-cover rounded-lg"
                     />
                     <Button
                       size="sm"
@@ -140,7 +138,6 @@ export const FavoritesList: React.FC<FavoritesListProps> = ({
                       className="absolute -top-2 -right-2 opacity-0 group-hover:opacity-100 transition-opacity"
                       onClick={() => onRemoveFromFavorites(
                         favorite.identifier,
-                        favorite.user.identifier
                       )}
                     >
                       <Trash2 className="h-3 w-3" />

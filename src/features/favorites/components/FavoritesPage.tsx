@@ -11,7 +11,7 @@ import { FavoritesHeader } from "./FavoritesHeader";
 import { FavoritesActions } from "./FavoritesActions";
 import { FavoritesSkeleton } from "./FavoritesSkeleton";
 import { useApp } from "@/shared/contexts/AppContext";
-import { useFavorite } from "../hooks/useFavorite";
+import { useFavorites } from "../hooks/useFavorites";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { Favorite } from "../types";
 
@@ -20,7 +20,7 @@ export const FavoritesPage: React.FC = () => {
   const { t: favoritesT } = useFeatureTranslations("favorites");
   const { navigateToSignIn, navigateToProducts } = useNavigation();
   const { prefetchFavorites } = usePrefetch();
-  const { removeFavorite, isLoadingFavorites, filteredAndSortedFavorites } = useFavorite();
+  const { removeFavorite, isLoadingFavorites, filteredAndSortedFavorites } = useFavorites();
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'price-low' | 'price-high' | 'price-asc' | 'price-desc'>('newest');
@@ -34,9 +34,9 @@ export const FavoritesPage: React.FC = () => {
 
   const favorites = filteredAndSortedFavorites(searchQuery, sortBy);
 
-  const handleRemoveFromFavorites = async (favoriteId: number, userId: number) => {
+  const handleRemoveFromFavorites = async (favoriteId: number) => {
     await removeFavorite({
-      userId: userId,
+      userId: currentUser?.identifier as number,
       favoriteId: favoriteId,
     });
   }

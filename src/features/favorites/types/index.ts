@@ -1,5 +1,5 @@
 import { User } from "@/features/auth/types";
-import { ProductColor, ProductVariant } from "@/features/products/types";
+import { ProductColor, ProductVariant, ProductImage } from "@/features/products/types";
 
 export interface Favorite {
 	identifier: number;
@@ -16,7 +16,7 @@ export interface Favorite {
 			details: string;
 		};
 		color: ProductColor;
-		image: string | null;
+		image: ProductImage;
 		variant: ProductVariant;
 	};
 	createdDate: string;

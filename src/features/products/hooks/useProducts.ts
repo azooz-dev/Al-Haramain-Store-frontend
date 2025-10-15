@@ -190,7 +190,8 @@ export const useProducts = () => {
 	const filteredProducts = useMemo(() => {
 		if (!transformedProducts || transformedProducts.length === 0) return [];
 
-		const query = (SearchQueryState || ProductsState.searchQuery).toLowerCase().trim();
+		const searchQuery = SearchQueryState || ProductsState.searchQuery || "";
+		const query = searchQuery.toLowerCase().trim();
 
 		return transformedProducts.filter((product) => {
 			const matchesSearch =

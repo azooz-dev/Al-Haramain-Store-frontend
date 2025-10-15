@@ -24,7 +24,6 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
   const { isRTL } = useApp();
   const { t: productT } = useFeatureTranslations("products");
 
-  console.log(product);
     return (
     <div className="space-y-6">
       {/* Product Title & Rating */}
