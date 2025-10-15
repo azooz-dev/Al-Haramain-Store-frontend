@@ -102,6 +102,10 @@ export const useProducts = () => {
 		}
 	}, [productsData, dispatch]);
 
+	useEffect(() => {
+		updatePaginationData();
+	}, [updatePaginationData]);
+
 	const setLoadingState = useCallback(
 		(loading: boolean) => {
 			dispatch(setProductsLoading(loading));
