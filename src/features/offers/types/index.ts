@@ -51,3 +51,11 @@ export interface OfferRequest {
 	page?: number;
 	per_page?: number;
 }
+
+export interface TimeRemaining {
+	days: number;
+	hours: number;
+	minutes: number;
+	seconds: number;
+	expired: boolean;
+}

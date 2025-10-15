@@ -51,6 +51,14 @@ export const useNavigation = () => {
 		navigate("/favorites", { replace: true });
 	};
 
+	const navigateToOffers = () => {
+		navigate("/offers", { replace: true });
+	};
+
+	const navigateToOffersDetails = (id: number) => {
+		navigate(`/offers/${id}`, { replace: true });
+	};
+
 	return {
 		navigateTo,
 		navigateToSignIn,
@@ -62,5 +70,7 @@ export const useNavigation = () => {
 		navigateToProductDetail,
 		navigateToProducts,
 		navigateToFavorites,
+		navigateToOffers,
+		navigateToOffersDetails,
 	};
 };

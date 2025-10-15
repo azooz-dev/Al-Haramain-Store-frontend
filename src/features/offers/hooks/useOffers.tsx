@@ -1,7 +1,7 @@
-import { useEffect, useCallback } from "react";
+import { useEffect, } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useGetOffersQuery } from "../services/offerApi";
-import { setOffers, setOffersError, setOffersLoading, selectOffers, setPaginationData } from "@/store/slices/offersSlice";
+import { setOffers, setOffersError, setOffersLoading, selectOffers, setCurrentPage as setCurrentPageAction } from "@/store/slices/offersSlice";
 import { extractErrorMessage } from "@/shared/utils/extractErrorMessage";
 import { RequestFailure } from "@/shared/types";
 import { useOffersState } from "./useOffersState";
@@ -27,18 +27,9 @@ export const useOffers = (offerId?: number) => {
     }
   }, [offersData, offersError, isOffersLoading, dispatch]);
 
-	const updatePaginationData = useCallback(() => {
-		if (offersData?.data) {
-			dispatch(
-				setPaginationData({
-					currentPage: offersState.currentPage,
-					totalPages: offersState.totalPages,
-					totalItems: offersState.totalItems,
-					perPage: offersState.perPage,
-				})
-			);
-		}
-	}, [offersData, dispatch, offersState]);
+  const setCurrentPage = (page: number) => {
+    dispatch(setCurrentPageAction(page));
+  };
 
   return {
     ...useOffersState(offerId as number),
@@ -50,6 +41,6 @@ export const useOffers = (offerId?: number) => {
     totalPages: offersState.totalPages,
     totalItems: offersState.totalItems,
     perPage: offersState.perPage,
-    updatePaginationData,
+    setCurrentPage,
   };
 }

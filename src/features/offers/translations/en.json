@@ -1,0 +1,31 @@
+{
+  "offers": {
+    "title": "Exclusive Offers",
+    "description": "Discover our exclusive deals on premium Islamic products. Save up to 25% on carefully curated collections",
+    "error": "Error Loading Offers",
+    "errorDescription": "An error occurred while loading offers. Please try again.",
+    "retry": "Retry",
+    "noOffers": "No Offers Found",
+    "noOffersDescription": "No offers are currently available for this filter",
+    "pagination": "Showing {{from}} - {{to}} of {{total}} offers"
+  },
+  "filters": {
+    "all": "All Offers",
+    "featured": "Featured Offers",
+    "endingSoon": "Ending Soon"
+  },
+  "status": {
+    "active": "Active",
+    "expired": "Expired"
+  },
+  "details": {
+    "discountPercentage": "OFF",
+    "days": "days",
+    "hours": "hours",
+    "left": "left",
+    "products": "products",
+    "included": "included",
+    "youSave": "You save",
+    "viewDetails": "View Details"
+  }
+}

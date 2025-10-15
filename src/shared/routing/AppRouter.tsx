@@ -10,6 +10,8 @@ import { ProductDetailPage } from "@/features/products/components/pages/ProductD
 import { ProductsPage } from "@/features/products/components/pages/ProductsPage";
 import { CategoryDetailsPage } from "@/features/categories/components/CategoryDetailsPage";
 import { FavoritesPage } from "@/features/favorites/components/FavoritesPage";
+import { OffersPage } from "@/features/offers/components/OffersPage";
+import { OffersDetailsPage } from "@/features/offers/components/OffersDetailsPage";
 
 // Create a simple home page component
 const HomePage: React.FC = () => {
@@ -66,6 +68,14 @@ const router = createBrowserRouter([
   {
     path: "/favorites",
     element: <FavoritesPage />,
+  },
+  {
+    path: "/offers",
+    element: <OffersPage />,
+  },
+  {
+    path: "/offers/:id",
+    element: <OffersDetailsPage />,
   },
   {
     path: "*",

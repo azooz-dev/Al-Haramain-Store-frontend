@@ -1,0 +1,31 @@
+{
+  "offers": {
+    "title": "عروض حصرية",
+    "description": "اكتشف عروضنا المميزة على أفضل المنتجات الإسلامية. وفر حتى 25% على مجموعات مختارة بعناية",
+    "error": "خطأ في تحميل العروض",
+    "errorDescription": "حدث خطأ أثناء تحميل العروض. يرجى المحاولة مرة أخرى.",
+    "retry": "إعادة المحاولة",
+    "noOffers": "لا توجد عروض",
+    "noOffersDescription": "لا توجد عروض متاحة حالياً لهذا الفلتر",
+    "pagination": "عرض {{from}} - {{to}} من {{total}} عرض"
+  },
+  "filters": {
+    "all": "جميع العروض",
+    "featured": "العروض المميزة",
+    "endingSoon": "تنتهي قريباً"
+  },
+  "status": {
+    "active": "نشط",
+    "expired": "منتهي"
+  },
+  "details": {
+    "discountPercentage": "خصم",
+    "days": "أيام",
+    "hours": "ساعات",
+    "left": "متبقية",
+    "products": "منتجات",
+    "included": "متضمنة",
+    "youSave": "توفر",
+    "viewDetails": "عرض التفاصيل"
+  }
+}

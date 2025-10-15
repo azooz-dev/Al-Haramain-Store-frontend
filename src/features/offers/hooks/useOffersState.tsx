@@ -1,13 +1,14 @@
 import { useCallback, useMemo } from "react";
 import { useAppSelector } from "@/store/hooks";
 import { selectOfferById } from "@/store/slices/offersSlice";
+import { TimeRemaining } from "../types";
 
 export const useOffersState = (offerId: number) => {
   const offer = useAppSelector(selectOfferById(offerId));
 
   
   // Format time remaining
-  const formatTimeRemaining = useCallback((endDate: string) => {
+  const formatTimeRemaining = useCallback((endDate: string): TimeRemaining => {
     const now = new Date();
     const end = new Date(endDate);
     const diff = end.getTime() - now.getTime();
