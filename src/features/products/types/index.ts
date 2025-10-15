@@ -1,3 +1,4 @@
+import { Link } from "@/shared/types";
 export interface Product {
 	identifier: number;
 	slug: string;
@@ -106,11 +107,4 @@ export interface ProductResponse {
 	data: Product;
 	message: string;
 	status: string;
-}
-
-export interface Link {
-	url: string | null;
-	label: string;
-	page: number | null;
-	active: boolean;
 }
