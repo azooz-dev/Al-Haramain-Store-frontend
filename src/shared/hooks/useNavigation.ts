@@ -55,8 +55,8 @@ export const useNavigation = () => {
 		navigate("/offers", { replace: true });
 	};
 
-	const navigateToOffersDetails = (id: number) => {
-		navigate(`/offers/${id}`, { replace: true });
+	const navigateToOffersDetails = (offerId: number) => {
+		navigate(`/offers/${offerId}`, { replace: true });
 	};
 
 	return {

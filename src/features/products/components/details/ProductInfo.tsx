@@ -31,7 +31,8 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
         {name}
       </h3>
 
-      {/* Clean Rating Display */}
+        {/* Clean Rating Display */}
+        {reviews > 0 && (
       <div className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
         <div className={`flex ${isRTL ? 'flex-row-reverse' : ''}`}>
           {[...Array(5)].map((_, i) => (
@@ -46,12 +47,13 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
           ))}
         </div>
         <span className="text-sm text-gray-600 dark:text-gray-400">
-          {`${reviews} ${productT("info.reviews")}`}
-        </span>
-      </div>
+            {`${reviews} ${productT("info.reviews")}`}
+          </span>
+        </div>
+      )}
 
       {/* Clean Price Display */}
-      <div className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+      <div className="flex items-center gap-2">
           {amount_discount_price && amount_discount_price !== 0 ? (
             <>
               <span className="text-lg font-semibold text-orange-600 dark:text-orange-400">

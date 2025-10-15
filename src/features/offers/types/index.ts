@@ -1,14 +1,19 @@
-import { Product } from "@/features/products/types";
+import {
+	ProductColor,
+	ProductImage,
+	ProductVariant,
+	TransformedProduct,
+} from "@/features/products/types";
 import { Link } from "@/shared/types";
 
-export interface Offer {
+export interface OfferTransformedResponse {
 	identifier: number;
 	picture: string;
 	productsTotalPrice: string;
 	offerPrice: string;
 	startDate: string;
 	endDate: string;
-	products: Product[];
+	products: OfferTransformedProduct[];
 	en: {
 		title: string;
 		details: string;
@@ -21,10 +26,48 @@ export interface Offer {
 	lastChange: string;
 }
 
+export interface Offer {
+	identifier: number;
+	picture: string;
+	productsTotalPrice: string;
+	offerPrice: string;
+	startDate: string;
+	endDate: string;
+	products: TransformedProduct[];
+	en: {
+		title: string;
+		details: string;
+	};
+	ar: {
+		title: string;
+		details: string;
+	};
+	createdDate: string;
+	lastChange: string;
+}
+
+export interface OfferTransformedProduct {
+	identifier: number;
+	slug: string;
+	sku: string;
+	quantity: number;
+	en: {
+		title: string;
+		details: string;
+	};
+	ar: {
+		title: string;
+		details: string;
+	};
+	variant: Partial<ProductVariant>;
+	color: Partial<ProductColor>;
+	image: Partial<ProductImage>;
+}
+
 export interface OffersResponse {
 	data: {
 		current_Page: number;
-		data: Offer[];
+		data: OfferTransformedResponse[];
 		first_page_url: string;
 		from: number;
 		last_page: number;

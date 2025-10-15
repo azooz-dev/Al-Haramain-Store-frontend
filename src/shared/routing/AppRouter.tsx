@@ -74,7 +74,7 @@ const router = createBrowserRouter([
     element: <OffersPage />,
   },
   {
-    path: "/offers/:id",
+    path: "/offers/:offerId",
     element: <OffersDetailsPage />,
   },
   {

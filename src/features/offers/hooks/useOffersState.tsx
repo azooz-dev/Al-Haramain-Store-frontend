@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react";
 import { useAppSelector } from "@/store/hooks";
 import { selectOfferById } from "@/store/slices/offersSlice";
-import { TimeRemaining } from "../types";
+import { TimeRemaining, Offer } from "../types";
 
 export const useOffersState = (offerId: number) => {
   const offer = useAppSelector(selectOfferById(offerId));
@@ -32,23 +32,23 @@ export const useOffersState = (offerId: number) => {
   }, []);
 
   // Computed values
-  const timeRemaining = useMemo(() => {
+  const timeRemaining = useCallback((offer: Offer) => {
     return offer ? formatTimeRemaining(offer.endDate) : { days: 0, hours: 0, minutes: 0, expired: true };
-  }, [offer, formatTimeRemaining]);
+  }, [formatTimeRemaining]);
 
-  const totalSavings = useMemo(() => {
+  const totalSavings = useCallback((offer: Offer) => {
     return offer ? parseFloat(offer.productsTotalPrice) - parseFloat(offer.offerPrice) : 0;
-  }, [offer]);
+  }, []);
 
-  const discountPercentage = useMemo(() => {
+  const discountPercentage = useCallback((offer: Offer) => {
     return offer ? calculateDiscountPercentage(offer.productsTotalPrice, offer.offerPrice) : 0;
-  }, [offer, calculateDiscountPercentage]);
+  }, [calculateDiscountPercentage]);
 
   const offerSummary = useMemo(() => {
     if (!offer) return null;
     
     return {
-      isExpired: timeRemaining.expired,
+      isExpired: timeRemaining(offer).expired,
       totalProducts: offer.products.length,
       originalPrice: parseFloat(offer.productsTotalPrice),
       offerPrice: parseFloat(offer.offerPrice),

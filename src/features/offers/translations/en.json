@@ -18,7 +18,7 @@
     "active": "Active",
     "expired": "Expired"
   },
-  "details": {
+  "card": {
     "discountPercentage": "OFF",
     "days": "days",
     "hours": "hours",
@@ -27,5 +27,27 @@
     "included": "included",
     "youSave": "You save",
     "viewDetails": "View Details"
+  },
+  "details": {
+    "errorTitle": "Offer Not Found",
+    "errorDescription": "An error occurred while loading the offer or the offer does not exist",
+    "backToOffers": "Back to Offers",
+    "offerEndsIn": "Offer ends in:",
+    "days": "Days",
+    "hours": "Hours",
+    "minutes": "Minutes",
+    "offerExpired": "Offer Expired",
+    "offerExpiredDescription": "This offer is no longer available",
+    "youSave": "You save",
+    "productsIncluded": "products included",
+    "addOfferToCard": "Add Offer to Card",
+    "offerProducts": "Offer Products",
+    "offerProductsDescription": "Discover {{count}} curated products",
+    "discountPercentage": "OFF",
+    "featured": "Featured",
+    "totalSavingsInOffer": "Total Savings in This Offer",
+    "totalSavingsDescription": "Save more when buying the complete collection",
+    "discount": "discount",
+    "rating": "4.5"
   }
 }
