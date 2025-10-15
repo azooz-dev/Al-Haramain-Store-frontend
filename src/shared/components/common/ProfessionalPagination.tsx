@@ -72,7 +72,7 @@ export const ProfessionalPagination: React.FC<ProfessionalPaginationProps> = ({
 
   const handlePageClick = (page: number) => {
     if (page !== currentPage && !isLoading) {
-      onPageChange(currentPage - 1);
+      onPageChange(page);
     }
   }
 
