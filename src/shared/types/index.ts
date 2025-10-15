@@ -35,3 +35,17 @@ export interface ProcessedError {
 		status: "error";
 	};
 }
+
+export interface Link {
+	url: string | null;
+	label: string;
+	page: number | null;
+	active: boolean;
+}
+
+export interface PaginationData {
+	currentPage: number;
+	totalPages: number;
+	totalItems: number;
+	perPage: number;
+}

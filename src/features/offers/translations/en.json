@@ -1,0 +1,53 @@
+{
+  "offers": {
+    "title": "Exclusive Offers",
+    "description": "Discover our exclusive deals on premium Islamic products. Save up to 25% on carefully curated collections",
+    "error": "Error Loading Offers",
+    "errorDescription": "An error occurred while loading offers. Please try again.",
+    "retry": "Retry",
+    "noOffers": "No Offers Found",
+    "noOffersDescription": "No offers are currently available for this filter",
+    "pagination": "Showing {{from}} - {{to}} of {{total}} offers"
+  },
+  "filters": {
+    "all": "All Offers",
+    "featured": "Featured Offers",
+    "endingSoon": "Ending Soon"
+  },
+  "status": {
+    "active": "Active",
+    "expired": "Expired"
+  },
+  "card": {
+    "discountPercentage": "OFF",
+    "days": "days",
+    "hours": "hours",
+    "left": "left",
+    "products": "products",
+    "included": "included",
+    "youSave": "You save",
+    "viewDetails": "View Details"
+  },
+  "details": {
+    "errorTitle": "Offer Not Found",
+    "errorDescription": "An error occurred while loading the offer or the offer does not exist",
+    "backToOffers": "Back to Offers",
+    "offerEndsIn": "Offer ends in:",
+    "days": "Days",
+    "hours": "Hours",
+    "minutes": "Minutes",
+    "offerExpired": "Offer Expired",
+    "offerExpiredDescription": "This offer is no longer available",
+    "youSave": "You save",
+    "productsIncluded": "products included",
+    "addOfferToCard": "Add Offer to Card",
+    "offerProducts": "Offer Products",
+    "offerProductsDescription": "Discover {{count}} curated products",
+    "discountPercentage": "OFF",
+    "featured": "Featured",
+    "totalSavingsInOffer": "Total Savings in This Offer",
+    "totalSavingsDescription": "Save more when buying the complete collection",
+    "discount": "discount",
+    "rating": "4.5"
+  }
+}

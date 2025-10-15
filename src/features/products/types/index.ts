@@ -1,3 +1,4 @@
+import { Link } from "@/shared/types";
 export interface Product {
 	identifier: number;
 	slug: string;
@@ -70,13 +71,6 @@ export interface Review {
 	lastChange: string;
 }
 
-export interface PaginationData {
-	currentPage: number;
-	totalPages: number;
-	totalItems: number;
-	perPage: number;
-}
-
 export interface ProductRequest {
 	page?: number;
 	per_page?: number;
@@ -106,11 +100,4 @@ export interface ProductResponse {
 	data: Product;
 	message: string;
 	status: string;
-}
-
-export interface Link {
-	url: string | null;
-	label: string;
-	page: number | null;
-	active: boolean;
 }

@@ -40,8 +40,7 @@ export const useFavorites = () => {
 		}
 		if (favoritesError) {
 			const error = extractErrorMessage(favoritesError as RequestFailure);
-			const errorMessage = error;
-			dispatch(setFavoritesErrorSlice(errorMessage));
+			dispatch(setFavoritesErrorSlice(error));
 		}
 		if (isLoadingFavorites) {
 			dispatch(setFavoritesLoading(isLoadingFavorites));
