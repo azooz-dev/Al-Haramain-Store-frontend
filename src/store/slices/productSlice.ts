@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Product } from "@/features/products/types";
 import { Category } from "@/features/categories/types";
-import { PaginationData } from "@/features/products/types";
+import { PaginationData } from "@shared/types";
 
 interface ProductsState {
 	products: Product[];

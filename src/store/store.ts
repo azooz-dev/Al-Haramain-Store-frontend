@@ -30,7 +30,7 @@ const rootReducer = combineReducers({
 	categories: categoriesSlice,
 	ui: uiSlice,
 	user: userSlice,
-	offersSlice,
+	offers: offersSlice,
 
 	// API reducers
 	[authApi.reducerPath]: authApi.reducer,

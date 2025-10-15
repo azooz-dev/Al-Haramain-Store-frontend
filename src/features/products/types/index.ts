@@ -71,13 +71,6 @@ export interface Review {
 	lastChange: string;
 }
 
-export interface PaginationData {
-	currentPage: number;
-	totalPages: number;
-	totalItems: number;
-	perPage: number;
-}
-
 export interface ProductRequest {
 	page?: number;
 	per_page?: number;

@@ -42,3 +42,10 @@ export interface Link {
 	page: number | null;
 	active: boolean;
 }
+
+export interface PaginationData {
+	currentPage: number;
+	totalPages: number;
+	totalItems: number;
+	perPage: number;
+}
