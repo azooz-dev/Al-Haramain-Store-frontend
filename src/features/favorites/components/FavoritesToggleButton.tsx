@@ -18,6 +18,10 @@ interface FavoritesToggleButtonProps {
     add: string;
     remove: string;
   };
+  customStyles?: {
+    unfavorited?: string;
+    favorited?: string;
+  };
 }
 
 export const FavoritesToggleButton: React.FC<FavoritesToggleButtonProps> = ({
@@ -29,6 +33,7 @@ export const FavoritesToggleButton: React.FC<FavoritesToggleButtonProps> = ({
   className,
   showText = true,
   text,
+  customStyles,
 }) => {
   const { isRTL } = useApp();
   const { t: favoritesT } = useFeatureTranslations("favorites");
@@ -41,6 +46,14 @@ export const FavoritesToggleButton: React.FC<FavoritesToggleButtonProps> = ({
   };
 
   const buttonText = text || defaultText;
+
+  // Default styles
+  const defaultUnfavoritedStyles = 'text-gray-600 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20';
+  const defaultFavoritedStyles = 'text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20';
+
+  // Use custom styles if provided, otherwise use defaults
+  const unfavoritedStyles = customStyles?.unfavorited || defaultUnfavoritedStyles;
+  const favoritedStyles = customStyles?.favorited || defaultFavoritedStyles;
 
   const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -61,8 +74,8 @@ export const FavoritesToggleButton: React.FC<FavoritesToggleButtonProps> = ({
       variant={variant}
       className={`transition-all duration-200 ${
         isFavorite(productId) 
-          ? 'text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20' 
-          : 'text-gray-600 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20'
+          ? favoritedStyles
+          : unfavoritedStyles
       } ${isLoadingFavorites ? 'opacity-70 cursor-not-allowed' : ''} ${className}`}
       onClick={handleClick}
       disabled={isLoading}

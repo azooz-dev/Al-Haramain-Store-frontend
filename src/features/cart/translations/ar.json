@@ -13,7 +13,7 @@
   "save": "وفر",
   "quantity": "الكمية",
   "total": "المجموع",
-  "saveForLater": "احفظ للمستقبل",
+  "saveForLater": "احفظ لاحقا",
   "remove": "إزالة",
   "orderSummary": "ملخص الطلب",
   "subtotal": "المجموع الفرعي",
@@ -24,6 +24,7 @@
   "continueShopping": "متابعة التسوق",
   "weAccept": "نحن نقبل",
   "display": {
-    "color": "اللون"
+    "color": "اللون",
+    "size": "المقاس"
   }
 }

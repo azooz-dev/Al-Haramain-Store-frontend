@@ -24,6 +24,7 @@
   "continueShopping": "Continue Shopping",
   "weAccept": "We accept",
   "display": {
-    "color": "Color"
+    "color": "Color",
+    "size": "Size"
   }
 }

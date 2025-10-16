@@ -6,7 +6,6 @@ import {
   ShoppingBag,
   ArrowRight,
   ArrowLeft,
-  Heart,
   Gift,
 } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
@@ -19,18 +18,14 @@ import { CartColorDisplay } from "./CartColorDisplay";
 import { useFeatureTranslations } from "@/shared/hooks/useTranslation";
 import { useApp } from "@/shared/contexts/AppContext";
 import { useNavigation } from "@/shared/hooks/useNavigation";
-import { useFavorites } from "@/features/favorites/hooks/useFavorites";
-import { APP_CONFIG } from "@/shared/config/config";
+import { FavoritesToggleButton } from "@/features/favorites/components/FavoritesToggleButton";
 import { CartItem } from "../types";
-import { useAuth } from "@/features/auth/hooks/useAuth";
 
 export const CartPage: React.FC = () => {
   const { isRTL } = useApp();
   const { t: cartT } = useFeatureTranslations("cart");
   const { navigateToProducts, navigateToHome } = useNavigation();
-  const { isAuthenticated, currentUser } = useAuth();
   const { cartItems, cartSummary, handleUpdateQuantity, handleRemoveItem, cartCalculations } = useCart();
-  const { addFavorite } = useFavorites();
 
   const handleQuantityChange = (identifier: number, quantity: number) => {
     if (quantity === 0) {
@@ -40,16 +35,6 @@ export const CartPage: React.FC = () => {
     }
   }
 
-  const handleAddToFavorites = (item: CartItem) => {
-    if (isAuthenticated && currentUser?.identifier) {
-      addFavorite({
-        userId: currentUser.identifier,
-        productId: item.identifier,
-        colorId: item.color?.id as number,
-        variantId: item.variant?.id as number,
-      });
-    }
-  }
 
   if (cartItems.length === 0) {
         return (
@@ -115,7 +100,7 @@ export const CartPage: React.FC = () => {
                     {/* Product Image */}
                     <div className="relative w-32 h-32 flex-shrink-0 mx-auto md:mx-0">
                       <ImageWithFallback
-                        src={`${APP_CONFIG.apiBaseUrl}/storage/${item.image}`}
+                        src={item.image}
                         alt={isRTL ? item.ar.title : item.en.title}
                         className="w-full h-full object-cover rounded-lg shadow-md"
                       />
@@ -149,22 +134,22 @@ export const CartPage: React.FC = () => {
                             />
                           )}
                           {item.variant?.id && (
-                            <p className="text-sm text-muted-foreground">{item.variant?.size}</p>
+                            <p className="text-sm text-muted-foreground">{cartT('display.size')}: {item.variant?.size}</p>
                           )}
                         </div>
                         <div className="flex items-center justify-center md:justify-start gap-2">
                           {item.amount_discount_price > 0 ? (
                             <>
+                              <span className="text-lg text-muted-foreground line-through">
+                                ${item.price}
+                              </span>
                               <span className="text-xl text-primary">
                                 ${item.amount_discount_price.toFixed(2)}
-                              </span>
-                              <span className="text-lg text-muted-foreground line-through">
-                                ${item.price.toFixed(2)}
                               </span>
                             </>
                           ) : (
                             <span className="text-xl text-primary">
-                              ${item.price.toFixed(2)}
+                              ${item.price}
                             </span>
                           )}
                           {item.orderable === 'offer' && item.amount_discount_price > 0 && (
@@ -219,15 +204,18 @@ export const CartPage: React.FC = () => {
                       {/* Additional Actions */}
                       <div className="flex justify-center sm:justify-start gap-2 pt-2">
                         { item.orderable === 'product' && (
-                        <Button
+                        <FavoritesToggleButton
+                          productId={item.identifier}
+                          colorId={item.color?.id}
+                          variantId={item.variant?.id}
                           size="sm"
                           variant="outline"
                           className="text-xs"
-                          onClick={() => handleAddToFavorites(item)}
-                        >
-                          <Heart className="h-3 w-3 mr-1" />
-                          {cartT('saveForLater')}
-                        </Button>
+                          showText={true}
+                          customStyles={{
+                            unfavorited: "text-amber-600 hover:text-amber-700 hover:bg-amber-50 dark:hover:bg-amber-900/20"
+                          }}
+                        />
                         )}
                         <Button
                           size="sm"
@@ -259,7 +247,7 @@ export const CartPage: React.FC = () => {
                   {cartItems.map((item: CartItem) => (
                     <div key={item.identifier} className="flex items-center space-x-3">
                       <ImageWithFallback
-                        src={`${APP_CONFIG.apiBaseUrl}/storage/${item.image}`}
+                        src={item.image}
                         alt={isRTL ? item.ar.title : item.en.title}
                         className="w-12 h-12 rounded-lg object-cover"
                       />
@@ -277,13 +265,14 @@ export const CartPage: React.FC = () => {
                           <p>{cartT('quantity')}: {item.quantity}</p>
                           {item.color?.id && (
                             <div className="flex items-center gap-1">
+                              <span className="text-sm text-muted-foreground ml-1">{cartT('display.color')}:</span>
                               <CartColorDisplay
                                 colorCode={item.color?.color_code || '#000000'}
                               />
                             </div>
                           )}
                           {item.variant?.id && (
-                            <p>{item.variant?.size}</p>
+                            <p>{cartT('display.size')}: {item.variant?.size}</p>
                           )}
                         </div>
                       </div>

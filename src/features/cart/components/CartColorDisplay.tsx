@@ -14,7 +14,7 @@ export const CartColorDisplay: React.FC<CartColorDisplayProps> = ({ colorCode })
     return (
     <div className={`flex items-center  justify-end gap-2 flex-row-reverse`}>
       <div
-        className='w-3 h-3 rounded-full transition-all duration-200  ring-2 ring-gray-300 ring-offset-1 scale-110'
+        className='w-2 h-2 rounded-full transition-all duration-200  ring-2 ring-gray-300 ring-offset-1 scale-110'
         style={{ backgroundColor: displayColor }}
         title={`${cartT('display.color')} ${validColorCode}`}
       />

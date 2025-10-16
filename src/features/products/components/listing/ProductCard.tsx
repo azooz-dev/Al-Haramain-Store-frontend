@@ -7,6 +7,7 @@ import { ProductImage } from "../details/ProductImage";
 import { ProductInfo } from "../details/ProductInfo";
 import { ProductActions } from "../details/ProductActions";
 import { TransformedProduct } from "../../types";
+import { useCart } from "@/features/cart/hooks/useCart";
 
 interface ProductCardProps {
   product: TransformedProduct;
@@ -19,6 +20,7 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(({
   const { isRTL } = useApp();
   const { prefetchProduct } = usePrefetch();
   const { navigateToProductDetail } = useNavigation();
+  const { handleAddToCart } = useCart();
 
 
   const handleMouseEnter = useCallback(() => {
@@ -33,6 +35,21 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(({
   const getProductName = (product: TransformedProduct) => {
     return isRTL ? product.ar.title : product.en.title;
   };
+
+  const onAddToCart = useCallback(async () => {
+    return handleAddToCart({
+      identifier: product.identifier,
+      quantity: 1 as number,
+      orderable: 'product',
+      price: product.price as number,
+      amount_discount_price: product.amount_discount_price as number,
+      image: product.image,
+      en: product.en,
+      ar: product.ar,
+      color: product.colors?.[0],
+      variant: product.colors?.[0]?.variants?.[0],
+    });
+  }, [product, handleAddToCart]);
 
   const handleCardClick = useCallback(() => {
     // Navigate to product detail page using React Router
@@ -70,7 +87,7 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(({
 
           <ProductActions
             product={product}
-            onAddToCart={async () => false}
+            onAddToCart={async () => onAddToCart()}
           />
         </div>
       </CardContent>
