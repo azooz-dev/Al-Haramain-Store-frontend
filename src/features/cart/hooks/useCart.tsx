@@ -93,13 +93,28 @@ export const useCart = () => {
     }
   }, [totalItems, totalPrice, cartItems.length, isEmpty, hasItems]);
 
+  const cartCalculations = useMemo(() => {
+    const subtotal: number = cartItems.reduce((acc: number, item: CartItem) => acc + (item.amount_discount_price || item.price) * item.quantity, 0);
+    const shipping: number = 0; // Temporary value
+    const tax: number = 0;
+    const total: number = subtotal + shipping + tax;
+    return {
+      subtotal,
+      shipping,
+      tax,
+      total,
+    }
+  }, [cartItems]);
+
   return {
+    cartItems,
     getCartItem,
     getProductCartItemQuantity,
     isInCart,
     isEmpty,
     hasItems,
     cartSummary,
+    cartCalculations,
     handleAddToCart,
     handleUpdateQuantity,
     handleRemoveItem,

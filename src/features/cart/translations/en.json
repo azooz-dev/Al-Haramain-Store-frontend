@@ -1,0 +1,29 @@
+{
+  "shoppingCart": "Shopping Cart",
+  "emptyCart": "Your cart is empty",
+  "ourProductsDescription": "Discover our amazing collection of products and start shopping",
+  "startShopping": "Start Shopping",
+  "backToHome": "Back to Home",
+  "product": "product",
+  "products": "products",
+  "item": "item",
+  "items": "items",
+  "inYourCart": "in your cart",
+  "offer": "Offer",
+  "save": "Save",
+  "quantity": "Quantity",
+  "total": "Total",
+  "saveForLater": "Save for Later",
+  "remove": "Remove",
+  "orderSummary": "Order Summary",
+  "subtotal": "Subtotal",
+  "shipping": "Shipping",
+  "free": "Free",
+  "tax": "Tax",
+  "proceedTo": "Proceed to Checkout",
+  "continueShopping": "Continue Shopping",
+  "weAccept": "We accept",
+  "display": {
+    "color": "Color"
+  }
+}

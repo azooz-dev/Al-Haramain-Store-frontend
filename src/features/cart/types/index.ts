@@ -8,11 +8,11 @@ export interface CartItem {
 		title: string;
 		details: string;
 	};
-	color: {
+	color?: {
 		id: number;
 		color_code: string;
 	};
-	variant: {
+	variant?: {
 		id: number;
 		size: string;
 	};

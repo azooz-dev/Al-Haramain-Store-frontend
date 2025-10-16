@@ -15,6 +15,7 @@ import { OffersDetailsPage } from "@/features/offers/components/OffersDetailsPag
 import { HomePage } from "@/features/home/components/HomePage";
 import { AboutPage } from "@/features/home/components/AboutPage";
 import { ContactPage } from "@/features/home/components/ContactPage";
+import { CartPage } from "@/features/cart/components/CartPage";
 
 const router = createBrowserRouter([
   {
@@ -76,6 +77,10 @@ const router = createBrowserRouter([
   {
     path: "/offers/:offerId",
     element: <Layout><OffersDetailsPage /></Layout>,
+  },
+  {
+    path: "/cart",
+    element: <Layout><CartPage /></Layout>,
   },
   {
     path: "*",

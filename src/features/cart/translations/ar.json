@@ -1,0 +1,29 @@
+{
+  "shoppingCart": "سلة التسوق",
+  "emptyCart": "سلة التسوق فارغة",
+  "ourProductsDescription": "اكتشف مجموعتنا المذهلة من المنتجات وابدأ التسوق",
+  "startShopping": "ابدأ التسوق",
+  "backToHome": "العودة للرئيسية",
+  "product": "منتج",
+  "products": "منتجات",
+  "item": "عنصر",
+  "items": "عناصر",
+  "inYourCart": "في سلة التسوق",
+  "offer": "عرض",
+  "save": "وفر",
+  "quantity": "الكمية",
+  "total": "المجموع",
+  "saveForLater": "احفظ للمستقبل",
+  "remove": "إزالة",
+  "orderSummary": "ملخص الطلب",
+  "subtotal": "المجموع الفرعي",
+  "shipping": "الشحن",
+  "free": "مجاني",
+  "tax": "الضريبة",
+  "proceedTo": "المتابعة للدفع",
+  "continueShopping": "متابعة التسوق",
+  "weAccept": "نحن نقبل",
+  "display": {
+    "color": "اللون"
+  }
+}

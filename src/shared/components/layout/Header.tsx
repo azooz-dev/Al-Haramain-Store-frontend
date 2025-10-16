@@ -7,15 +7,17 @@ import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useAppSelector } from "@/store/hooks";
 import { selectIsAuthenticated } from "@/store/slices/authSlice";
 import { Badge } from "../ui/badge";
-import { Heart } from "lucide-react";
+import { Heart, ShoppingCart } from "lucide-react";
 import { useFavorites } from "@/features/favorites/hooks/useFavorites";
+import { useCart } from "@/features/cart/hooks/useCart";
 
 export const Header: React.FC = () => {
   const { isRTL, toggleTheme, toggleLanguage } = useApp();
-	const { navigateToHome, navigateToSignIn, navigateToFavorites } = useNavigation();
+	const { navigateToHome, navigateToSignIn, navigateToFavorites, navigateToCart } = useNavigation();
 	const { handleSignOut } = useAuth();
 	const isAuthenticated = useAppSelector(selectIsAuthenticated);
 	const { favoritesCount } = useFavorites();
+	const { cartSummary } = useCart();
 	const handleLogout = (e: React.MouseEvent<HTMLButtonElement>) => {
 		if ((e.target as HTMLButtonElement).innerHTML === "Logout") {
 		handleSignOut();
@@ -69,6 +71,25 @@ export const Header: React.FC = () => {
 							>
 								<span className="text-sm font-medium">{isRTL ? "🌙" : "☀️"}</span>
 							</Button>
+
+							<Button
+							variant="ghost"
+							size="sm"
+							onClick={() => navigateToCart()}
+							className="relative w-9 h-9 rounded-full hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors"
+							title={isRTL ? "عربة التسوق" : "Shopping Cart"}
+						>
+							<ShoppingCart className="h-4 w-4" />
+							{cartSummary.itemsCount > 0 && (
+								<Badge
+									className={`absolute h-4 w-4 rounded-full bg-gradient-to-r from-amber-600 to-orange-600 text-white text-xs flex items-center justify-center p-0 shadow-lg ${
+										isRTL ? "-top-1 -left-1" : "-top-1 -right-1"
+									}`}
+								>
+									{cartSummary.itemsCount > 99 ? "99+" : cartSummary.itemsCount}
+								</Badge>
+							)}
+						</Button>
 
 							<Button
 								variant="ghost"
