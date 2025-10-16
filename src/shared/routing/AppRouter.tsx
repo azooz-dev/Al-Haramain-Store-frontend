@@ -12,18 +12,8 @@ import { CategoryDetailsPage } from "@/features/categories/components/CategoryDe
 import { FavoritesPage } from "@/features/favorites/components/FavoritesPage";
 import { OffersPage } from "@/features/offers/components/OffersPage";
 import { OffersDetailsPage } from "@/features/offers/components/OffersDetailsPage";
+import { HomePage } from "@/features/home/components/HomePage";
 
-// Create a simple home page component
-const HomePage: React.FC = () => {
-  return (
-    <div className="container mx-auto py-8">
-      <h1 className="text-4xl font-bold text-center mb-8">
-        Welcome to Al-Haramain Islamic E-commerce
-      </h1>
-      <p className="text-center text-muted-foreground">Your trusted source for Islamic products</p>
-    </div>
-  );
-}
 const router = createBrowserRouter([
   {
     path: "/",
@@ -35,47 +25,47 @@ const router = createBrowserRouter([
   },
   {
     path: "/signin",
-    element: <SignInPage />,
+    element: <Layout><SignInPage /></Layout>,
   },
   {
     path: "/signup",
-    element: <SignUpPage />,
+    element: <Layout><SignUpPage /></Layout>,
   },
   {
     path: "/verify-otp",
-    element: <OTPPage />,
+    element: <Layout><OTPPage /></Layout>,
   },
   {
     path: "/forget-password",
-    element: <ForgetPasswordPage />,
+    element: <Layout><ForgetPasswordPage /></Layout>,
   },
   {
     path: "/reset-password",
-    element: <ResetPasswordPage />,
+    element: <Layout><ResetPasswordPage /></Layout>,
   },
   {
-    path: "/categories/:id",
-    element: <CategoryDetailsPage />,
+    path: "/categories/:slug/:id",
+    element: <Layout><CategoryDetailsPage /></Layout>,
   },
   {
     path: "/products/:slug/:id",
-    element: <ProductDetailPage />,
+    element: <Layout><ProductDetailPage /></Layout>,
   },
   {
     path: "/products",
-    element: <ProductsPage />,
+    element: <Layout><ProductsPage /></Layout>,
   },
   {
     path: "/favorites",
-    element: <FavoritesPage />,
+    element: <Layout><FavoritesPage /></Layout>,
   },
   {
     path: "/offers",
-    element: <OffersPage />,
+    element: <Layout><OffersPage /></Layout>,
   },
   {
     path: "/offers/:offerId",
-    element: <OffersDetailsPage />,
+    element: <Layout><OffersDetailsPage /></Layout>,
   },
   {
     path: "*",

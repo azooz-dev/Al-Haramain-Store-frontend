@@ -1,4 +1,3 @@
-import './App.css'
 import ReduxProvider from './store/ReduxProvider'
 import { AppProvider } from "./shared/contexts/AppContext"
 import { AppRouter } from './shared/routing/AppRouter'

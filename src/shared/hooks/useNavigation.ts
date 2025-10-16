@@ -59,6 +59,10 @@ export const useNavigation = () => {
 		navigate(`/offers/${offerId}`, { replace: true });
 	};
 
+	const navigateToCategoriesDetails = (id: number, slug: string) => {
+		navigate(`/categories/${slug}/${id}`, { replace: true });
+	};
+
 	return {
 		navigateTo,
 		navigateToSignIn,
@@ -72,5 +76,6 @@ export const useNavigation = () => {
 		navigateToFavorites,
 		navigateToOffers,
 		navigateToOffersDetails,
+		navigateToCategoriesDetails,
 	};
 };

@@ -255,6 +255,7 @@ export const useProducts = () => {
 			perPage: ProductsState.perPage,
 			currentPage: ProductsState.currentPage,
 			isLoading: isLoading,
+			productsError: ProductsState.error,
 		}),
 		[filteredAndSortedProducts, ProductsState, isLoading]
 	);
@@ -263,6 +264,7 @@ export const useProducts = () => {
 		productsList: computedState.products,
 		filteredProducts: filteredAndSortedProducts,
 		isLoading: computedState.isLoading,
+		productsError: computedState.productsError,
 		searchQuery: SearchQueryState,
 		selectedCategories: selectedCategories || [],
 		sortBy: ProductsState.sortBy,

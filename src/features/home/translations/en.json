@@ -1,0 +1,37 @@
+{
+  "hero": {
+    "title": "Welcome to Al-Haramain Store",
+    "subtitle": "Discover premium quality products with exceptional value and authentic craftsmanship",
+    "shopNow": "Shop Now",
+    "exploreCollection": "Explore Collection"
+  },
+  "offers": {
+    "title": "Special Offers",
+    "description": "Don't miss out on our amazing deals and limited-time offers",
+    "noOffers": "No offers available",
+    "noOffersDescription": "Check back later for exciting offers and discounts",
+    "shopNow": "Shop Now",
+    "discoverOurAmazingProducts": "Discover Our Amazing Products",
+    "discountUpTo": "Up to",
+    "discountPercentage": "OFF",
+    "clickToExploreAllOffers": "Click to explore all offers",
+    "card": {
+      "days": "days",
+      "hours": "hours"
+    }
+  },
+  "categories": {
+    "title": "Shop by Categories",
+    "description": "Browse our carefully curated categories to find exactly what you're looking for",
+    "viewCategory": "View Category"
+  },
+  "featuredProducts": {
+    "title": "Featured Products",
+    "description": "Discover our handpicked selection of premium products",
+    "allProducts": "View All Products",
+    "noProducts": "No products available at the moment",
+    "error": "Unable to load products",
+    "errorDescription": "We're experiencing some technical difficulties. Please try again later.",
+    "retry": "Try Again"
+  }
+}
