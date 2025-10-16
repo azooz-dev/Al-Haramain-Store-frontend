@@ -63,6 +63,14 @@ export const useNavigation = () => {
 		navigate(`/categories/${slug}/${id}`, { replace: true });
 	};
 
+	const navigateToAboutPage = () => {
+		navigate("/about", { replace: true });
+	};
+
+	const navigateToContactPage = () => {
+		navigate("/contact", { replace: true });
+	};
+
 	return {
 		navigateTo,
 		navigateToSignIn,
@@ -77,5 +85,7 @@ export const useNavigation = () => {
 		navigateToOffers,
 		navigateToOffersDetails,
 		navigateToCategoriesDetails,
+		navigateToAboutPage,
+		navigateToContactPage,
 	};
 };

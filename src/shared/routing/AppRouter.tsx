@@ -13,6 +13,8 @@ import { FavoritesPage } from "@/features/favorites/components/FavoritesPage";
 import { OffersPage } from "@/features/offers/components/OffersPage";
 import { OffersDetailsPage } from "@/features/offers/components/OffersDetailsPage";
 import { HomePage } from "@/features/home/components/HomePage";
+import { AboutPage } from "@/features/home/components/AboutPage";
+import { ContactPage } from "@/features/home/components/ContactPage";
 
 const router = createBrowserRouter([
   {
@@ -22,6 +24,14 @@ const router = createBrowserRouter([
         <HomePage />
       </Layout>
     ),
+  },
+  {
+    path: "/about",
+    element: <Layout><AboutPage /></Layout>,
+  },
+  {
+    path: "/contact",
+    element: <Layout><ContactPage /></Layout>,
   },
   {
     path: "/signin",
