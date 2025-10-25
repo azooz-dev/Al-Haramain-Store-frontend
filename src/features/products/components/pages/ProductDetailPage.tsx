@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { useApp } from "@/shared/contexts/AppContext";
@@ -10,6 +10,7 @@ import { ProductActions } from "../details/ProductActions";
 import { useFeatureTranslations } from "@/shared/hooks/useTranslation";
 import { ProductColor, ProductVariant } from "../../types";
 import { useParams, useNavigate } from "react-router-dom";
+import { useCart } from "@/features/cart/hooks/useCart";
 
 export const ProductDetailPage: React.FC = () => {
   const { isRTL } = useApp();
@@ -21,6 +22,7 @@ export const ProductDetailPage: React.FC = () => {
   } = useProducts();
   const { id } = useParams();
   const product = productsList.find((product) => product.identifier === parseInt(id || '0'));
+  const { handleAddToCart } = useCart();
 
   // State for selected color and variant
   const [selectedColorId, setSelectedColorId] = useState<number | null>(null);
@@ -65,21 +67,20 @@ export const ProductDetailPage: React.FC = () => {
     setSelectedVariantId(variantId);
   };
 
-  const handleAddToCart = async (quantity: number): Promise<boolean> => {
-    // TODO: Implement add to cart functionality
-    console.log('Add to cart:', { 
-      selectedColorId, 
-      selectedVariantId,
-      quantity 
+  const onAddToCart = useCallback(async () => {
+    return handleAddToCart({
+      identifier: (product?.identifier as number) || 0,
+      quantity: 1 as number,
+      orderable: 'product',
+      price: (product?.price as number) || 0,
+      amount_discount_price: (product?.amount_discount_price as number) || 0,
+      image: (product?.image as string) || '',
+      en: product?.en as { title: string; details: string; } || { title: '', details: '' },
+      ar: product?.ar as { title: string; details: string; } || { title: '', details: '' },
+      color: product?.colors?.[0] as { id: number; color_code: string; } || undefined,
+      variant: product?.colors?.[0]?.variants?.[0] as { id: number; size: string; } || { id: 0, size: '' },
     });
-    
-    // Simulate API call
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(true);
-      }, 500);
-    });
-  };
+  }, [product, handleAddToCart]);
 
   if (isLoading) {
         return (
@@ -250,7 +251,7 @@ export const ProductDetailPage: React.FC = () => {
 
             <ProductActions
               product={product}
-              onAddToCart={handleAddToCart}
+              onAddToCart={onAddToCart}
             />
           </div>
         </div>

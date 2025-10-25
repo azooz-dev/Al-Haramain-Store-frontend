@@ -27,6 +27,13 @@ export const CartPage: React.FC = () => {
   const { navigateToProducts, navigateToHome } = useNavigation();
   const { cartItems, cartSummary, handleUpdateQuantity, handleRemoveItem, cartCalculations } = useCart();
 
+  // Helper function to safely convert price to number
+  const getPriceAsNumber = (price: number | string | undefined): number => {
+    if (typeof price === 'number') return price;
+    if (typeof price === 'string') return parseFloat(price) || 0;
+    return 0;
+  };
+
   const handleQuantityChange = (identifier: number, quantity: number) => {
     if (quantity === 0) {
       handleRemoveItem(identifier);
@@ -141,7 +148,7 @@ export const CartPage: React.FC = () => {
                           {item.amount_discount_price > 0 ? (
                             <>
                               <span className="text-lg text-muted-foreground line-through">
-                                ${item.price}
+                                ${getPriceAsNumber(item.price).toFixed(2)}
                               </span>
                               <span className="text-xl text-primary">
                                 ${item.amount_discount_price.toFixed(2)}
@@ -149,12 +156,12 @@ export const CartPage: React.FC = () => {
                             </>
                           ) : (
                             <span className="text-xl text-primary">
-                              ${item.price}
+                              ${getPriceAsNumber(item.price).toFixed(2)}
                             </span>
                           )}
                           {item.orderable === 'offer' && item.amount_discount_price > 0 && (
                             <span className="text-xs text-green-600 dark:text-green-400 ml-1">
-                              {cartT('save')} ${(item.price -item.amount_discount_price).toFixed(2)}
+                              {cartT('save')} ${(getPriceAsNumber(item.price) - getPriceAsNumber(item.amount_discount_price)).toFixed(2)}
                             </span>
                           )}
                       </div>
@@ -195,8 +202,8 @@ export const CartPage: React.FC = () => {
                           <div className="text-lg">
                               {cartT('total')}: <span className="text-xl text-primary">
                                 {isRTL ?
-                                  ((item.amount_discount_price || item.price) * item.quantity).toFixed(2).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[Number(d)]) + "$"
-                                  : ((item.amount_discount_price || item.price) * item.quantity).toFixed(2) + "$"}</span>
+                                  ((getPriceAsNumber(item.amount_discount_price) || getPriceAsNumber(item.price)) * item.quantity).toFixed(2).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[Number(d)]) + "$"
+                                  : ((getPriceAsNumber(item.amount_discount_price) || getPriceAsNumber(item.price)) * item.quantity).toFixed(2) + "$"}</span>
                           </div>
                         </div>
                       </div>
@@ -265,7 +272,7 @@ export const CartPage: React.FC = () => {
                           <p>{cartT('quantity')}: {item.quantity}</p>
                           {item.color?.id && (
                             <div className="flex items-center gap-1">
-                              <span className="text-sm text-muted-foreground ml-1">{cartT('display.color')}:</span>
+                              <span className={`text-sm text-muted-foreground ${isRTL ? 'ml-1' : 'mr-1'}`}>{cartT('display.color')}:</span>
                               <CartColorDisplay
                                 colorCode={item.color?.color_code || '#000000'}
                               />
@@ -276,7 +283,7 @@ export const CartPage: React.FC = () => {
                           )}
                         </div>
                       </div>
-                      <span className="text-sm">{isRTL ? ((item.amount_discount_price || item.price) * item.quantity).toFixed(2).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[Number(d)]) + "$" : ((item.amount_discount_price || item.price) * item.quantity).toFixed(2) + "$"}</span>
+                      <span className="text-sm">{isRTL ? ((getPriceAsNumber(item.amount_discount_price) || getPriceAsNumber(item.price)) * item.quantity).toFixed(2).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[Number(d)]) + "$" : ((getPriceAsNumber(item.amount_discount_price) || getPriceAsNumber(item.price)) * item.quantity).toFixed(2) + "$"}</span>
                     </div>
                   ))}
                 </div>

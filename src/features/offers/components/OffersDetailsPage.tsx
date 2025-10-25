@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
   Clock,
   Percent,
@@ -23,6 +23,7 @@ import { ImageWithFallback } from '@/shared/components/common/ImageWithFallback'
 import { ProductCard } from '@/features/products/components/listing/ProductCard';
 import { APP_CONFIG } from '@/shared/config/config';
 import { useFeatureTranslations } from '@/shared/hooks/useTranslation';
+import { useCart } from '@/features/cart/hooks/useCart';
 
 export const OffersDetailsPage: React.FC = () => {
   const { isRTL } = useApp();
@@ -37,8 +38,23 @@ export const OffersDetailsPage: React.FC = () => {
     totalSavings,
     discountPercentage
   } = useOffers(Number(offerId));
+  const { handleAddToCart, getCartItem } = useCart();
 
-  console.log(offerId);
+  const onAddToCart = useCallback(() => {
+    const cartItem = getCartItem(offer?.identifier as number);
+    const quantityToAdded = cartItem ? 1 : 1;
+
+    return handleAddToCart({
+      identifier: (offer?.identifier as number) || 0,
+      quantity: quantityToAdded,
+      orderable: 'offer',
+      price: parseFloat(offer?.offerPrice || '0'),
+      amount_discount_price: parseFloat(offer?.productsTotalPrice || '0'),
+      image: `${APP_CONFIG.apiBaseUrl}/storage/${offer?.picture}`,
+      en: offer?.en as { title: string; details: string; } || { title: '', details: '' },
+      ar: offer?.ar as { title: string; details: string; } || { title: '', details: '' },
+    });
+  }, [offer, handleAddToCart, getCartItem]);
 
   if (isLoading) {
     return <OffersSkeleton />;
@@ -212,7 +228,7 @@ export const OffersDetailsPage: React.FC = () => {
             <Button 
               size="lg"
               className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 text-lg py-6"
-              onClick={() => false} // Temparary
+              onClick={() => onAddToCart()}
             >
               <ShoppingCart className="w-5 h-5 mr-3" />
               {offersT("details.addOfferToCard")}
