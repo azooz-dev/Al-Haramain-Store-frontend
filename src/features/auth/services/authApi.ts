@@ -17,12 +17,12 @@ import {
 	DeleteUserAccountResponse,
 	DeleteUserAccountRequest,
 	LogoutResponse,
-	RequestFailure,
 } from "./../types/index";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RootState } from "@store/store";
 import { APP_CONFIG } from "@/shared/config/config";
 import { getCookieValue } from "@/shared/utils/getCookieValue";
+import { RequestFailure } from "@/shared/types";
 
 const rawBaseQuery = fetchBaseQuery({
 	baseUrl: APP_CONFIG.apiBaseUrl,
