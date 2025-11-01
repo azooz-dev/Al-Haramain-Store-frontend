@@ -49,7 +49,7 @@ export const AddressFormFields: React.FC<AddressFormFieldsProps> = ({
 
       {/* Address Type */}
       <div>
-        <Label>{sharedT("address.type")}</Label>
+        <Label>{sharedT("address.type.label")}</Label>
         <RadioGroup
           value={formData.addressType}
           onValueChange={(value) => handleInputChange('addressType', value)}

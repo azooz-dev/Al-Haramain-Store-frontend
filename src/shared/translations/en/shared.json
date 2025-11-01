@@ -1,0 +1,43 @@
+{
+  "address": {
+    "selection": {
+      "title": "Select Delivery Address",
+      "addNewAddress": "Add New Address",
+      "addFirstAddress": "Start by adding your first delivery address to proceed with your order",
+      "addAddress": "Add Address"
+    },
+    "display": {
+      "title": "Delivery Addresses",
+      "noSavedAddresses": "No Saved Addresses",
+      "addFirstAddress": "You haven't saved any addresses yet. Add your first address to get started"
+    },
+    "label": "Address Label",
+    "labelPlaceholder": "e.g., Home, Office, Apartment",
+    "type": {
+      "label": "Address Type",
+      "home": "Home",
+      "work": "Work",
+      "other": "Other"
+    },
+    "street": "Street Address",
+    "streetPlaceholder": "Enter your street address",
+    "city": "City",
+    "cityPlaceholder": "Enter your city",
+    "state": "State / Province",
+    "statePlaceholder": "Enter your state or province",
+    "postalCode": "Postal Code",
+    "postalCodePlaceholder": "Enter postal code",
+    "country": "Country",
+    "countryPlaceholder": "Enter country code (2-3 letters)",
+    "default": "Set as default address",
+    "addAddress": "Add New Address",
+    "editAddress": "Edit Address",
+    "editAddressDescription": "Update your address information below. Make sure all details are accurate for smooth delivery.",
+    "addAddressDescription": "Fill in your delivery address details below. This will be used for shipping your orders.",
+    "cancel": "Cancel",
+    "save": "Save Address",
+    "saving": "Saving...",
+    "updateAddress": "Update Address"
+  }
+}
+

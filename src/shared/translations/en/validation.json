@@ -33,5 +33,10 @@
   },
   "verificationAttempts": {
     "required": "Verification attempts are required"
+  },
+  "form": {
+    "invalidFormat": "Please enter a valid format",
+    "tooShort": "This field must be at least {{min}} characters long",
+    "tooLong": "This field must be no more than {{max}} characters long"
   }
 }

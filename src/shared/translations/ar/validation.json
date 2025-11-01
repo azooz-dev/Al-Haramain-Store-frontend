@@ -33,5 +33,10 @@
   },
   "verificationAttempts": {
     "required": "عدد المحاولات مطلوب"
+  },
+  "form": {
+    "invalidFormat": "يرجى إدخال تنسيق صحيح",
+    "tooShort": "يجب أن يكون هذا الحقل على الأقل {{min}} أحرف",
+    "tooLong": "يجب ألا يزيد هذا الحقل عن {{max}} حرف"
   }
 }

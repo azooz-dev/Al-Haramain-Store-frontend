@@ -1,0 +1,43 @@
+{
+  "address": {
+    "selection": {
+      "title": "اختر عنوان التسليم",
+      "addNewAddress": "إضافة عنوان جديد",
+      "addFirstAddress": "ابدأ بإضافة عنوان التسليم الأول للمتابعة مع طلبك",
+      "addAddress": "إضافة عنوان"
+    },
+    "display": {
+      "title": "عناوين التسليم",
+      "noSavedAddresses": "لا توجد عناوين محفوظة",
+      "addFirstAddress": "لم تقم بحفظ أي عناوين بعد. أضف عنوانك الأول للبدء"
+    },
+    "label": "تسمية العنوان",
+    "labelPlaceholder": "مثال: المنزل، المكتب، الشقة",
+    "type": {
+      "label": "نوع العنوان",
+      "home": "منزل",
+      "work": "عمل",
+      "other": "آخر"
+    },
+    "street": "عنوان الشارع",
+    "streetPlaceholder": "أدخل عنوان الشارع",
+    "city": "المدينة",
+    "cityPlaceholder": "أدخل اسم المدينة",
+    "state": "الولاية / المحافظة",
+    "statePlaceholder": "أدخل الولاية أو المحافظة",
+    "postalCode": "الرمز البريدي",
+    "postalCodePlaceholder": "أدخل الرمز البريدي",
+    "country": "الدولة",
+    "countryPlaceholder": "أدخل رمز الدولة (2-3 أحرف)",
+    "default": "تعيين كعنوان افتراضي",
+    "addAddress": "إضافة عنوان جديد",
+    "editAddress": "تعديل العنوان",
+    "editAddressDescription": "قم بتحديث معلومات العنوان أدناه. تأكد من دقة جميع التفاصيل لتسليم سلس.",
+    "addAddressDescription": "املأ تفاصيل عنوان التسليم أدناه. سيتم استخدام هذا لإرسال طلباتك.",
+    "cancel": "إلغاء",
+    "save": "حفظ العنوان",
+    "saving": "جاري الحفظ...",
+    "updateAddress": "تحديث العنوان"
+  }
+}
+
