@@ -116,3 +116,10 @@ export interface CouponResponse {
 	message: string;
 	status: string;
 }
+
+export interface PaymentFormData {
+	creditCardNumber: string;
+	creditCardExpirationDate: string;
+	creditCardCvv: string;
+	creditCardName: string;
+}
