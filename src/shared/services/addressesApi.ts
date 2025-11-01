@@ -46,22 +46,16 @@ export const addressApi = createApi({
         method: "POST",
         body: addressData,
       }),
-      invalidatesTags: (_result, _error, { userId }) => [
-        { type: "Address", id: "CURRENT" },
-        { type: "Address", id: userId },
-      ],
+      invalidatesTags: (_result, _error, { userId }) => [{ type: "Address", id: "CURRENT" }, { type: "Address", id: userId }],
     }),
 
     updateAddress: builder.mutation<AddressResponse, UpdateAddressRequest>({
-      query: ({ userId, addressId, data }) => ({
-        url: `/api/users/${userId}/addresses/${addressId}`,
+      query: (addressData) => ({
+        url: `/api/users/${addressData.userId}/addresses/${addressData.addressId}`,
         method: "PUT",
-        body: data,
+        body: addressData.data,
       }),
-      invalidatesTags: (_result, _error, { userId }) => [
-        { type: "Address", id: "CURRENT" },
-        { type: "Address", id: userId },
-      ],
+      invalidatesTags: (_result, _error, { userId }) => [{ type: "Address", id: "CURRENT" }, { type: "Address", id: userId }],
     }),
 
     deleteAddress: builder.mutation<DeleteAddressResponse, DeleteAddressRequest>({
@@ -90,3 +84,5 @@ export const addressApi = createApi({
     }),
   })
 })
+
+export const { useCreateAddressMutation, useUpdateAddressMutation, useDeleteAddressMutation, useGetUserAddressesQuery } = addressApi;

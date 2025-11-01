@@ -6,7 +6,7 @@ import {
 	useGetUserAddressesQuery,
 } from "../services/addressesApi";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { CreateAddressRequest, UpdateAddressRequest, DeleteAddressRequest } from "../types";
+import { AddressFormData, UpdateAddressRequest, DeleteAddressRequest } from "../types";
 
 export const useAddress = () => {
 	const { currentUser } = useAuth();
@@ -23,13 +23,13 @@ export const useAddress = () => {
 	} = useGetUserAddressesQuery(currentUser?.identifier as number);
 
 	const createAddress = useCallback(
-		async (addressData: CreateAddressRequest) => {
+		async (addressData: AddressFormData) => {
 			if (!currentUser?.identifier) {
 				throw new Error("User not authenticated");
 			}
 
 			const response = await createAddressMutation({
-				addressData,
+				...addressData,
 				userId: currentUser.identifier,
 			}).unwrap();
 			return response.data;

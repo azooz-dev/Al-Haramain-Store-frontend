@@ -1,3 +1,5 @@
+import { Address } from "@/shared/types";
+
 export interface User {
 	identifier: number;
 	firstName: string;
@@ -8,20 +10,6 @@ export interface User {
 	createdDate: string;
 	lastChange: string;
 	addresses?: Address[];
-}
-
-export interface Address {
-	identifier: number;
-	addressType: string;
-	label: string;
-	street: string;
-	city: string;
-	state: string;
-	postalCode: string;
-	country: string;
-	is_default: boolean;
-	createdDate: string;
-	lastChange: string;
 }
 
 export interface AuthState {

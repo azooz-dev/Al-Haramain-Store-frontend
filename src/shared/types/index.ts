@@ -49,3 +49,59 @@ export interface PaginationData {
 	totalItems: number;
 	perPage: number;
 }
+
+export interface AddressFormData {
+	label: string;
+	addressType: string;
+	street: string;
+	city: string;
+	state: string;
+	postalCode: string;
+	country: string;
+	isDefault: boolean;
+}
+
+export interface CreateAddressRequest extends AddressFormData {
+	userId: number;
+}
+export interface UpdateAddressRequest {
+	userId: number;
+	addressId: number;
+	data: Partial<AddressFormData>;
+}
+
+export interface Address {
+	identifier: number;
+	addressType: string;
+	label: string;
+	street: string;
+	city: string;
+	state: string;
+	postalCode: string;
+	country: string;
+	isDefault: boolean;
+	createdDate: string;
+	lastChange: string;
+}
+
+export interface AddressResponse {
+	data: Address;
+	message: string;
+	status: string;
+}
+
+export interface AddressesResponse {
+	data: Address[];
+	message: string;
+	status: string;
+}
+
+export interface DeleteAddressRequest {
+	addressId: number;
+	userId: number;
+}
+
+export interface DeleteAddressResponse {
+	message: string;
+	status: string;
+}
