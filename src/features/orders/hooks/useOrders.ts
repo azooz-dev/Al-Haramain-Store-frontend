@@ -1,25 +1,16 @@
-import { useCallback, useState } from "react";
-import { useCreateOrderMutation, useGetCouponQuery } from "../services/ordersApi";
+import { useCallback } from "react";
+import { useCreateOrderMutation, useLazyGetCouponQuery } from "../services/ordersApi";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { OrderRequest, CouponRequest } from "../types";
+import { OrderRequest } from "../types";
 
 export const useOrders = () => {
 	const { currentUser } = useAuth();
 	const [createOrderMutation, { isLoading: isCreatingOrder, error: createOrderError }] =
 		useCreateOrderMutation();
 
-	// State to control when to fetch coupon
-	const [couponParams, setCouponParams] = useState<CouponRequest | null>(null);
-
-	// Use the query hook at the top level
-	const {
-		data: couponData,
-		isLoading: isLoadingCoupon,
-		error: couponError,
-		refetch: refetchCoupon,
-	} = useGetCouponQuery(couponParams!, {
-		skip: !couponParams, // Skip the query if no params are set
-	});
+	// Use lazy query hook which gives us a trigger function
+	const [triggerGetCoupon, { data: couponData, isLoading: isLoadingCoupon, error: couponError }] =
+		useLazyGetCouponQuery();
 
 	const createOrder = useCallback(
 		async (orderData: OrderRequest) => {
@@ -35,17 +26,15 @@ export const useOrders = () => {
 				throw new Error("User not authenticated");
 			}
 
-			// Set the parameters to trigger the query
-			setCouponParams({
+			// Trigger the query and wait for the result
+			const result = await triggerGetCoupon({
 				code,
 				userId: currentUser.identifier,
 			});
 
-			// Wait for the query to complete
-			const result = await refetchCoupon();
 			return result.data;
 		},
-		[currentUser?.identifier, refetchCoupon]
+		[currentUser?.identifier, triggerGetCoupon]
 	);
 
 	return {

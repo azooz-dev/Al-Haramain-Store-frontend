@@ -16,6 +16,7 @@ import { HomePage } from "@/features/home/components/HomePage";
 import { AboutPage } from "@/features/home/components/AboutPage";
 import { ContactPage } from "@/features/home/components/ContactPage";
 import { CartPage } from "@/features/cart/components/CartPage";
+import { CheckoutPage } from "@/features/orders/components/CheckoutPage";
 
 const router = createBrowserRouter([
   {
@@ -81,6 +82,10 @@ const router = createBrowserRouter([
   {
     path: "/cart",
     element: <Layout><CartPage /></Layout>,
+  },
+  {
+    path: "/checkout",
+    element: <Layout><CheckoutPage /></Layout>,
   },
   {
     path: "*",

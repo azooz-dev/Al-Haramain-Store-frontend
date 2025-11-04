@@ -52,16 +52,31 @@ export const AddressFormFields: React.FC<AddressFormFieldsProps> = ({
         <Label>{sharedT("address.type.label")}</Label>
         <RadioGroup
           value={formData.addressType}
-          onValueChange={(value) => handleInputChange('addressType', value)}
+          onValueChange={(value) => {
+            handleInputChange('addressType', value);
+          }}
           disabled={disabled}
           className="flex flex-wrap gap-4"
-        >
+          >
+            <div className={`flex ${isRTL ? 'flex-row-reverse' : 'flex-row'} gap-4`} >
+
           {addressTypes.map((type) => (
-            <div key={type.value} className="flex items-center space-x-2">
-              <RadioGroupItem value={type.value} id={type.value} />
-              <Label htmlFor={type.value}>{type.label}</Label>
+            <div key={type.value} className={`flex items-center space-x-2 ${isRTL ? 'flex-row-reverse' : 'flex-row'}`}>
+              <RadioGroupItem 
+                value={type.value} 
+                id={`addressType-${type.value}`}
+                disabled={disabled}
+                className={`${disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+              />
+              <Label 
+                htmlFor={`addressType-${type.value}`}
+                className={disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"}
+              >
+                {type.label}
+              </Label>
             </div>
           ))}
+            </div>
         </RadioGroup>
       </div>
 

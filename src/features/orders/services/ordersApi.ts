@@ -82,6 +82,6 @@ export const ordersApi = createApi({
 	}),
 });
 
-export const { useCreateOrderMutation, useGetCouponQuery } = ordersApi;
+export const { useCreateOrderMutation, useGetCouponQuery, useLazyGetCouponQuery } = ordersApi;
 
 export const { createOrder, getCoupon } = ordersApi.endpoints;

@@ -24,7 +24,7 @@ import { CartItem } from "../types";
 export const CartPage: React.FC = () => {
   const { isRTL } = useApp();
   const { t: cartT } = useFeatureTranslations("cart");
-  const { navigateToProducts, navigateToHome } = useNavigation();
+  const { navigateToProducts, navigateToHome, navigateToCheckout } = useNavigation();
   const { cartItems, cartSummary, handleUpdateQuantity, handleRemoveItem, cartCalculations } = useCart();
 
   // Helper function to safely convert price to number
@@ -48,7 +48,7 @@ export const CartPage: React.FC = () => {
       <div className="min-h-screen py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-md mx-auto text-center">
-            <Card className="bg-card/50 backdrop-blur-sm border-0 shadow-xl">
+            <Card className="bg-card/50 backdrop-blur-sm border-0 shadow-xl p-4">
               <CardContent className="p-12">
                 <div className="w-24 h-24 bg-muted rounded-full flex items-center justify-center mx-auto mb-6">
                   <ShoppingBag className="h-12 w-12 text-muted-foreground" />
@@ -101,7 +101,7 @@ export const CartPage: React.FC = () => {
 
             {/* Cart Items List */}
               {cartItems.map((item: CartItem) => (
-              <Card key={item.identifier} className="bg-card/50 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300">
+              <Card key={item.identifier} className="bg-card/50 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300 p-4">
                 <CardContent className="p-6">
                   <div className="flex flex-col md:flex-row gap-6">
                     {/* Product Image */}
@@ -244,7 +244,7 @@ export const CartPage: React.FC = () => {
 
           {/* Order Summary */}
           <div className="lg:col-span-1">
-            <Card className="bg-card/50 backdrop-blur-sm border-0 shadow-xl sticky top-8">
+            <Card className="bg-card/50 backdrop-blur-sm border-0 shadow-xl sticky top-8 p-4">
               <CardHeader>
                 <CardTitle>{cartT('orderSummary')}</CardTitle>
               </CardHeader>
@@ -314,7 +314,7 @@ export const CartPage: React.FC = () => {
                 {/* Action Buttons */}
                 <div className="space-y-3 pt-4">
                   <Button 
-                    onClick={() => false} // Temporary
+                    onClick={() => navigateToCheckout()}
                     className="w-full bg-amber-600 hover:bg-amber-700 text-white text-lg py-3"
                   >
                     {cartT('proceedTo')}

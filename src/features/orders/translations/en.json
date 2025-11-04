@@ -1,0 +1,82 @@
+{
+  "checkoutPage": {
+    "title": "Checkout",
+    "description": "Complete your order by filling in the details below",
+    "step": "Step",
+    "steps": {
+      "shipping": "Shipping",
+      "payment": "Payment",
+      "review": "Review"
+    },
+    "previous": "Previous",
+    "next": "Next",
+    "placeOrder": "Place Order",
+    "creatingOrder": "Creating Order...",
+    "orderCreated": "Order Placed Successfully!",
+    "orderCreatedDescription": "Thank you for your order! We've received your order and will send you a confirmation email shortly.",
+    "backToHome": "Back to Home",
+    "cartEmpty": "Your cart is empty",
+    "cartEmptyDescription": "Add some items to your cart before proceeding to checkout.",
+    "continueShopping": "Continue Shopping",
+    "back": "Back"
+  },
+  "orderSummary": {
+    "title": "Order Summary",
+    "quantity": "Quantity",
+    "couponCodePlaceholder": "Enter coupon code",
+    "removeCoupon": "Remove Coupon",
+    "applyCoupon": "Apply",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "tax": "Tax",
+    "discount": "Discount",
+    "total": "Total",
+    "proceedToPayment": "Proceed to Payment",
+    "reviewOrder": "Review Order"
+  },
+  "shippingStep": {
+    "userInformation": {
+      "title": "Customer Information",
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone"
+    }
+  },
+  "paymentStep": {
+    "title": "Payment Method",
+    "paymentMethod": {
+      "creditCard": "Credit Card",
+      "creditCardDescription": "Pay securely with your credit or debit card",
+      "cashOnDelivery": "Cash on Delivery",
+      "cashOnDeliveryDescription": "Pay in cash when your order is delivered"
+    },
+    "creditCardInformation": {
+      "title": "Credit Card Details",
+      "cardholderName": "Cardholder Name",
+      "cardholderNamePlaceholder": "John Doe",
+      "cardNumber": "Card Number",
+      "cardNumberPlaceholder": "1234 5678 9012 3456",
+      "expiryDate": "Expiry Date",
+      "expiryDatePlaceholder": "MM/YY",
+      "cvv": "CVV",
+      "cvvPlaceholder": "123"
+    }
+  },
+  "reviewStep": {
+    "title": "Review Your Order",
+    "quantity": "Quantity",
+    "color": "Color",
+    "size": "Size",
+    "each": "each",
+    "shippingAddress": {
+      "title": "Shipping Address",
+      "noAddressSelected": "No address selected"
+    },
+    "paymentMethod": {
+      "title": "Payment Method",
+      "creditCard": "Credit Card",
+      "cashOnDelivery": "Cash on Delivery"
+    }
+  }
+}
+

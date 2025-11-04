@@ -1,5 +1,6 @@
-import { Address, User } from "@/features/auth/types";
+import { User } from "@/features/auth/types";
 import { ProductImage } from "@/features/products/types";
+import { Address } from "@/shared/types";
 
 export interface Order {
 	identifier: number;
@@ -68,7 +69,7 @@ export interface Coupon {
 	id: number;
 	code: string;
 	name: string;
-	discount_type: "fixed" | "percentage";
+	type: "fixed" | "percentage";
 	discount_amount: number;
 	usage_limit: number;
 	usage_limit_per_user: number;
@@ -80,22 +81,22 @@ export interface Coupon {
 }
 
 export interface OrderRequest {
-	userId: number;
-	couponId?: number;
-	addressId: number;
+	user_id: number;
+	coupon_code?: string;
+	address_id: number;
 	paymentMethod: "cash_on_delivery" | "credit_card";
 	items: Array<
 		| {
 				colorId: number;
-				variantId: number;
+				variant_id: number;
 				quantity: number;
 				orderable_type: string;
-				orderableId: number;
+				orderable_id: number;
 		  }
 		| {
 				quantity: number;
 				orderable_type: string;
-				orderableId: number;
+				orderable_id: number;
 		  }
 	>;
 }

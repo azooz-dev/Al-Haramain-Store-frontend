@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { MapPin, Save, X } from 'lucide-react';
 import { Button } from '@/shared/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/shared/components/ui/dialog';
@@ -41,41 +41,65 @@ export const AddressForm: React.FC<AddressFormProps> = ({
     state: z.string().nonempty(validationT("required")),
     postalCode: z.string().nonempty(validationT("required"))
         .regex(/^\d{4,5}$/, validationT("form.invalidFormat")),
-    country: z.string().nonempty(validationT("required"))
-        .min(2, validationT("form.tooShort", { min: 2 }))
-      .max(3, validationT("form.tooLong", { max: 3 })),
+    country: z.string().nonempty(validationT("required")),
     isDefault: z.boolean().optional(),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      label: editingAddress?.label || '',
-      addressType: editingAddress?.addressType as 'Home' | 'Work' | 'Other' || 'Home',
-      street: editingAddress?.street || '',
-      city: editingAddress?.city || '',
-      state: editingAddress?.state || '',
-      postalCode: editingAddress?.postalCode || '',
-      country: editingAddress?.country || '',
-      isDefault: editingAddress?.isDefault || false,
+      label: '',
+      addressType: 'Home',
+      street: '',
+      city: '',
+      state: '',
+      postalCode: '',
+      country: '',
+      isDefault: false,
     },
   });
 
+  // Reset form when editingAddress changes
+  useEffect(() => {
+    if (editingAddress) {
+      form.reset({
+        label: editingAddress.label || '',
+        addressType: editingAddress.addressType as 'Home' | 'Work' | 'Other' || 'Home',
+        street: editingAddress.street || '',
+        city: editingAddress.city || '',
+        state: editingAddress.state || '',
+        postalCode: editingAddress.postalCode || '',
+        country: editingAddress.country || '',
+        isDefault: editingAddress.isDefault || false,
+      });
+    } else {
+      // Reset to empty form for new address
+      form.reset({
+        label: '',
+        addressType: 'Home',
+        street: '',
+        city: '',
+        state: '',
+        postalCode: '',
+        country: '',
+        isDefault: false,
+      });
+    }
+  }, [editingAddress, form]);
+
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     if (editingAddress) {
+      // Gather only the changed fields (based on editingAddress keys, not static list)
+      const changedFields = Object.fromEntries(
+        Object.entries(data).filter(
+          ([key, value]) => editingAddress?.[key as keyof typeof data] !== value
+        )
+      );
       await updateAddress({
         userId,
         addressId: editingAddress.identifier,
         data: {
-          ...data,
-          label: data.label,
-          addressType: data.addressType,
-          street: data.street,
-          city: data.city,
-          state: data.state,
-          postalCode: data.postalCode,
-          country: data.country,
-          isDefault: data.isDefault,
+          ...changedFields,
         },
       });
       onSuccess?.();
@@ -87,29 +111,29 @@ export const AddressForm: React.FC<AddressFormProps> = ({
 
   const isLoading = isCreatingAddress || isUpdatingAddress;
 
+  // Watch form values to get reactive updates
+  const watchedValues = form.watch();
+  
   const setFormData = React.useCallback((value: React.SetStateAction<AddressFormData>) => {
-    const current = { ...form.getValues(), isDefault: form.getValues().isDefault ?? false } as AddressFormData;
+    const current = { ...watchedValues, isDefault: watchedValues.isDefault ?? false } as AddressFormData;
     const newValue = typeof value === 'function' ? value(current) : value;
     (Object.keys(newValue) as Array<keyof AddressFormData>).forEach((key) => {
       form.setValue(key, newValue[key]);
     });
-  }, [form]);
+  }, [form, watchedValues]);
+
+  // Use watched values for formData
+  const formData = React.useMemo(() => ({
+    ...watchedValues,
+    isDefault: watchedValues.isDefault ?? false
+  } as AddressFormData), [watchedValues]);
 
   const formContent = (
     <div className="space-y-4">
-      <div className="flex items-center gap-2 text-primary mb-4">
-        <MapPin className="w-5 h-5" />
-        <h3 className="font-semibold">
-          {editingAddress 
-            ? sharedT("address.editAddress")
-            : sharedT("address.addAddress")
-          }
-        </h3>
-      </div>
-
       <AddressFormFields
-        formData={{ ...form.getValues(), isDefault: form.getValues().isDefault ?? false } as AddressFormData}
+        formData={formData}
         setFormData={setFormData}
+        disabled={isLoading}
       />
 
       {/* Error Display */}
@@ -145,7 +169,7 @@ export const AddressForm: React.FC<AddressFormProps> = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+          <DialogTitle className="flex items-center gap-2 mt-4">
             <MapPin className="w-5 h-5" />
             {editingAddress 
               ? sharedT("address.editAddress")

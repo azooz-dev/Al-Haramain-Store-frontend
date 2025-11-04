@@ -5,6 +5,8 @@ interface CartState {
 	items: CartItem[];
 	totalItems: number;
 	totalPrice: number;
+	discountAmount: number;
+	discountType: "fixed" | "percentage";
 	isLoading: boolean;
 	error: string | null;
 }
@@ -13,6 +15,8 @@ const initialState: CartState = {
 	items: [],
 	totalItems: 0,
 	totalPrice: 0,
+	discountAmount: 0,
+	discountType: "fixed",
 	isLoading: false,
 	error: null,
 };
@@ -50,6 +54,14 @@ const cartSlice = createSlice({
 				}
 				cartSlice.caseReducers.calculateTotals(state);
 			}
+		},
+
+		setDiscount: (
+			state,
+			action: PayloadAction<{ amount: number; type: "fixed" | "percentage" }>
+		) => {
+			state.discountAmount = action.payload.amount;
+			state.discountType = action.payload.type;
 		},
 
 		calculateTotals: (state) => {
@@ -93,6 +105,7 @@ export const {
 	setCartError,
 	loadCartFromStorage,
 	clearCart,
+	setDiscount,
 } = cartSlice.actions;
 
 // Selectors
@@ -101,6 +114,8 @@ export const selectCartTotalItems = (state: { cart: CartState }) => state.cart.t
 export const selectCartTotalPrice = (state: { cart: CartState }) => state.cart.totalPrice;
 export const selectCartIsLoading = (state: { cart: CartState }) => state.cart.isLoading;
 export const selectCartError = (state: { cart: CartState }) => state.cart.error;
+export const selectCartDiscountAmount = (state: { cart: CartState }) => state.cart.discountAmount;
+export const selectCartDiscountType = (state: { cart: CartState }) => state.cart.discountType;
 export const selectCartItemById = (state: { cart: CartState }, identifier: number) =>
 	state.cart.items.find((item) => item.identifier === identifier);
 

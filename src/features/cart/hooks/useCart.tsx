@@ -7,7 +7,10 @@ import {
   addToCart,
   updateQuantity,
   removeFromCart,
-  clearCart
+  clearCart,
+  selectCartDiscountAmount,
+  selectCartDiscountType,
+  setDiscount
 } from "@/store/slices/cartSlice";
 import { CartItem } from "../types";
 
@@ -16,7 +19,8 @@ export const useCart = () => {
   const cartItems = useAppSelector(selectCartItems);
   const totalItems = useAppSelector(selectCartTotalItems);
   const totalPrice = useAppSelector(selectCartTotalPrice);
-
+  const discountAmount = useAppSelector(selectCartDiscountAmount);  
+  const discountType = useAppSelector(selectCartDiscountType);
 
   const handleAddToCart = useCallback((item: CartItem): boolean => {
     try {
@@ -94,17 +98,27 @@ export const useCart = () => {
   }, [totalItems, totalPrice, cartItems.length, isEmpty, hasItems]);
 
   const cartCalculations = useMemo(() => {
-    const subtotal: number = cartItems.reduce((acc: number, item: CartItem) => acc + (item.amount_discount_price || item.price) * item.quantity, 0);
+    const subtotal: number = cartItems.reduce((acc: number, item: CartItem) => acc + (item.orderable === "product" ? item.amount_discount_price || item.price : item.price) * item.quantity, 0);
     const shipping: number = 0; // Temporary value
     const tax: number = 0;
-    const total: number = subtotal + shipping + tax;
+    const total: number = ( discountType && discountAmount ? discountType === "fixed" ? subtotal - discountAmount : subtotal - (subtotal * discountAmount / 100) : subtotal) + shipping + tax;
     return {
       subtotal,
       shipping,
       tax,
       total,
     }
-  }, [cartItems]);
+  }, [cartItems, discountAmount, discountType]);
+
+  const handleSetDiscount = useCallback((amount: number, type: "fixed" | "percentage") => {
+    try {
+      dispatch(setDiscount({ amount, type }));
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  }, [dispatch]);
 
   return {
     cartItems,
@@ -119,5 +133,8 @@ export const useCart = () => {
     handleUpdateQuantity,
     handleRemoveItem,
     handleClearCart,
+    handleSetDiscount,
+    discountAmount,
+    discountType,
   }
 }

@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { MapPin, Edit, X, User, Briefcase, Globe } from 'lucide-react';
 import { Button } from '../ui/button';
-import { RadioGroup } from '../ui/radio-group';
+import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Badge } from '../ui/badge';
 import { useApp } from '@/shared/contexts/AppContext';
 import { Address } from '@/shared/types';
@@ -32,6 +32,16 @@ export const AddressList: React.FC<AddressListProps> = ({
 }) => {
   const { isRTL } = useApp();
   const { t: sharedT } = useSharedTranslations("shared");
+
+  
+  useEffect(() => {
+    if (addresses && !selectedAddressId) {
+      const defaultAddress = addresses.find((addr: Address) => addr.isDefault);
+      if (defaultAddress) {
+        onAddressSelect(defaultAddress.identifier);
+      }
+    }
+  }, [addresses, selectedAddressId, onAddressSelect]);
 
   const getAddressTypeIcon = (addressType: string) => {
     switch (addressType.toLowerCase()) {
@@ -66,7 +76,7 @@ export const AddressList: React.FC<AddressListProps> = ({
         onValueChange={(value) => onAddressSelect(parseInt(value))}
         className={`space-y-3 ${isRTL ? 'flex-row-reverse' : ''}`}
       >
-        {addresses.map((address) => (
+        {addresses?.map((address: Address) => (
           <div key={address.identifier} className="relative">
             <label
               htmlFor={`address-${address.identifier}`}
@@ -77,8 +87,14 @@ export const AddressList: React.FC<AddressListProps> = ({
               }`}
             >
               <div className={`flex items-start gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                {/* Radio button */}
+                <RadioGroupItem 
+                  value={address.identifier.toString()} 
+                  id={`address-${address.identifier}`}
+                  className="mt-1 flex-shrink-0"
+                />
 
-                {/* Avatar icon on the left */}
+                {/* Avatar icon */}
                 <div className={`p-2 rounded-lg ${
                   address.isDefault 
                     ? 'bg-amber-100 dark:bg-amber-900/30' 
@@ -95,7 +111,7 @@ export const AddressList: React.FC<AddressListProps> = ({
                     </h5>
                     {address.isDefault && (
                       <Badge variant="secondary" className="bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400 text-xs">
-                        {isRTL ? 'افتراضي' : 'Default'}
+                        {sharedT("address.default")}
                       </Badge>
                     )}
                   </div>
@@ -173,7 +189,7 @@ export const AddressList: React.FC<AddressListProps> = ({
                 </h5>
                 {address.isDefault && (
                   <Badge variant="secondary" className="bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400 text-xs">
-                    {isRTL ? 'افتراضي' : 'Default'}
+                    {sharedT("address.default")}
                   </Badge>
                 )}
               </div>

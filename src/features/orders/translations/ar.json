@@ -1,0 +1,82 @@
+{
+  "checkoutPage": {
+    "title": "الدفع",
+    "description": "أكمل طلبك عن طريق ملء التفاصيل أدناه",
+    "step": "الخطوة",
+    "steps": {
+      "shipping": "الشحن",
+      "payment": "الدفع",
+      "review": "المراجعة"
+    },
+    "previous": "السابق",
+    "next": "التالي",
+    "placeOrder": "تأكيد الطلب",
+    "creatingOrder": "جارٍ إنشاء الطلب...",
+    "orderCreated": "تم إنشاء الطلب بنجاح!",
+    "orderCreatedDescription": "شكراً لك على طلبك! لقد تم استلام طلبك وسنرسل لك رسالة تأكيد بالبريد الإلكتروني قريباً.",
+    "backToHome": "العودة للرئيسية",
+    "cartEmpty": "سلة التسوق فارغة",
+    "cartEmptyDescription": "أضف بعض المنتجات إلى سلة التسوق قبل المتابعة إلى الدفع.",
+    "continueShopping": "متابعة التسوق",
+    "back": "العودة"
+  },
+  "orderSummary": {
+    "title": "ملخص الطلب",
+    "quantity": "الكمية",
+    "couponCodePlaceholder": "أدخل رمز القسيمة",
+    "applyCoupon": "تطبيق",
+    "removeCoupon": "إزالة القسيمة",
+    "subtotal": "المجموع الفرعي",
+    "shipping": "الشحن",
+    "tax": "الضريبة",
+    "discount": "الخصم",
+    "total": "المجموع الكلي",
+    "proceedToPayment": "المتابعة للدفع",
+    "reviewOrder": "مراجعة الطلب"
+  },
+  "shippingStep": {
+    "userInformation": {
+      "title": "معلومات العميل",
+      "name": "الاسم",
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف"
+    }
+  },
+  "paymentStep": {
+    "title": "طريقة الدفع",
+    "paymentMethod": {
+      "creditCard": "البطاقة الائتمانية",
+      "creditCardDescription": "ادفع بأمان باستخدام بطاقتك الائتمانية أو بطاقة الخصم",
+      "cashOnDelivery": "الدفع عند الاستلام",
+      "cashOnDeliveryDescription": "ادفع نقداً عند تسليم طلبك"
+    },
+    "creditCardInformation": {
+      "title": "تفاصيل البطاقة الائتمانية",
+      "cardholderName": "اسم حامل البطاقة",
+      "cardholderNamePlaceholder": "محمد أحمد",
+      "cardNumber": "رقم البطاقة",
+      "cardNumberPlaceholder": "1234 5678 9012 3456",
+      "expiryDate": "تاريخ الانتهاء",
+      "expiryDatePlaceholder": "شهر/سنة",
+      "cvv": "رمز الأمان",
+      "cvvPlaceholder": "123"
+    }
+  },
+  "reviewStep": {
+    "title": "مراجعة طلبك",
+    "quantity": "الكمية",
+    "color": "اللون",
+    "size": "المقاس",
+    "each": "لكل",
+    "shippingAddress": {
+      "title": "عنوان الشحن",
+      "noAddressSelected": "لم يتم اختيار عنوان"
+    },
+    "paymentMethod": {
+      "title": "طريقة الدفع",
+      "creditCard": "البطاقة الائتمانية",
+      "cashOnDelivery": "الدفع عند الاستلام"
+    }
+  }
+}
+

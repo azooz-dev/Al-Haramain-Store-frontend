@@ -3,13 +3,12 @@ import { Truck, Package, FileText } from 'lucide-react';
 import { ImageWithFallback } from '@/shared/components/common/ImageWithFallback';
 import { useFeatureTranslations } from '@/shared/hooks/useTranslation';
 import { useApp } from '@/shared/contexts/AppContext';
-import { APP_CONFIG } from '@/shared/config/config';
 import { CartItem } from '@/features/cart/types';
 import { Address } from '@/shared/types';
 
 interface ReviewStepProps {
   cartItems: CartItem[];
-  selectedAddress: Address;
+  selectedAddress: Address | null;
   paymentMethod: 'cash_on_delivery' | 'credit_card';
 }
 
@@ -30,12 +29,12 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({
         </h4>
         
         {/* Order Items */}
-        <div className="space-y-4">
+        <div className="space-y-4 mb-2">
           {cartItems.map((item) => (
             <div key={`${item.identifier}-${item.color?.id}-${item.variant?.id}`} className="flex items-center gap-4 p-4 border rounded-lg">
               <div className="w-16 h-16 rounded-lg overflow-hidden bg-muted">
                 <ImageWithFallback
-                  src={`${APP_CONFIG.apiBaseUrl}/storage/${item.image}`}
+                  src={item.image}
                   alt={item.en.title}
                   className="w-full h-full object-cover"
                 />
@@ -58,7 +57,7 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({
               </div>
               <div className="text-right">
                 <p className="font-medium">${(( item.amount_discount_price && item.amount_discount_price > 0  ? item.amount_discount_price : item.price) * item.quantity).toFixed(2)}</p>
-                <p className="text-sm text-muted-foreground">${item.price.toFixed(2)} {featureT("reviewStep.each")}</p>
+                <p className="text-sm text-muted-foreground">${item.price} {featureT("reviewStep.each")}</p>
               </div>
             </div>
           ))}

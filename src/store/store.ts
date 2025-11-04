@@ -15,11 +15,13 @@ import { productApi } from "@/features/products/services/productApi";
 import { categoryApi } from "@/features/categories/services/categoryApi";
 import { favoriteApi } from "@/features/favorites/services/favoriteApi";
 import { offersApi } from "@/features/offers/services/offerApi";
+import { ordersApi } from "@/features/orders/services/ordersApi";
+import { addressApi } from "@/shared/services/addressesApi";
 
 const persistConfig = {
 	key: "root",
 	storage,
-	whiteList: ["auth", "cart", "favorites", "ui"],
+	whitelist: ["auth", "cart", "favorites", "ui"],
 };
 
 const rootReducer = combineReducers({
@@ -39,6 +41,8 @@ const rootReducer = combineReducers({
 	[favoriteApi.reducerPath]: favoriteApi.reducer,
 	[offersApi.reducerPath]: offersApi.reducer,
 	[categoryApi.reducerPath]: categoryApi.reducer,
+	[addressApi.reducerPath]: addressApi.reducer,
+	[ordersApi.reducerPath]: ordersApi.reducer,
 });
 
 // Persisted reducer
@@ -57,6 +61,8 @@ export const store = configureStore({
 			.concat(productApi.middleware)
 			.concat(favoriteApi.middleware)
 			.concat(categoryApi.middleware)
+			.concat(ordersApi.middleware)
+			.concat(addressApi.middleware)
 			.concat(offersApi.middleware),
 });
 

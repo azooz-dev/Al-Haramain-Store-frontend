@@ -20,7 +20,9 @@ export const useAddress = () => {
 		data: addresses,
 		isLoading: isLoadingAddresses,
 		error: addressesError,
-	} = useGetUserAddressesQuery(currentUser?.identifier as number);
+	} = useGetUserAddressesQuery(currentUser?.identifier as number, {
+		skip: !currentUser?.identifier,
+	});
 
 	const createAddress = useCallback(
 		async (addressData: AddressFormData) => {

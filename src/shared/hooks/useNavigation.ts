@@ -75,6 +75,10 @@ export const useNavigation = () => {
 		navigate("/cart", { replace: true });
 	};
 
+	const navigateToCheckout = () => {
+		navigate("/checkout", { replace: true });
+	};
+
 	return {
 		navigateTo,
 		navigateToSignIn,
@@ -92,5 +96,6 @@ export const useNavigation = () => {
 		navigateToAboutPage,
 		navigateToContactPage,
 		navigateToCart,
+		navigateToCheckout,
 	};
 };
