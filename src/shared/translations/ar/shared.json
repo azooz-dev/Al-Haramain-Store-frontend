@@ -55,6 +55,57 @@
   "account": {
     "title": "حسابي"
   },
+  "footer": {
+    "companyName": "متجر الحرمين",
+    "description": "مصدرك الموثوق للمنتجات الإسلامية الأصيلة، والسبح، والسجاجيد، والخواتم الفضية، والهدايا ذات المعنى. حرفية عالية الجودة لرحلتك الروحية.",
+    "email": "info@alharamainstore.com",
+    "phone": "+966 12 345 6789",
+    "address": "شارع الإسلام 123، مكة المكرمة، المملكة العربية السعودية 24231",
+    "quickLinks": {
+      "title": "روابط سريعة",
+      "home": "الرئيسية",
+      "products": "المنتجات",
+      "about": "من نحن",
+      "contact": "اتصل بنا"
+    },
+    "categories": {
+      "title": "الفئات"
+    },
+    "followUs": "تابعنا",
+    "subscribe": {
+      "en": "Subscribe to our newsletter",
+      "ar": "اشترك في نشرتنا الإخبارية",
+      "email": {
+        "en": "Enter your email",
+        "ar": "أدخل بريدك الإلكتروني"
+      },
+      "button": {
+        "en": "Subscribe",
+        "ar": "اشترك"
+      }
+    },
+    "rights": {
+      "en": "All rights reserved",
+      "ar": "جميع الحقوق محفوظة"
+    },
+    "privacy": {
+      "en": "Privacy Policy",
+      "ar": "سياسة الخصوصية"
+    },
+    "terms": {
+      "en": "Terms of Service",
+      "ar": "شروط الخدمة"
+    },
+    "shipping": {
+      "en": "Shipping Info",
+      "ar": "معلومات الشحن"
+    },
+    "madeWith": {
+      "en": "Made with",
+      "ar": "صنع بـ",
+      "in": "حب"
+    }
+  },
   "address": {
     "selection": {
       "title": "اختر عنوان التسليم",

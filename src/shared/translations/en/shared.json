@@ -55,6 +55,57 @@
   "account": {
     "title": "My Account"
   },
+  "footer": {
+    "companyName": "Al-Haramain Store",
+    "description": "Your trusted source for authentic Islamic products, prayer beads, prayer rugs, silver rings, and meaningful gifts. Quality craftsmanship for your spiritual journey.",
+    "email": "info@alharamainstore.com",
+    "phone": "+1 (555) 123-4567",
+    "address": "123 Islamic Street, Makkah, Saudi Arabia 24231",
+    "quickLinks": {
+      "title": "Quick Links",
+      "home": "Home",
+      "products": "Products",
+      "about": "About",
+      "contact": "Contact"
+    },
+    "categories": {
+      "title": "Categories"
+    },
+    "followUs": "Follow Us",
+    "subscribe": {
+      "en": "Subscribe to our newsletter",
+      "ar": "اشترك في نشرتنا الإخبارية",
+      "email": {
+        "en": "Enter your email",
+        "ar": "أدخل بريدك الإلكتروني"
+      },
+      "button": {
+        "en": "Subscribe",
+        "ar": "اشترك"
+      }
+    },
+    "rights": {
+      "en": "All rights reserved",
+      "ar": "جميع الحقوق محفوظة"
+    },
+    "privacy": {
+      "en": "Privacy Policy",
+      "ar": "سياسة الخصوصية"
+    },
+    "terms": {
+      "en": "Terms of Service",
+      "ar": "شروط الخدمة"
+    },
+    "shipping": {
+      "en": "Shipping Info",
+      "ar": "معلومات الشحن"
+    },
+    "madeWith": {
+      "en": "Made with",
+      "ar": "صنع بـ",
+      "in": "love"
+    }
+  },
   "address": {
     "selection": {
       "title": "Select Delivery Address",
