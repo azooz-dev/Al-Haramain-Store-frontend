@@ -39,6 +39,7 @@ export interface OrderItem {
 				variant: string;
 				price: number;
 				discount_price: number;
+				is_reviewed?: boolean;
 				createdDate: string;
 				lastChange: string;
 		  }
@@ -57,6 +58,7 @@ export interface OrderItem {
 					title: string;
 					details: string;
 				};
+				is_reviewed?: boolean;
 				createdDate: string;
 				lastChange: string;
 		  };
