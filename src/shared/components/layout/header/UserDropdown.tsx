@@ -9,7 +9,6 @@ interface UserDropdownProps {
   navigateToDashboard: () => void;
   navigateToDashboardOrders: () => void;
   navigateToDashboardSettings: () => void;
-  handleSignOut: () => void;
   closeUserDropdown: () => void;
 }
 
@@ -18,12 +17,11 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
   navigateToDashboard,
   navigateToDashboardOrders,
   navigateToDashboardSettings,
-  handleSignOut,
   closeUserDropdown
 }) => {
   const { isRTL } = useApp();
   const { t: shared } = useSharedTranslations('shared');
-  const { currentUser } = useAuth();
+  const { currentUser, handleSignOut } = useAuth();
 
   return (
     <div className="dropdown-3d">

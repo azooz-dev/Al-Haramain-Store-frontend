@@ -1,4 +1,60 @@
 {
+  "home": {
+    "title": "Home"
+  },
+  "products": {
+    "title": "Products"
+  },
+  "about": {
+    "title": "About"
+  },
+  "contact": {
+    "title": "Contact"
+  },
+  "dashboard": {
+    "title": "Dashboard"
+  },
+  "orders": {
+    "title": "Orders"
+  },
+  "settings": {
+    "title": "Settings"
+  },
+  "logout": {
+    "title": "Log Out"
+  },
+  "favorites": {
+    "title": "Favorites",
+    "count": {
+      "99": "99+"
+    }
+  },
+  "language": {
+    "en": "English",
+    "ar": "العربية"
+  },
+  "theme": {
+    "dark": "Switch to Dark Mode",
+    "light": "Switch to Light Mode"
+  },
+  "search": {
+    "title": "Search products..."
+  },
+  "signin": {
+    "title": "Sign In"
+  },
+  "signup": {
+    "title": "Sign Up"
+  },
+  "cart": {
+    "title": "Shopping Cart",
+    "count": {
+      "99": "99+"
+    }
+  },
+  "account": {
+    "title": "My Account"
+  },
   "address": {
     "selection": {
       "title": "Select Delivery Address",

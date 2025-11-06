@@ -1,4 +1,60 @@
 {
+  "home": {
+    "title": "الرئيسية"
+  },
+  "products": {
+    "title": "المنتجات"
+  },
+  "about": {
+    "title": "من نحن"
+  },
+  "contact": {
+    "title": "اتصل بنا"
+  },
+  "dashboard": {
+    "title": "لوحة التحكم"
+  },
+  "orders": {
+    "title": "الطلبات"
+  },
+  "settings": {
+    "title": "الإعدادات"
+  },
+  "logout": {
+    "title": "تسجيل الخروج"
+  },
+  "favorites": {
+    "title": "المفضلة",
+    "count": {
+      "99": "99+"
+    }
+  },
+  "language": {
+    "en": "English",
+    "ar": "العربية"
+  },
+  "theme": {
+    "dark": "التبديل إلى الوضع الداكن",
+    "light": "التبديل إلى الوضع الفاتح"
+  },
+  "search": {
+    "title": "ابحث عن المنتجات..."
+  },
+  "signin": {
+    "title": "تسجيل الدخول"
+  },
+  "signup": {
+    "title": "إنشاء حساب"
+  },
+  "cart": {
+    "title": "سلة التسوق",
+    "count": {
+      "99": "99+"
+    }
+  },
+  "account": {
+    "title": "حسابي"
+  },
   "address": {
     "selection": {
       "title": "اختر عنوان التسليم",

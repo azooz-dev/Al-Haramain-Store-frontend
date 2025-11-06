@@ -13,7 +13,6 @@ import { useNavigation } from '@/shared/hooks/useNavigation';
 interface ActionsProps {
   isMobile: boolean;
   openUserDropdown: () => void;
-  handleSignOut: () => void;
   isMenuOpen: boolean;
   openMobileMenu: () => void;
   closeMobileMenu: () => void;
@@ -22,14 +21,13 @@ interface ActionsProps {
 const Actions: React.FC<ActionsProps> = ({
   isMobile,
   openUserDropdown,
-  handleSignOut,
   isMenuOpen,
   openMobileMenu,
   closeMobileMenu,
 }) => {
   const { isRTL, toggleLanguage, toggleTheme } = useApp();
   const { t: shared } = useSharedTranslations('shared');
-  const { isAuthenticated, currentUser } = useAuth();
+  const { isAuthenticated, currentUser, handleSignOut } = useAuth();
   const { cartSummary } = useCart();
   const { favoritesCount } = useFavorites();
   const { navigateToCart, navigateToFavorites, navigateToSignIn } = useNavigation();
@@ -42,7 +40,7 @@ const Actions: React.FC<ActionsProps> = ({
           size="sm"
           onClick={() => toggleLanguage()}
           className="h-9 px-3 rounded-full hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors"
-          title={isRTL ? shared('language.ar') : shared('language.en')}
+          title={isRTL ? shared('language.en') : shared('language.ar')}
         >
           <span className="text-sm font-medium">{isRTL ? shared('language.en') : shared('language.ar')}</span>
         </Button>

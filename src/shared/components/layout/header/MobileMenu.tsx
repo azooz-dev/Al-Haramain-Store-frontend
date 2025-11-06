@@ -12,7 +12,6 @@ import { useNavigation } from '@/shared/hooks/useNavigation';
 
 interface MobileMenuProps {
   isOnDashboard: boolean;
-  handleSignOut: () => void;
   closeMobileMenu: () => void;
   isMobileMenuAnimating: boolean;
   navigationItems: NavigationItem[];
@@ -21,14 +20,13 @@ interface MobileMenuProps {
 
 const MobileMenu: React.FC<MobileMenuProps> = ({
   isOnDashboard,
-  handleSignOut,
   closeMobileMenu,
   isMobileMenuAnimating,
   navigationItems,
 }) => {
   const { isRTL } = useApp();
   const { t: shared } = useSharedTranslations('shared');
-  const { isAuthenticated, currentUser } = useAuth();
+  const { isAuthenticated, currentUser, handleSignOut } = useAuth();
   const { favoritesCount } = useFavorites();
   const { navigateToFavorites, navigateToSignIn, navigateToSignUp } = useNavigation();
   const { toggleLanguage, toggleTheme } = useApp();
