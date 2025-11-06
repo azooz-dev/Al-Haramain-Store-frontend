@@ -119,3 +119,9 @@ export interface DeleteAddressResponse {
 	message: string;
 	status: string;
 }
+
+export interface NavigationItem {
+	key: string;
+	path: string;
+	label: string;
+}
