@@ -28,7 +28,11 @@ const userSlice = createSlice({
 		},
 
 		updateProfile: (state, action: PayloadAction<User>) => {
-			state.profile = { ...state.profile, ...action.payload };
+			const updatedUser =
+				state.profile?.identifier === action.payload.identifier ? action.payload : null;
+			if (updatedUser) {
+				state.profile = updatedUser;
+			}
 		},
 
 		setAddresses: (state, action: PayloadAction<Address[]>) => {
@@ -64,6 +68,14 @@ const userSlice = createSlice({
 		setUserError: (state, action: PayloadAction<string | null>) => {
 			state.error = action.payload;
 		},
+
+		deleteUserAction: (state) => {
+			state.profile = null;
+			state.addresses = [];
+			state.orders = [];
+			state.isLoading = false;
+			state.error = null;
+		},
 	},
 });
 
@@ -78,6 +90,7 @@ export const {
 	addOrder,
 	setUserLoading,
 	setUserError,
+	deleteUserAction,
 } = userSlice.actions;
 
 export const selectProfile = (state: { user: UserState }) => state.user.profile;

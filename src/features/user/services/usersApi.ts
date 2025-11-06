@@ -76,6 +76,7 @@ export const usersApi = createApi({
 
 		getUserOrders: builder.query<UserOrdersResponse, GetUserOrdersRequest>({
 			query: ({ userId }) => `/api/users/${userId}/orders`,
+			keepUnusedDataFor: 300,
 			providesTags: [{ type: "User", id: "ORDERS" }],
 		}),
 	}),
