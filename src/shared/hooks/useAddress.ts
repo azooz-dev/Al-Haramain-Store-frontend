@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import {
 	useCreateAddressMutation,
 	useUpdateAddressMutation,
@@ -6,10 +6,18 @@ import {
 	useGetUserAddressesQuery,
 } from "../services/addressesApi";
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useAppDispatch } from "@/store/hooks";
+import {
+	setAddresses,
+	addAddress,
+	updateAddress as updateAddressAction,
+	removeAddress,
+} from "@/store/slices/userSlice";
 import { AddressFormData, UpdateAddressRequest, DeleteAddressRequest } from "../types";
 
 export const useAddress = () => {
 	const { currentUser } = useAuth();
+	const dispatch = useAppDispatch();
 	const [createAddressMutation, { isLoading: isCreatingAddress, error: createAddressError }] =
 		useCreateAddressMutation();
 	const [updateAddressMutation, { isLoading: isUpdatingAddress, error: updateAddressError }] =
@@ -24,6 +32,12 @@ export const useAddress = () => {
 		skip: !currentUser?.identifier,
 	});
 
+	useEffect(() => {
+		if (addresses) {
+			dispatch(setAddresses(addresses.data.data));
+		}
+	}, [addresses, dispatch]);
+
 	const createAddress = useCallback(
 		async (addressData: AddressFormData) => {
 			if (!currentUser?.identifier) {
@@ -34,9 +48,12 @@ export const useAddress = () => {
 				...addressData,
 				userId: currentUser.identifier,
 			}).unwrap();
+			if (response.status === "success") {
+				dispatch(addAddress(response.data));
+			}
 			return response.data;
 		},
-		[createAddressMutation, currentUser?.identifier]
+		[createAddressMutation, currentUser?.identifier, dispatch]
 	);
 
 	const updateAddress = useCallback(
@@ -49,9 +66,12 @@ export const useAddress = () => {
 				...addressData,
 				userId: currentUser.identifier,
 			}).unwrap();
+			if (response.status === "success") {
+				dispatch(updateAddressAction(response.data));
+			}
 			return response.data;
 		},
-		[updateAddressMutation, currentUser?.identifier]
+		[updateAddressMutation, currentUser?.identifier, dispatch]
 	);
 
 	const deleteAddress = useCallback(
@@ -64,9 +84,12 @@ export const useAddress = () => {
 				...addressData,
 				userId: currentUser.identifier,
 			}).unwrap();
+			if (response.status === "success") {
+				dispatch(removeAddress(addressData.addressId));
+			}
 			return response.message;
 		},
-		[deleteAddressMutation, currentUser?.identifier]
+		[deleteAddressMutation, currentUser?.identifier, dispatch]
 	);
 
 	return {
