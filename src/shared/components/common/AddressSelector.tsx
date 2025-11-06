@@ -38,6 +38,8 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({
   const { deleteAddress, addresses, isLoadingAddresses } = useAddress();
   const { t: sharedT } = useSharedTranslations("shared");
 
+  console.log(addresses);
+
   const handleDeleteAddress = async (addressId: number) => {
     setDeletingAddressId(addressId);
     await deleteAddress({ addressId, userId });
@@ -82,7 +84,7 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({
     );
   }
 
-  if (addresses && addresses?.data?.data?.length === 0) {
+  if (addresses && addresses?.length === 0) {
     return (
       <div className={className}>
         <AddressEmptyState
@@ -133,7 +135,7 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({
 
       <div className="transition-all duration-300 ease-in-out">
         <AddressList
-          addresses={addresses?.data?.data || []}
+          addresses={addresses || []}
           selectedAddressId={selectedAddressId}
           onAddressSelect={onAddressSelect}
           onEditAddress={handleEditAddress}

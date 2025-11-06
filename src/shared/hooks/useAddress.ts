@@ -6,17 +6,19 @@ import {
 	useGetUserAddressesQuery,
 } from "../services/addressesApi";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { useAppDispatch } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
 	setAddresses,
 	addAddress,
 	updateAddress as updateAddressAction,
 	removeAddress,
+	selectAddresses,
 } from "@/store/slices/userSlice";
 import { AddressFormData, UpdateAddressRequest, DeleteAddressRequest } from "../types";
 
 export const useAddress = () => {
 	const { currentUser } = useAuth();
+	const addresses = useAppSelector(selectAddresses);
 	const dispatch = useAppDispatch();
 	const [createAddressMutation, { isLoading: isCreatingAddress, error: createAddressError }] =
 		useCreateAddressMutation();
@@ -25,7 +27,7 @@ export const useAddress = () => {
 	const [deleteAddressMutation, { isLoading: isDeletingAddress, error: deleteAddressError }] =
 		useDeleteAddressMutation();
 	const {
-		data: addresses,
+		data: addressesData,
 		isLoading: isLoadingAddresses,
 		error: addressesError,
 	} = useGetUserAddressesQuery(currentUser?.identifier as number, {
@@ -33,10 +35,10 @@ export const useAddress = () => {
 	});
 
 	useEffect(() => {
-		if (addresses) {
-			dispatch(setAddresses(addresses.data.data));
+		if (addressesData) {
+			dispatch(setAddresses(addressesData.data.data));
 		}
-	}, [addresses, dispatch]);
+	}, [addressesData, dispatch]);
 
 	const createAddress = useCallback(
 		async (addressData: AddressFormData) => {
