@@ -9,11 +9,7 @@ import {
 import { Package } from 'lucide-react';
 import type { Order } from '@/features/orders/types';
 import { useFeatureTranslations } from '@/shared/hooks/useTranslation';
-import { OrderHeader } from './order-details/OrderHeader';
-import { OrderItemsList } from './order-details/OrderItemsList';
-import { ShippingAddressCard } from './order-details/ShippingAddressCard';
-import { CustomerInformationCard } from './order-details/CustomerInformationCard';
-import { OrderSummaryCard } from './order-details/OrderSummaryCard';
+import { OrderHeader, OrderItemsList, ShippingAddressCard, CustomerInformationCard, OrderSummaryCard } from './order-details/index';
 
 interface OrderDetailsModalProps {
   order: Order;
