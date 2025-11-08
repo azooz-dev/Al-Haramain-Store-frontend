@@ -3,9 +3,10 @@ import {
 	useUpdateUserMutation,
 	useDeleteUserMutation,
 	useGetUserOrdersQuery,
+	useCreateReviewMutation,
 } from "../services/usersApi";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { UpdateUserRequest, DeleteUserRequest } from "../types";
+import { UpdateUserRequest, DeleteUserRequest, CreateReviewRequest } from "../types";
 import { useCallback, useEffect } from "react";
 import { useAppDispatch } from "@/store/hooks";
 import { setProfile, setOrders, updateProfile, deleteUserAction } from "@/store/slices/userSlice";
@@ -18,6 +19,8 @@ export const useUsers = () => {
 		useUpdateUserMutation();
 	const [deleteUserMutation, { isLoading: isDeletingUser, error: deleteUserError }] =
 		useDeleteUserMutation();
+	const [createReviewMutation, { isLoading: isCreatingReview, error: createReviewError }] =
+		useCreateReviewMutation();
 	const {
 		data: userOrdersData,
 		isLoading: isLoadingUserOrders,
@@ -63,6 +66,17 @@ export const useUsers = () => {
 		[deleteUserMutation, dispatch]
 	);
 
+	const createReview = useCallback(
+		async (payload: CreateReviewRequest) => {
+			const response = await createReviewMutation(payload).unwrap();
+			if (response.status === "success") {
+				return response.data;
+			}
+			return response.message;
+		},
+		[createReviewMutation]
+	);
+
 	return {
 		userData,
 		isLoadingUser,
@@ -76,5 +90,8 @@ export const useUsers = () => {
 		userOrdersData,
 		isLoadingUserOrders,
 		userOrdersError,
+		createReview,
+		isCreatingReview,
+		createReviewError,
 	};
 };

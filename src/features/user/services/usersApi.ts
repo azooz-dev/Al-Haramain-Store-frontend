@@ -103,4 +103,5 @@ export const {
 	useUpdateUserMutation,
 	useDeleteUserMutation,
 	useGetUserOrdersQuery,
+	useCreateReviewMutation,
 } = usersApi;
