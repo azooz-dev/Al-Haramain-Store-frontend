@@ -67,8 +67,15 @@ export const useUsers = () => {
 	);
 
 	const createReview = useCallback(
-		async (payload: CreateReviewRequest) => {
-			const response = await createReviewMutation(payload).unwrap();
+		async ({ userId, orderId, itemId, rating, comment, locale }: CreateReviewRequest) => {
+			const response = await createReviewMutation({
+				userId: userId,
+				orderId: orderId,
+				itemId: itemId,
+				rating: rating,
+				comment: comment,
+				locale: locale,
+			}).unwrap();
 			if (response.status === "success") {
 				return response.data;
 			}

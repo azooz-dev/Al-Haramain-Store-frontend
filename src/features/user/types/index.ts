@@ -37,6 +37,7 @@ export interface CreateReviewRequest {
 	itemId: number;
 	rating: number;
 	comment: string;
+	locale: "en" | "ar";
 }
 
 export interface CreateReviewResponse {
