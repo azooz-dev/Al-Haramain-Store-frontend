@@ -10,6 +10,8 @@ import {
 	UpdateUserResponse,
 	GetUserOrdersRequest,
 	UserOrdersResponse,
+	CreateReviewResponse,
+	CreateReviewRequest,
 } from "../types";
 
 const rawBaseQuery = fetchBaseQuery({
@@ -78,6 +80,20 @@ export const usersApi = createApi({
 			query: ({ userId }) => `/api/users/${userId}/orders`,
 			keepUnusedDataFor: 300,
 			providesTags: [{ type: "User", id: "ORDERS" }],
+		}),
+
+		createReview: builder.mutation<CreateReviewResponse, CreateReviewRequest>({
+			query: ({ userId, orderId, itemId, rating, comment }) => ({
+				url: `/api/users/${userId}/orders/${orderId}/items/${itemId}/reviews`,
+				method: "POST",
+				body: { rating, comment },
+			}),
+			invalidatesTags: (_result, _error, { userId, orderId, itemId }) => [
+				{ type: "User", id: "ORDERS" },
+				{ type: "User", id: userId },
+				{ type: "User", id: orderId },
+				{ type: "User", id: itemId },
+			],
 		}),
 	}),
 });
