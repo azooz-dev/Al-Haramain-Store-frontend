@@ -2,7 +2,6 @@ import { RootState } from "./../../../store/store";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { APP_CONFIG } from "@/shared/config/config";
 import { getCookieValue } from "@/shared/utils/getCookieValue";
-import { User } from "@/features/auth/types";
 import {
 	DeleteUserRequest,
 	DeleteUserResponse,
@@ -48,11 +47,6 @@ export const usersApi = createApi({
 	baseQuery: rawBaseQuery,
 	tagTypes: ["User"],
 	endpoints: (builder) => ({
-		getUser: builder.query<{ data: User }, void>({
-			query: () => "/api/user",
-			providesTags: [{ type: "User", id: "CURRENT" }],
-		}),
-
 		updateUser: builder.mutation<UpdateUserResponse, UpdateUserRequest>({
 			query: ({ userId, data }) => ({
 				url: `/api/users/${userId}`,
@@ -99,7 +93,6 @@ export const usersApi = createApi({
 });
 
 export const {
-	useGetUserQuery,
 	useUpdateUserMutation,
 	useDeleteUserMutation,
 	useGetUserOrdersQuery,

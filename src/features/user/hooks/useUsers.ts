@@ -1,5 +1,4 @@
 import {
-	useGetUserQuery,
 	useUpdateUserMutation,
 	useDeleteUserMutation,
 	useGetUserOrdersQuery,
@@ -9,15 +8,14 @@ import { useAuth } from "@/features/auth/hooks/useAuth";
 import { UpdateUserRequest, DeleteUserRequest, CreateReviewRequest } from "../types";
 import { useCallback, useEffect } from "react";
 import { useAppDispatch } from "@/store/hooks";
-import { setProfile, setOrders, updateProfile, deleteUserAction } from "@/store/slices/userSlice";
+import { setOrders, updateProfile, deleteUserAction } from "@/store/slices/userSlice";
 import { extractErrorMessage } from "@/shared/utils/extractErrorMessage";
 import type { RequestFailure } from "@/shared/types";
-import type { User } from "@/features/auth/types";
+import { User } from "@/features/auth/types/index";
 
 export const useUsers = () => {
 	const { currentUser } = useAuth();
 	const dispatch = useAppDispatch();
-	const { data: userData, isLoading: isLoadingUser, error: userError } = useGetUserQuery();
 	const [updateUserMutation, { isLoading: isUpdatingUser, error: updateUserError }] =
 		useUpdateUserMutation();
 	const [deleteUserMutation, { isLoading: isDeletingUser, error: deleteUserError }] =
@@ -36,14 +34,10 @@ export const useUsers = () => {
 	);
 
 	useEffect(() => {
-		if (userData) {
-			dispatch(setProfile(userData.data));
-		}
-
 		if (userOrdersData) {
 			dispatch(setOrders(userOrdersData.data.data));
 		}
-	}, [userData, userOrdersData, dispatch]);
+	}, [userOrdersData, dispatch]);
 
 	const updateUser = useCallback(
 		async (payload: UpdateUserRequest): Promise<User | string> => {
@@ -93,9 +87,6 @@ export const useUsers = () => {
 	);
 
 	return {
-		userData,
-		isLoadingUser,
-		userError,
 		updateUser,
 		isUpdatingUser,
 		updateUserError,
