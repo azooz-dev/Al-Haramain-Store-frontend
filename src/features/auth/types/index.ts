@@ -6,6 +6,8 @@ export interface User {
 	lastName: string;
 	email: string;
 	phone: number;
+	password?: string;
+	password_confirmation?: string;
 	isVerified: boolean;
 	createdDate: string;
 	lastChange: string;

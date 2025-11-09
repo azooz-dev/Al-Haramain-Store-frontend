@@ -10,6 +10,9 @@ import { UpdateUserRequest, DeleteUserRequest, CreateReviewRequest } from "../ty
 import { useCallback, useEffect } from "react";
 import { useAppDispatch } from "@/store/hooks";
 import { setProfile, setOrders, updateProfile, deleteUserAction } from "@/store/slices/userSlice";
+import { extractErrorMessage } from "@/shared/utils/extractErrorMessage";
+import type { RequestFailure } from "@/shared/types";
+import type { User } from "@/features/auth/types";
 
 export const useUsers = () => {
 	const { currentUser } = useAuth();
@@ -43,13 +46,18 @@ export const useUsers = () => {
 	}, [userData, userOrdersData, dispatch]);
 
 	const updateUser = useCallback(
-		async (payload: UpdateUserRequest) => {
-			const response = await updateUserMutation(payload).unwrap();
-			if (response.status === "success") {
-				dispatch(updateProfile(response.data));
-				return response.data;
+		async (payload: UpdateUserRequest): Promise<User | string> => {
+			try {
+				const response = await updateUserMutation(payload).unwrap();
+				if (response.status === "success") {
+					dispatch(updateProfile(response.data));
+					return response.data;
+				}
+				return response.message || "Update failed. Please try again.";
+			} catch (error) {
+				const errorMessage = extractErrorMessage(error as RequestFailure);
+				return errorMessage.data.message;
 			}
-			return response.message;
 		},
 		[updateUserMutation, dispatch]
 	);
