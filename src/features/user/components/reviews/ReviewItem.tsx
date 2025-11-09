@@ -16,7 +16,7 @@ interface ReviewItemProps {
 
 export const ReviewItem: React.FC<ReviewItemProps> = ({ review, item }) => {
   const { isRTL } = useApp();
-  const { t: reviewT } = useFeatureTranslations("reviews");
+  const { t: reviewT } = useFeatureTranslations("user");
 
   const renderStars = (rating: number) => {
     return Array.from({length: 5}).map((_, index: number) => (

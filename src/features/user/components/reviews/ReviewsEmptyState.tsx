@@ -10,7 +10,7 @@ interface ReviewsEmptyStateProps {
 }
 
 export const ReviewsEmptyState: React.FC<ReviewsEmptyStateProps> = ({ onGoToProductPage, isReviewableItemsEmpty }) => {
-  const { t: reviewT } = useFeatureTranslations("reviews");
+  const { t: reviewT } = useFeatureTranslations("user");
 
   if (isReviewableItemsEmpty) {
         return (

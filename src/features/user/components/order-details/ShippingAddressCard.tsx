@@ -12,7 +12,7 @@ interface ShippingAddressCardProps {
 
 export const ShippingAddressCard: React.FC<ShippingAddressCardProps> = ({ address }) => {
   const { isRTL } = useApp();
-  const { t: featureT } = useFeatureTranslations("orders");
+  const { t: featureT } = useFeatureTranslations("user");
 
   return (
     <Card className={`${isRTL ? 'border-r-4 border-r-primary' : 'border-l-4 border-l-primary'}`}>

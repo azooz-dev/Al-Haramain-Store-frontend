@@ -25,7 +25,7 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
   authorName,
 }) => {
   const { isRTL } = useApp();
-  const { t: reviewT } = useFeatureTranslations("reviews");
+  const { t: reviewT } = useFeatureTranslations("user");
 
   const formattedDate = formatDate(review.createdDate, isRTL);
 

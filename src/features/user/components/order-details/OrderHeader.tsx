@@ -12,7 +12,7 @@ interface OrderHeaderProps {
 
 export const OrderHeader: React.FC<OrderHeaderProps> = ({ order }) => {
   const { isRTL } = useApp();
-  const { t: featureT } = useFeatureTranslations("orders");
+  const { t: featureT } = useFeatureTranslations("user");
   
   const StatusIcon = getStatusIcon(order.status);
 

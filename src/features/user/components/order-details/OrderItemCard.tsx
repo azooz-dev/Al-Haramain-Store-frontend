@@ -13,7 +13,7 @@ interface OrderItemCardProps {
 
 export const OrderItemCard: React.FC<OrderItemCardProps> = ({ item, index }) => {
   const { isRTL } = useApp();
-  const { t: featureT } = useFeatureTranslations("orders");
+  const { t: featureT } = useFeatureTranslations("user");
 
   const orderable = item.orderable;
   const isOffer = item.orderable_type === 'App\\Models\\Offer\\Offer';

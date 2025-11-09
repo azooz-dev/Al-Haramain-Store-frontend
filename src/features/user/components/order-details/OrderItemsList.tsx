@@ -10,7 +10,7 @@ interface OrderItemsListProps {
 }
 
 export const OrderItemsList: React.FC<OrderItemsListProps> = ({ items }) => {
-  const { t: featureT } = useFeatureTranslations("orders");
+  const { t: featureT } = useFeatureTranslations("user");
 
   return (
     <Card>

@@ -23,7 +23,7 @@ export const ReviewFilters: React.FC<ReviewFiltersProps> = ({
   onSortByChange,
 }) => {
   const { isRTL } = useApp();
-  const { t: reviewT } = useFeatureTranslations("reviews");
+  const { t: reviewT } = useFeatureTranslations("user");
 
     return (
     <div className="flex flex-col sm:flex-row gap-4">

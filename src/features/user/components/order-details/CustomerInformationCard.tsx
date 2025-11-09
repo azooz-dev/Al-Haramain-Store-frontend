@@ -12,7 +12,7 @@ interface CustomerInformationCardProps {
 
 export const CustomerInformationCard: React.FC<CustomerInformationCardProps> = ({ customer }) => {
   const { isRTL } = useApp();
-  const { t: featureT } = useFeatureTranslations("orders");
+  const { t: featureT } = useFeatureTranslations("user");
 
   return (
     <Card className={`${isRTL ? 'border-r-4 border-r-blue-500' : 'border-l-4 border-l-blue-500'}`}>

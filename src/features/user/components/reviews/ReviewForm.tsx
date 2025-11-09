@@ -38,7 +38,7 @@ export const ReviewForm: React.FC<ReviewFormProps> = ({
   existingReview,
 }) => {
   const { isRTL } = useApp();
-  const { t: reviewT } = useFeatureTranslations("reviews");
+  const { t: reviewT } = useFeatureTranslations("user");
   const { t: validationT } = useSharedTranslations("validation");
   const { createReview } = useUsers();
 

@@ -22,7 +22,7 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
   isOpen, 
   onClose 
 }) => {
-  const { t: featureT } = useFeatureTranslations("orders");
+  const { t: featureT } = useFeatureTranslations("user");
 
   if (!isOpen) return null;
 

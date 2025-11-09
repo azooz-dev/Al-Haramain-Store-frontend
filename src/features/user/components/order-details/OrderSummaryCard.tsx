@@ -14,7 +14,7 @@ interface OrderSummaryCardProps {
 
 export const OrderSummaryCard: React.FC<OrderSummaryCardProps> = ({ order }) => {
   const { isRTL } = useApp();
-  const { t: featureT } = useFeatureTranslations("orders");
+  const { t: featureT } = useFeatureTranslations("user");
 
   const getPaymentMethodText = (method: string) => {
     const methodMap = {

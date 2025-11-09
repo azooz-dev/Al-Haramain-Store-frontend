@@ -13,7 +13,7 @@ interface ReviewSortingProps {
 
 export const ReviewSorting: React.FC<ReviewSortingProps> = ({ hasMore, hasPrev, onLoadMore, onLoadPrev }) => {
   const { isRTL } = useApp();
-  const { t: reviewT } = useFeatureTranslations("reviews");
+  const { t: reviewT } = useFeatureTranslations("user");
 
     return (
     <div className={`flex justify-center gap-4 mt-6 ${isRTL ? 'flex-row-reverse' : ''}`}>

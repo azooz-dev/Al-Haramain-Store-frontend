@@ -26,7 +26,7 @@ export const ReviewList: React.FC<ReviewListProps> = ({
   userId,
 }) => {
   const { isRTL } = useApp();
-  const { t: reviewT } = useFeatureTranslations("reviews");
+  const { t: reviewT } = useFeatureTranslations("user");
   const { navigateToProducts } = useNavigation();
   const { userOrdersData, isLoadingUserOrders: isOrdersLoading, userOrdersError: ordersError } = useUsers();
   const orders = userOrdersData?.data.data;

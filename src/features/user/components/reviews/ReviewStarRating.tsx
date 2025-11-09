@@ -22,7 +22,7 @@ export const ReviewStarRating: React.FC<ReviewStarRatingProps> = ({
 }) => {
   const { isRTL } = useApp();
   const [hoverRating, setHoverRating] = useState(0);
-  const { t: reviewT } = useFeatureTranslations("reviews");
+  const { t: reviewT } = useFeatureTranslations("user");
 
   const sizeClasses = {
     sm: "w-4 h-4",
