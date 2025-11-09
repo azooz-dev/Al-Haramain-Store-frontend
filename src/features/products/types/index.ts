@@ -1,3 +1,4 @@
+import { OrderItem } from "@/features/orders/types";
 import { Link } from "@/shared/types";
 export interface Product {
 	identifier: number;
@@ -62,7 +63,7 @@ export interface Review {
 	id: number;
 	order_id: number;
 	user_id: number;
-	product_id: number;
+	item: OrderItem;
 	rating: string;
 	comment: string;
 	locale: "en" | "ar";

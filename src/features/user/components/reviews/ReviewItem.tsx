@@ -6,14 +6,15 @@ import { ImageWithFallback } from '@/shared/components/common/ImageWithFallback'
 import { useApp } from '@/shared/contexts/AppContext';
 import { useFeatureTranslations } from '@/shared/hooks/useTranslation';
 import { APP_CONFIG } from '@/shared/config/config';
-import type { Review, Product } from '@/features/products/types';
+import type { Review } from '@/features/products/types';
+import type { OrderItem } from '@/features/orders/types';
 
 interface ReviewItemProps {
   review: Review | { _reviewCreated?: boolean };
-  product: Product;
+  item: OrderItem;
 }
 
-export const ReviewItem: React.FC<ReviewItemProps> = ({ review, product }) => {
+export const ReviewItem: React.FC<ReviewItemProps> = ({ review, item }) => {
   const { isRTL } = useApp();
   const { t: reviewT } = useFeatureTranslations("reviews");
 
@@ -28,6 +29,19 @@ export const ReviewItem: React.FC<ReviewItemProps> = ({ review, product }) => {
     ))
   }
 
+  const getItemImage = () => {
+    if ('images' in item.orderable && item.orderable.images?.[0]?.image_url) {
+      return `${APP_CONFIG.apiBaseUrl}/storage/${item.orderable.images[0].image_url}`;
+    } else if ('picture' in item.orderable && item.orderable.picture) {
+      return `${APP_CONFIG.apiBaseUrl}/storage/${item.orderable.picture}`;
+    }
+    return '';
+  }
+
+  const getItemTitle = () => {
+    return isRTL ? item.orderable.ar.title : item.orderable.en.title;
+  }
+
     return (
     <Card 
       className={`p-6 transition-all duration-500 ease-in-out transform ${
@@ -38,25 +52,23 @@ export const ReviewItem: React.FC<ReviewItemProps> = ({ review, product }) => {
     >
       <div className="space-y-4">
         {/* Product Info */}
-        {product && (
+        {item && (
           <div className={`flex items-start gap-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
             <ImageWithFallback
-              src={product.colors && product.colors.length > 0 && product.colors[0].images && product.colors[0].images.length > 0
-                ? `${APP_CONFIG.apiBaseUrl}/storage/${product.colors[0].images[0].image_url}`
-                : '/placeholder-product.jpg'
-              }
-              alt={isRTL ? product.ar.title : product.en.title}
+              src={getItemImage()}
+              alt={getItemTitle()}
               className="w-16 h-16 rounded-lg object-cover shadow-sm"
             />
             <div className={`flex-1 ${isRTL ? 'text-right' : 'text-left'}`}>
               <h3 className="font-medium text-foreground mb-1">
-                {isRTL ? product.ar.title : product.en.title}
-              </h3>
+                {getItemTitle()}
+                </h3>
+                {('sku' in item.orderable) && item.orderable.sku && (
               <div className="flex items-center gap-2 mb-2">
-                {product.sku && (
                   <Badge variant="outline" className="text-xs">
-                    {product.sku}
-                  </Badge>
+                    {item.orderable.sku}
+                    </Badge>
+                  </div>
                 )}
                 {('_reviewCreated' in review && review._reviewCreated) && (
                   <Badge className="bg-green-100 text-green-800 border-green-200 dark:bg-green-900 dark:text-green-200 dark:border-green-700">
@@ -68,8 +80,8 @@ export const ReviewItem: React.FC<ReviewItemProps> = ({ review, product }) => {
                 {reviewT("previouslyReviewed")}
               </div>
             </div>
-          </div>
         )}
+      </div>
 
         {/* Review Content */}
         <div className={`${isRTL ? 'text-right' : 'text-left'}`}>
@@ -96,7 +108,6 @@ export const ReviewItem: React.FC<ReviewItemProps> = ({ review, product }) => {
             })}
           </div>
         </div>
-      </div>
     </Card>
   );
 }
