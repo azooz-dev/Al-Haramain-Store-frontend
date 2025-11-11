@@ -14,7 +14,7 @@ export const ReviewsEmptyState: React.FC<ReviewsEmptyStateProps> = ({ onGoToProd
 
   if (isReviewableItemsEmpty) {
         return (
-      <Card className="p-12 text-center">
+      <Card className="p-12 text-center p-4">
         <Star className="w-16 h-16 text-muted-foreground/50 mx-auto mb-4" />
         <h3 className="text-lg font-medium text-foreground mb-2">
           {reviewT("emptyState.title")}

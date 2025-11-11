@@ -13,7 +13,7 @@ export const OrderItemsList: React.FC<OrderItemsListProps> = ({ items }) => {
   const { t: featureT } = useFeatureTranslations("user");
 
   return (
-    <Card>
+    <Card className="p-4">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <ShoppingCart className="h-5 w-5" />

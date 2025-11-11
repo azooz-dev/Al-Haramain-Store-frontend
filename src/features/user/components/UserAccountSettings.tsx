@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Eye, EyeOff, Mail, Lock, AlertTriangle, Check, Trash2 } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, AlertTriangle, Check, Trash2, X } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@shared/components/ui/card';
 import { Button } from '@/shared/components/ui/button';
 import { Input } from '@/shared/components/ui/input';
@@ -15,6 +15,8 @@ import { z } from 'zod';
 import type { User } from '@/features/auth/types';
 import { useUsers } from '../hooks/useUsers';
 import { useAuth } from '@/features/auth/hooks/useAuth';
+import { ProcessedError } from '@/shared/types';
+import { UpdateUserRequest, DeleteUserRequest, DeleteUserResponse } from '../types';
 
 
 interface UserAccountSettingsProps {
@@ -28,27 +30,34 @@ export const UserAccountSettings: React.FC<UserAccountSettingsProps> = ({
   const { t: userT } = useFeatureTranslations('user');
   const { t: validationT } = useSharedTranslations("validation");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const { updateUser, isUpdatingUser, deleteUser, isDeletingUser } = useUsers();
+  const { updateUser, isUpdatingUser, deleteUser, isDeletingUser, updateUserError } = useUsers() as {
+    updateUser: (payload: UpdateUserRequest) => Promise<User | string>;
+    isUpdatingUser: boolean;
+    deleteUser: (payload: DeleteUserRequest) => Promise<DeleteUserResponse>;
+    isDeletingUser: boolean;
+    updateUserError: ProcessedError | undefined;
+  };
   const { handleSignOut } = useAuth();
   const [successMessage, setSuccessMessage] = useState<string>("");
-  const [emailError, setEmailError] = useState<string>("");
-  const [passwordError, setPasswordError] = useState<string>("");
   const [isEditingEmail, setIsEditingEmail] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const formSchema = z.object({
     email: z.string().email(validationT("email.invalid")).nonempty(validationT("email.required")),
-    password: z.string().min(8, validationT("password.minLength")).nonempty(validationT("password.required")),
-    confirmPassword: z.string().min(8, validationT("password.minLength")).nonempty(validationT("password.required")),
-    newPassword: z.string().min(8, validationT("password.minLength")).nonempty(validationT("password.required")),
-    newPasswordConfirmation: z.string().min(8, validationT("password.minLength")).nonempty(validationT("password.required")),
-  }).refine((data) => data.password === data.confirmPassword && data.newPassword === data.newPasswordConfirmation, {
+    password: z.string().min(8, validationT("password.minLength", { min: 8 })).nonempty(validationT("password.required")),
+    newPassword: z.string().min(8, validationT("password.minLength", { min: 8 })).nonempty(validationT("password.required")),
+    newPasswordConfirmation: z.string().min(8, validationT("password.minLength", { min: 8 })).nonempty(validationT("password.required")),
+  }).refine((data) => data.newPassword === data.newPasswordConfirmation, {
     message: validationT("password.mismatch"),
-    path: ["confirmPassword", "newPassword", "newPasswordConfirmation"],
+    path: ["newPasswordConfirmation"],
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    mode: "onChange",
     defaultValues: {
       email: user.email,
       password: "",
@@ -62,7 +71,6 @@ export const UserAccountSettings: React.FC<UserAccountSettingsProps> = ({
   }
 
   const handleEmailChange = async () => {
-    setEmailError("");
     const response = await updateUser({
       userId: user.identifier,
       data: {
@@ -72,38 +80,37 @@ export const UserAccountSettings: React.FC<UserAccountSettingsProps> = ({
     if (typeof response !== "string") {
       await handleSignOut();
     } else {
-      setEmailError(response);
       setIsDialogOpen(false);
     }
   }
 
   const handleEmailSaveClick = () => {
-    setEmailError("");
     setIsDialogOpen(true);
   }
 
-  const handlePasswordChange = async () => {
-    setPasswordError("");
+  const handlePasswordChange = async (data: z.infer<typeof formSchema>) => {
     setSuccessMessage("");
     const response = await updateUser({
       userId: user.identifier,
       data: {
-        password: form.getValues("newPassword"),
-        password_confirmation: form.getValues("newPasswordConfirmation"),
+        current_password: data.password,
+        password: data.newPassword,
+        password_confirmation: data.newPasswordConfirmation,
       },
     });
     if (typeof response !== "string") {
       setSuccessMessage(userT("accountSettings.passwordChanged"));
       setIsChangingPassword(false);
       form.reset();
-    } else {
-      setPasswordError(response);
+      setShowCurrentPassword(false);
+      setShowNewPassword(false);
+      setShowConfirmPassword(false);
     }
   }
 
   const handleDeleteAccount = async () => {
     const response = await deleteUser({ userId: user.identifier });
-    if (response) {
+    if (response.data) {
 			await handleSignOut();
 		}
 	};
@@ -111,7 +118,7 @@ export const UserAccountSettings: React.FC<UserAccountSettingsProps> = ({
     return (
     <div className="space-y-6">
       {/* Email Settings */}
-      <Card>
+      <Card className="p-4">
         <CardHeader>
           <CardTitle className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
             <Mail className="w-5 h-5" />
@@ -119,22 +126,22 @@ export const UserAccountSettings: React.FC<UserAccountSettingsProps> = ({
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {emailError && (
+          {updateUserError && isEditingEmail && (
             <Alert className="border-red-500 bg-red-50 dark:bg-red-950/20">
               <AlertTriangle className="h-4 w-4 text-red-600 dark:text-red-400" />
               <AlertDescription className="text-red-800 dark:text-red-200">
-                {emailError}
+                {updateUserError.data?.message}
               </AlertDescription>
             </Alert>
           )}
           {isEditingEmail ? (
             <div className="space-y-4">
               <div className={`space-y-2 ${isRTL ? 'text-right' : 'text-left'}`}>
-                <Label htmlFor="new-email">{userT("accountSettings.newEmail")}</Label>
+                <Label htmlFor="new-email" className={`${isRTL ? 'flex-row-reverse' : ''}`}>{userT("accountSettings.newEmail")}</Label>
                 <Input
                   id="new-email"
                   type="email"
-                  value={form.getValues("email")}
+                  value={form.watch("email")}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => form.setValue("email", e.target.value)}
                   className={isRTL ? 'text-right' : 'text-left'}
                   dir={isRTL ? 'rtl' : 'ltr'}
@@ -143,7 +150,7 @@ export const UserAccountSettings: React.FC<UserAccountSettingsProps> = ({
               </div>
               <div className={`flex gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
                 <Button
-                  onClick={form.handleSubmit(handleEmailSaveClick)}
+                  onClick={handleEmailSaveClick}
                   disabled={isUpdatingUser}
                   className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700"
                 >
@@ -155,7 +162,18 @@ export const UserAccountSettings: React.FC<UserAccountSettingsProps> = ({
                       {userT("accountSettings.save")}
                     </>
                   )}
-                </Button>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setIsEditingEmail(false);
+                      form.reset();
+                    }}
+                    className={`${isRTL ? 'flex-row-reverse' : ''}`}
+                  >
+                    <X className="h-4 w-4" />
+                    <span className={`${isRTL ? 'ml-2' : 'mr-2'}`}>{userT("accountSettings.cancel")}</span>
+                  </Button>
 
               </div>
             </div>
@@ -171,7 +189,6 @@ export const UserAccountSettings: React.FC<UserAccountSettingsProps> = ({
                 variant="outline"
                 onClick={() => {
                   setIsEditingEmail(true);
-                  setEmailError("");
                 }}
               >
                 {userT("accountSettings.change")}
@@ -182,7 +199,7 @@ export const UserAccountSettings: React.FC<UserAccountSettingsProps> = ({
       </Card>
 
       {/* Password Settings */}
-      <Card>
+      <Card className="p-4">
         <CardHeader>
           <CardTitle className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
             <Lock className="w-5 h-5" />
@@ -190,7 +207,7 @@ export const UserAccountSettings: React.FC<UserAccountSettingsProps> = ({
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {successMessage && !isChangingPassword && (
+          {successMessage && !isChangingPassword &&  (
             <Alert className="border-green-500 bg-green-50 dark:bg-green-950/20">
               <Check className="h-4 w-4 text-green-600 dark:text-green-400" />
               <AlertDescription className="text-green-800 dark:text-green-200">
@@ -198,11 +215,11 @@ export const UserAccountSettings: React.FC<UserAccountSettingsProps> = ({
               </AlertDescription>
             </Alert>
           )}
-          {passwordError && isChangingPassword && (
+          {updateUserError && isChangingPassword && (
             <Alert className="border-red-500 bg-red-50 dark:bg-red-950/20">
               <AlertTriangle className="h-4 w-4 text-red-600 dark:text-red-400" />
               <AlertDescription className="text-red-800 dark:text-red-200">
-                {passwordError}
+                {updateUserError.data?.message}
               </AlertDescription>
             </Alert>
           )}
@@ -219,7 +236,6 @@ export const UserAccountSettings: React.FC<UserAccountSettingsProps> = ({
                 onClick={() => {
                   setIsChangingPassword(true);
                   setSuccessMessage("");
-                  setPasswordError("");
                 }}
               >
                 {userT("accountSettings.change")}
@@ -227,23 +243,15 @@ export const UserAccountSettings: React.FC<UserAccountSettingsProps> = ({
             </div>
           ) : (
             <div className="space-y-4">
-              <Alert>
-                <AlertTriangle className="h-4 w-4" />
-                <AlertDescription>
-                  {userT("accountSettings.passwordChangeConfirmation")}
-                </AlertDescription>
-              </Alert>
-
               {/* Current Password */}
               <div className={`space-y-2 ${isRTL ? 'text-right' : 'text-left'}`}>
-                <Label htmlFor="current-password">{userT("accountSettings.currentPassword")}</Label>
+                <Label htmlFor="current-password" className={`${isRTL ? 'flex-row-reverse' : ''}`}>{userT("accountSettings.currentPassword")}</Label>
                 <div className="relative">
                   <Input
                     id="current-password"
-                    type="password"
-                    value={form.getValues("password")}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => form.setValue("password", e.target.value)}
-                    className={`${isRTL ? 'pr-10 text-right' : 'pl-10'}`}
+                    {...form.register("password")}
+                    type={showCurrentPassword ? "text" : "password"}
+                    className={`${isRTL ? 'pr-10 text-right' : 'pl-10'} ${form.formState.errors.password ? 'border-red-500' : ''}`}
                     dir={isRTL ? 'rtl' : 'ltr'}
                     placeholder={userT("accountSettings.currentPasswordPlaceholder")}
                   />
@@ -251,24 +259,28 @@ export const UserAccountSettings: React.FC<UserAccountSettingsProps> = ({
                     type="button"
                     variant="ghost"
                     size="sm"
-                    onClick={() => form.setValue("password", form.getValues("password") === "password" ? "text" : "password")}
+                    onClick={() => setShowCurrentPassword(!showCurrentPassword)}
                     className={`absolute top-1/2 transform -translate-y-1/2 ${isRTL ? 'left-3' : 'right-3'} p-0 h-4 w-4`}
                   >
-                    {form.getValues("password") === "password" ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    {showCurrentPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </Button>
                 </div>
+                {form.formState.errors.password && (
+                  <p className={`text-red-500 text-sm ${isRTL ? 'text-right' : 'text-left'}`}>
+                    {form.formState.errors.password.message}
+                  </p>
+                )}
               </div>
 
               {/* New Password */}
               <div className={`space-y-2 ${isRTL ? 'text-right' : 'text-left'}`}>
-                <Label htmlFor="new-password">{userT("accountSettings.newPassword")}</Label>
+                <Label htmlFor="new-password" className={`${isRTL ? 'flex-row-reverse' : ''}`}>{userT("accountSettings.newPassword")}</Label>
                 <div className="relative">
                   <Input
                     id="new-password"
-                    type="password"
-                    value={form.getValues("newPassword")}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => form.setValue("newPassword", e.target.value)}
-                    className={`${isRTL ? 'pr-10 text-right' : 'pl-10'}`}
+                    {...form.register("newPassword")}
+                    type={showNewPassword ? "text" : "password"}
+                    className={`${isRTL ? 'pr-10 text-right' : 'pl-10'} ${form.formState.errors.newPassword ? 'border-red-500' : ''}`}
                     dir={isRTL ? 'rtl' : 'ltr'}
                     placeholder={userT("accountSettings.newPasswordPlaceholder")}
                   />
@@ -276,24 +288,28 @@ export const UserAccountSettings: React.FC<UserAccountSettingsProps> = ({
                     type="button"
                     variant="ghost"
                     size="sm"
-                    onClick={() => form.setValue("newPassword", form.getValues("newPassword") === "password" ? "text" : "password")}
+                    onClick={() => setShowNewPassword(!showNewPassword)}
                     className={`absolute top-1/2 transform -translate-y-1/2 ${isRTL ? 'left-3' : 'right-3'} p-0 h-4 w-4`}
                   >
-                    {form.getValues("newPassword") === "password" ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </Button>
                 </div>
+                {form.formState.errors.newPassword && (
+                  <p className={`text-red-500 text-sm ${isRTL ? 'text-right' : 'text-left'}`}>
+                    {form.formState.errors.newPassword.message}
+                  </p>
+                )}
               </div>
 
               {/* Confirm Password */}
               <div className={`space-y-2 ${isRTL ? 'text-right' : 'text-left'}`}>
-                <Label htmlFor="confirm-password">{userT("accountSettings.confirmPassword")}</Label>
+                <Label htmlFor="confirm-password" className={`${isRTL ? 'flex-row-reverse' : ''}`}>{userT("accountSettings.confirmPassword")}</Label>
                 <div className="relative">
                   <Input
                     id="confirm-password"
-                    type="password"
-                    value={form.getValues("newPasswordConfirmation")}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => form.setValue("newPasswordConfirmation", e.target.value)}
-                    className={`${isRTL ? 'pr-10 text-right' : 'pl-10'}`}
+                    {...form.register("newPasswordConfirmation")}
+                    type={showConfirmPassword ? "text" : "password"}
+                    className={`${isRTL ? 'pr-10 text-right' : 'pl-10'} ${form.formState.errors.newPasswordConfirmation ? 'border-red-500' : ''}`}
                     dir={isRTL ? 'rtl' : 'ltr'}
                     placeholder={userT("accountSettings.newPasswordConfirmationPlaceholder")}
                   />
@@ -301,19 +317,24 @@ export const UserAccountSettings: React.FC<UserAccountSettingsProps> = ({
                     type="button"
                     variant="ghost"
                     size="sm"
-                    onClick={() => form.setValue("newPasswordConfirmation", form.getValues("newPasswordConfirmation") === "password" ? "text" : "password")}
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     className={`absolute top-1/2 transform -translate-y-1/2 ${isRTL ? 'left-3' : 'right-3'} p-0 h-4 w-4`}
                   >
-                    {form.getValues("newPasswordConfirmation") === "password" ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </Button>
                 </div>
+                {form.formState.errors.newPasswordConfirmation && (
+                  <p className={`text-red-500 text-sm ${isRTL ? 'text-right' : 'text-left'}`}>
+                    {form.formState.errors.newPasswordConfirmation.message}
+                  </p>
+                )}
               </div>
 
               <div className={`flex gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
                 <Button
                   onClick={form.handleSubmit(handlePasswordChange)}
                   disabled={isUpdatingUser}
-                  className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700"
+                  className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 dark:text-white"
                 >
                   {isUpdatingUser ? (
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -329,12 +350,17 @@ export const UserAccountSettings: React.FC<UserAccountSettingsProps> = ({
                   onClick={() => {
                     setIsChangingPassword(false);
                     form.reset();
+                    form.clearErrors();
                     setSuccessMessage("");
-                    setPasswordError("");
+                    setShowCurrentPassword(false);
+                    setShowNewPassword(false);
+                    setShowConfirmPassword(false);
                   }}
                   disabled={isUpdatingUser}
+                  className={`${isRTL ? 'flex-row-reverse' : ''}`}
                 >
-                  {userT("accountSettings.cancel")}
+                  <X className="h-4 w-4" />
+                  <span className={`${isRTL ? 'ml-2' : 'mr-2'}`}>{userT("accountSettings.cancel")}</span>
                 </Button>
               </div>
             </div>
@@ -355,7 +381,7 @@ export const UserAccountSettings: React.FC<UserAccountSettingsProps> = ({
       </Card>
 
       {/* Delete Account */}
-      <Card className="border-red-200 dark:border-red-800">
+      <Card className="border-red-200 dark:border-red-800 p-4">
         <CardHeader>
           <CardTitle className={`flex items-center gap-2 text-red-600 ${isRTL ? 'flex-row-reverse' : ''}`}>
             <AlertTriangle className="w-5 h-5 text-red-600" />

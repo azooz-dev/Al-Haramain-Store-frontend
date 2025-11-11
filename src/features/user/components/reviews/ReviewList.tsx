@@ -123,7 +123,7 @@ export const ReviewList: React.FC<ReviewListProps> = ({ userId }) => {
             </p>
           </div>
         </div>
-        <Card className="p-12 text-center">
+        <Card className="p-12 text-center p-4">
           <p className="text-muted-foreground">
             {reviewT("emptyState.description")}
           </p>
@@ -187,7 +187,7 @@ export const ReviewList: React.FC<ReviewListProps> = ({ userId }) => {
             </p>
           </div>
         </div>
-        <Card className="p-12 text-center">
+        <Card className="p-12 text-center p-4">
           <p className="text-muted-foreground">
             {reviewT("errorDescription")}
           </p>
@@ -249,7 +249,7 @@ export const ReviewList: React.FC<ReviewListProps> = ({ userId }) => {
           {reviewableItemsByOrder.map((orderGroup) => (
             <Card 
               key={orderGroup.orderId} 
-              className="p-6 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border border-amber-200 dark:border-amber-800"
+              className="p-4 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border border-amber-200 dark:border-amber-800"
             >
               {/* Order Header */}
               <div className={`flex items-center justify-between mb-4 pb-4 border-b border-amber-200 dark:border-amber-800 ${isRTL ? 'flex-row-reverse' : ''}`}>

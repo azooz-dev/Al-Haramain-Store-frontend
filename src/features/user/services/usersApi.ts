@@ -12,6 +12,8 @@ import {
 	CreateReviewResponse,
 	CreateReviewRequest,
 } from "../types";
+import { extractErrorMessage } from "@/shared/utils/extractErrorMessage";
+import type { RequestFailure } from "@/shared/types";
 
 const rawBaseQuery = fetchBaseQuery({
 	baseUrl: APP_CONFIG.apiBaseUrl,
@@ -53,6 +55,9 @@ export const usersApi = createApi({
 				method: "PUT",
 				body: data,
 			}),
+			transformErrorResponse: (response: unknown) => {
+				return extractErrorMessage(response as RequestFailure);
+			},
 			invalidatesTags: (_result, _error, { userId }) => [
 				{ type: "User", id: "CURRENT" },
 				{ type: "User", id: userId },
@@ -77,10 +82,10 @@ export const usersApi = createApi({
 		}),
 
 		createReview: builder.mutation<CreateReviewResponse, CreateReviewRequest>({
-			query: ({ userId, orderId, itemId, rating, comment }) => ({
+			query: ({ userId, orderId, itemId, rating, comment, locale }) => ({
 				url: `/api/users/${userId}/orders/${orderId}/items/${itemId}/reviews`,
 				method: "POST",
-				body: { rating, comment },
+				body: { rating, comment, locale },
 			}),
 			invalidatesTags: (_result, _error, { userId, orderId, itemId }) => [
 				{ type: "User", id: "ORDERS" },

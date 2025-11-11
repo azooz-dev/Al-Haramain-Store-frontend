@@ -9,7 +9,7 @@ interface UserAddressesProps {
 export const UserAddresses: React.FC<UserAddressesProps> = ({ userId }) => {
 
     return (
-    <Card className="mb-6 pt-4">
+    <Card className="mb-6 p-4">
       <CardContent>
         <AddressSelector
           selectedAddressId={null}

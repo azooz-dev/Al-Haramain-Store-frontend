@@ -44,7 +44,7 @@ export const ReviewItem: React.FC<ReviewItemProps> = ({ review, item }) => {
 
     return (
     <Card 
-      className={`p-6 transition-all duration-500 ease-in-out transform ${
+        className={`p-4 transition-all duration-500 ease-in-out transform ${
         ('_reviewCreated' in review && review._reviewCreated) 
           ? 'opacity-100 scale-100 translate-y-0 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border-green-200 dark:border-green-800' 
           : 'bg-background/50 border-border/50 hover:shadow-md hover:border-amber-200 dark:hover:border-amber-600'

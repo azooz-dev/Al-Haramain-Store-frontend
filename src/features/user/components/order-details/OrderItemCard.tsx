@@ -38,7 +38,7 @@ export const OrderItemCard: React.FC<OrderItemCardProps> = ({ item, index }) => 
   return (
     <div
       key={index}
-      className={`border rounded-xl p-4 bg-gradient-to-r ${
+      className={`border rounded-xl p-4 bg-background ${
         isRTL ? 'from-slate-50 to-white' : 'from-white to-slate-50'
       } shadow-sm hover:shadow-md transition-all duration-200`}
     >

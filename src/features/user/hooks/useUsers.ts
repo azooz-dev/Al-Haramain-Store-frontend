@@ -5,12 +5,15 @@ import {
 	useCreateReviewMutation,
 } from "../services/usersApi";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { UpdateUserRequest, DeleteUserRequest, CreateReviewRequest } from "../types";
+import {
+	UpdateUserRequest,
+	DeleteUserRequest,
+	DeleteUserResponse,
+	CreateReviewRequest,
+} from "../types";
 import { useCallback, useEffect } from "react";
 import { useAppDispatch } from "@/store/hooks";
 import { setOrders, updateProfile, deleteUserAction } from "@/store/slices/userSlice";
-import { extractErrorMessage } from "@/shared/utils/extractErrorMessage";
-import type { RequestFailure } from "@/shared/types";
 import { User } from "@/features/auth/types/index";
 
 export const useUsers = () => {
@@ -41,35 +44,31 @@ export const useUsers = () => {
 
 	const updateUser = useCallback(
 		async (payload: UpdateUserRequest): Promise<User | string> => {
-			try {
-				const response = await updateUserMutation(payload).unwrap();
-				if (response.status === "success") {
-					dispatch(updateProfile(response.data));
-					return response.data;
-				}
-				return response.message || "Update failed. Please try again.";
-			} catch (error) {
-				const errorMessage = extractErrorMessage(error as RequestFailure);
-				return errorMessage.data.message;
+			const response = await updateUserMutation(payload).unwrap();
+			if (response.status === "success") {
+				dispatch(updateProfile(response.data));
+				return response.data;
 			}
+			return response.message;
 		},
 		[updateUserMutation, dispatch]
 	);
 
 	const deleteUser = useCallback(
-		async (payload: DeleteUserRequest) => {
+		async (payload: DeleteUserRequest): Promise<DeleteUserResponse> => {
 			const response = await deleteUserMutation(payload).unwrap();
-			if (response.status === "success") {
+			if (response.data) {
 				dispatch(deleteUserAction());
-				return true;
+				return response;
 			}
-			return false;
+			return { data: {} as Partial<User> };
 		},
 		[deleteUserMutation, dispatch]
 	);
 
 	const createReview = useCallback(
 		async ({ userId, orderId, itemId, rating, comment, locale }: CreateReviewRequest) => {
+			console.log(locale);
 			const response = await createReviewMutation({
 				userId: userId,
 				orderId: orderId,

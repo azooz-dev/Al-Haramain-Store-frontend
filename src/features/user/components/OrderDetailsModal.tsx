@@ -28,13 +28,13 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-background dark:bg-black">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold flex items-center gap-3">
             <Package className="h-6 w-6 text-primary" />
             {featureT("orderDetailsModal.title")}
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="text-gray-600 dark:text-white">
             {featureT("orderDetailsModal.description")}
           </DialogDescription>
         </DialogHeader>

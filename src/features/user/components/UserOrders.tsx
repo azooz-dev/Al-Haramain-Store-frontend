@@ -35,7 +35,7 @@ export const UserOrders: React.FC<UserOrdersProps> = ({ orders, isLoading, error
 
   if (isLoading) {
         return (
-      <Card className="mb-6">
+      <Card className="mb-6 p-4">
         <CardHeader>
           <CardTitle className={`flex items-center gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
             <Package className="h-6 w-6 text-amber-600" />
@@ -57,7 +57,7 @@ export const UserOrders: React.FC<UserOrdersProps> = ({ orders, isLoading, error
 
   if (error) {
         return (
-      <Card className="mb-6">
+      <Card className="mb-6 p-4">
         <CardHeader>
           <CardTitle className={`flex items-center gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
             <Package className="h-6 w-6 text-amber-600" />
@@ -80,7 +80,7 @@ export const UserOrders: React.FC<UserOrdersProps> = ({ orders, isLoading, error
   }
 
     return (
-    <Card className="mb-6">
+    <Card className="mb-6 p-4">
       <CardHeader>
         <CardTitle className={`flex items-center gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
           <Package className="h-6 w-6 text-amber-600" />
@@ -126,7 +126,7 @@ export const UserOrders: React.FC<UserOrdersProps> = ({ orders, isLoading, error
 
                 <TabsContent value="all" className="space-y-4 mt-6">
                   {Array.isArray(orders) && orders.filter(order => selectedTab === 'all' || order.status.toLowerCase() === selectedTab).map((order) => (
-                <Card key={order.orderNumber} className="border-l-4 border-l-amber-500">
+                <Card key={order.orderNumber} className="border-l-4 border-l-amber-500 p-2">
                   <CardContent className="p-4">
                     <div className={`flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
                       <div className="flex-1">
@@ -166,7 +166,7 @@ export const UserOrders: React.FC<UserOrdersProps> = ({ orders, isLoading, error
             
                 <TabsContent value="pending" className="space-y-4 mt-6">
                   {Array.isArray(orders) && orders.filter(order => order.status.toLowerCase() === 'pending').map((order) => (
-                <Card key={order.orderNumber} className="border-l-4 border-l-yellow-500">
+                <Card key={order.orderNumber} className="border-l-4 border-l-yellow-500 p-2">
                   <CardContent className="p-4">
                     <div className={`flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
                       <div className="flex-1">
@@ -206,7 +206,7 @@ export const UserOrders: React.FC<UserOrdersProps> = ({ orders, isLoading, error
             
                 <TabsContent value="processing" className="space-y-4 mt-6">
                   {Array.isArray(orders) && orders.filter(order => order.status.toLowerCase() === 'processing').map((order) => (
-                <Card key={order.orderNumber} className="border-l-4 border-l-blue-500">
+                <Card key={order.orderNumber} className="border-l-4 border-l-blue-500 p-2">
                   <CardContent className="p-4">
                     <div className={`flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
                       <div className="flex-1">

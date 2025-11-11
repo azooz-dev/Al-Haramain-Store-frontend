@@ -68,7 +68,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
   }
 
     return (
-    <Card className="mb-6">
+    <Card className="mb-6 p-4">
       <CardHeader>
         <CardTitle className={`flex items-center gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
           <UserIcon className="h-6 w-6 text-amber-600" />
@@ -85,10 +85,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
             <Label htmlFor="firstName">{ userT("profile.firstName") }</Label>
             <Input
               id="firstName"
-              value={form.getValues('firstName')}
-              onChange={(e) => {
-                form.setValue('firstName', e.target.value);
-              }}
+              {...form.register('firstName')}
               disabled={!isEditing}
               className={`${isRTL ? 'text-right rtl' : 'text-left ltr'} ${form.formState.errors.firstName ? 'border-red-500' : ''
                 }`}
@@ -104,10 +101,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
             <Label htmlFor="lastName">{ userT("profile.lastName") }</Label>
             <Input
               id="lastName"
-              value={form.getValues('lastName')}
-              onChange={(e) => {
-                form.setValue('lastName', e.target.value);
-              }}
+              {...form.register('lastName')}
               disabled={!isEditing}
               className={`${isRTL ? 'text-right rtl' : 'text-left ltr'} ${form.formState.errors.lastName ? 'border-red-500' : ''
                 }`}
@@ -125,10 +119,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
             <Input
               id="phone"
               type="tel"
-              value={form.getValues('phone')}
-              onChange={(e) => {
-                form.setValue('phone', e.target.value);
-              }}
+              {...form.register('phone')}
               disabled={!isEditing}
               className={`${isRTL ? 'text-right rtl' : 'text-left ltr'} ${form.formState.errors.phone ? 'border-red-500' : ''
                 }`}

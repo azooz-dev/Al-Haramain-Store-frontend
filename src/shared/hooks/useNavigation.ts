@@ -79,6 +79,18 @@ export const useNavigation = () => {
 		navigate("/checkout", { replace: true });
 	};
 
+	const navigateToDashboard = () => {
+		navigate("/dashboard", { replace: true });
+	};
+
+	const navigateToDashboardOrders = () => {
+		navigate("/dashboard/orders", { replace: true });
+	};
+
+	const navigateToDashboardSettings = () => {
+		navigate("/dashboard/settings", { replace: true });
+	};
+
 	return {
 		navigateTo,
 		navigateToSignIn,
@@ -97,5 +109,8 @@ export const useNavigation = () => {
 		navigateToContactPage,
 		navigateToCart,
 		navigateToCheckout,
+		navigateToDashboard,
+		navigateToDashboardOrders,
+		navigateToDashboardSettings,
 	};
 };

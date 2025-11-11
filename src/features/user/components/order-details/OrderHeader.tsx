@@ -28,7 +28,7 @@ export const OrderHeader: React.FC<OrderHeaderProps> = ({ order }) => {
   };
 
   return (
-    <Card>
+    <Card className="p-4">
       <CardHeader className="pb-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>

@@ -13,7 +13,7 @@ export const UserReviews: React.FC<UserReviewsProps> = ({ userId }) => {
   const { t: featureT } = useFeatureTranslations("user");
   const { isRTL } = useApp();
   return (
-    <Card className="mb-6">
+    <Card className="mb-6 p-4">
       <CardHeader>
         <CardTitle className={`flex items-center gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
           <Star className="h-6 w-6 text-amber-600" />

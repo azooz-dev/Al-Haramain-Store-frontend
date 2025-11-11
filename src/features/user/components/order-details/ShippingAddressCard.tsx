@@ -15,7 +15,7 @@ export const ShippingAddressCard: React.FC<ShippingAddressCardProps> = ({ addres
   const { t: featureT } = useFeatureTranslations("user");
 
   return (
-    <Card className={`${isRTL ? 'border-r-4 border-r-primary' : 'border-l-4 border-l-primary'}`}>
+    <Card className={`p-4 bg-[#0a0a0a] ${isRTL ? 'border-r-4 border-r-primary' : 'border-l-4 border-l-primary'}`}>
       <CardHeader className="pb-4">
         <CardTitle className="flex items-center gap-3 text-lg">
           <div className="p-2 bg-primary/10 rounded-full">
@@ -25,7 +25,7 @@ export const ShippingAddressCard: React.FC<ShippingAddressCardProps> = ({ addres
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className={`bg-gradient-to-r from-slate-50 to-gray-50 rounded-xl p-6 ${isRTL ? 'text-right' : 'text-left'}`}>
+        <div className={`bg-background rounded-xl p-6 ${isRTL ? 'text-right' : 'text-left'}`}>
           <div className={`flex items-start gap-4 ${isRTL ? 'flex-row-reverse' : 'flex-row'}`}>
             <div className="p-3 bg-primary/10 rounded-full flex-shrink-0">
               {address.addressType === 'home' ? (
@@ -38,7 +38,7 @@ export const ShippingAddressCard: React.FC<ShippingAddressCardProps> = ({ addres
               <div className="flex items-center gap-3">
                 <h4 className="font-bold text-lg text-gray-900">{address.label}</h4>
                 <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
-                  {featureT(`orderDetailsModal.addressType.${address.addressType}`)}
+                  {featureT(`orderDetailsModal.addressType.${address.addressType.charAt(0).toUpperCase() + address.addressType.slice(1)}`)}
                 </Badge>
               </div>
 

@@ -62,7 +62,7 @@ export const SignUpPage: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left Side - Sign Up Form */}
           <div className="w-full max-w-md mx-auto lg:mx-0 order-2 lg:order-1">
-            <Card className="bg-card/50 backdrop-blur-sm border-0 shadow-2xl">
+            <Card className="bg-card/50 backdrop-blur-sm border-0 shadow-2xl p-4">
               <CardHeader className="text-center pb-8">
                 <div className="w-16 h-16 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
                   <div className="w-8 h-8 bg-amber-600 rounded-full flex items-center justify-center">

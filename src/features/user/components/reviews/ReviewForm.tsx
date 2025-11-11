@@ -90,14 +90,14 @@ export const ReviewForm: React.FC<ReviewFormProps> = ({
   }
 
   return (
-    <Card className="p-6 bg-card/50 backdrop-blur-sm border border-amber-200 dark:border-amber-800">
+    <Card className="p-6 bg-card/50 backdrop-blur-sm border border-amber-200 dark:border-amber-800 p-4">
       <div className={`flex items-start gap-4 mb-6 ${isRTL ? 'flex-row-reverse' : ''}`}>
         <ImageWithFallback
           src={getItemImage()}
           alt={getItemTitle()}
           className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
         />
-        <div className={`flex-1 ${isRTL ? 'text-right' : 'text-left'}`}>
+        <div className={`${isRTL ? 'text-right' : 'text-left'}`}>
           <h3 className="font-medium text-foreground">
             {getItemTitle()}
           </h3>
@@ -148,7 +148,7 @@ export const ReviewForm: React.FC<ReviewFormProps> = ({
           )}
         </div>
 
-      <form onSubmit={form.handleSubmit((data) => handleSubmit(data, orderId, orderItem.identifier))} className="space-y-6">
+      <form onSubmit={form.handleSubmit((data) => handleSubmit(data, orderId, orderItem.identifier))} className="space-y-6 flex-1">
         {/* Rating */}
         <div className={`space-y-2 ${isRTL ? 'text-right' : 'text-left'}`}>
           <label className="text-sm font-medium text-foreground">

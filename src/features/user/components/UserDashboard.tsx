@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { UserAccountSettings } from './UserAccountSettings';
 import { UserProfile } from './UserProfile';
 import { UserOrders } from './UserOrders';
@@ -15,6 +15,7 @@ import { useAuth } from '@/features/auth/hooks/useAuth';
 import { useLocation } from 'react-router-dom';
 import { DashboardTab } from '@/shared/types';
 import { User } from '@/features/auth/types';
+import { useNavigation } from '@/shared/hooks/useNavigation';
 
 export const UserDashboard: React.FC = () => {
   const { isRTL } = useApp();
@@ -22,9 +23,10 @@ export const UserDashboard: React.FC = () => {
   const { currentUser, handleSignOut } = useAuth();
   const { userOrdersData, isLoadingUserOrders, userOrdersError } = useUsers();
   const location = useLocation();
+  const { navigateToDashboard, navigateToDashboardOrders, navigateToDashboardSettings } = useNavigation();
 
-  const getInitialTab = () => {
-    const pathSegments = location.pathname.split('/');
+  const getTabFromPath = (pathname: string): DashboardTab => {
+    const pathSegments = pathname.split('/');
     const lastSegment = pathSegments[pathSegments.length - 1];
 
     if (lastSegment === 'orders') return 'orders';
@@ -32,7 +34,27 @@ export const UserDashboard: React.FC = () => {
     return 'profile';
   }
 
-  const [activeTab, setActiveTab] = useState<DashboardTab>(getInitialTab());
+  const [activeTab, setActiveTab] = useState<DashboardTab>(getTabFromPath(location.pathname));
+
+  // Sync activeTab with URL path whenever location changes
+  useEffect(() => {
+    const tabFromPath = getTabFromPath(location.pathname);
+    setActiveTab(tabFromPath);
+  }, [location.pathname]);
+
+  // Update URL when tab changes manually
+  const handleTabChange = (value: string) => {
+    const newTab = value as DashboardTab;
+    setActiveTab(newTab);
+    
+    if (newTab === 'orders') {
+      navigateToDashboardOrders();
+    } else if (newTab === 'settings') {
+      navigateToDashboardSettings();
+    } else {
+      navigateToDashboard();
+    }
+  };
 
   if (!currentUser) {
     return (
@@ -74,7 +96,7 @@ export const UserDashboard: React.FC = () => {
         </div>
       </div>
 
-      <Tabs value={activeTab} onValueChange={(value: string) => setActiveTab(value as DashboardTab)} className="w-full">
+      <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
         <TabsList
           className={`grid w-full grid-cols-5 mb-8 ${isRTL ? '[direction:rtl]' : ''}`}>
           <TabsTrigger value="profile">{isRTL ? userT("dashboard.profile") : userT("dashboard.profile")}</TabsTrigger>

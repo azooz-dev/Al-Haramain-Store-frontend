@@ -31,7 +31,7 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
 
     return (
     <>
-      <Card className="p-6 bg-card/60 backdrop-blur-sm hover:shadow-xl transition-all duration-300 border border-border/60 rounded-xl">
+      <Card className="p-6 bg-card/60 backdrop-blur-sm hover:shadow-xl transition-all duration-300 border border-border/60 rounded-xl p-4">
         <div className={`flex items-start gap-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
           {/* Product Info (if shown) */}
           {showProductInfo && product && (

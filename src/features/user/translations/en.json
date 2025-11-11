@@ -68,6 +68,7 @@
     "newPasswordConfirmationPlaceholder": "Confirm your new password",
     "update": "Update Password",
     "cancel": "Cancel",
+    "cancelEditEmail": "Cancel Edit",
     "emailChangeConfirmation": "Confirm Email Change",
     "emailChangeConfirmationDescription": "Changing your email address will log you out. You'll need to log in again with your new email address. Do you want to continue?",
     "continueAndLogout": "Continue & Logout",
@@ -103,7 +104,7 @@
     "orderItems": "Order Items",
     "shippingAddress": "Shipping Address",
     "addressType": {
-      "home": "Home",
+      "Home": "Home",
       "work": "Work"
     },
     "defaultAddress": "Default Address",

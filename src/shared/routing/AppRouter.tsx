@@ -17,6 +17,7 @@ import { AboutPage } from "@/features/home/components/AboutPage";
 import { ContactPage } from "@/features/home/components/ContactPage";
 import { CartPage } from "@/features/cart/components/CartPage";
 import { CheckoutPage } from "@/features/orders/components/CheckoutPage";
+import { UserDashboard } from "@/features/user/components/UserDashboard";
 
 const router = createBrowserRouter([
   {
@@ -86,6 +87,18 @@ const router = createBrowserRouter([
   {
     path: "/checkout",
     element: <Layout><CheckoutPage /></Layout>,
+  },
+  {
+    path: "/dashboard",
+    element: <Layout><UserDashboard /></Layout>,
+  },
+  {
+    path: "/dashboard/orders",
+    element: <Layout><UserDashboard /></Layout>,
+  },
+  {
+    path: "/dashboard/settings",
+    element: <Layout><UserDashboard /></Layout>,
   },
   {
     path: "*",

@@ -3,7 +3,11 @@ import { Order, OrderItem } from "@/features/orders/types";
 
 export interface UpdateUserRequest {
 	userId: number;
-	data: Partial<User>;
+	data: Partial<User> & {
+		current_password?: string;
+		password?: string;
+		password_confirmation?: string;
+	};
 }
 
 export interface UpdateUserResponse {
@@ -17,8 +21,7 @@ export interface DeleteUserRequest {
 }
 
 export interface DeleteUserResponse {
-	message: string;
-	status: string;
+	data: Partial<User>;
 }
 
 export interface GetUserOrdersRequest {
