@@ -87,20 +87,15 @@ export interface OrderRequest {
 	coupon_code?: string;
 	address_id: number;
 	paymentMethod: "cash_on_delivery" | "credit_card";
-	items: Array<
-		| {
-				colorId: number;
-				variant_id: number;
-				quantity: number;
-				orderable_type: string;
-				orderable_id: number;
-		  }
-		| {
-				quantity: number;
-				orderable_type: string;
-				orderable_id: number;
-		  }
-	>;
+	items: OrderItemRequest[];
+}
+
+export interface OrderItemRequest {
+	orderable_type: string;
+	orderable_id: number;
+	quantity: number;
+	color_id?: number;
+	variant_id?: number;
 }
 
 export interface OrderResponse {
