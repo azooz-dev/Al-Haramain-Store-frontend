@@ -15,5 +15,10 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     return <Navigate to="/signin" state={{ from: location }} replace />;
   }
 
+  if (isAuthenticated && (location.pathname === '/signin' || location.pathname === '/signup')) {
+    // Redirect to home page if user is authenticated and tries to access signin or signup page
+    return <Navigate to="/" replace />;
+  }
+
   return <>{ children }</>
 }

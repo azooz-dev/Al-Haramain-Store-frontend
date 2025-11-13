@@ -18,6 +18,7 @@ import { ContactPage } from "@/features/home/components/ContactPage";
 import { CartPage } from "@/features/cart/components/CartPage";
 import { CheckoutPage } from "@/features/orders/components/CheckoutPage";
 import { UserDashboard } from "@/features/user/components/UserDashboard";
+import { ProtectedRoute } from "./ProtectedRoute";
 
 const router = createBrowserRouter([
   {
@@ -70,7 +71,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/favorites",
-    element: <Layout><FavoritesPage /></Layout>,
+    element: <ProtectedRoute><Layout><FavoritesPage /></Layout></ProtectedRoute>,
   },
   {
     path: "/offers",
@@ -86,19 +87,19 @@ const router = createBrowserRouter([
   },
   {
     path: "/checkout",
-    element: <Layout><CheckoutPage /></Layout>,
+    element: <ProtectedRoute><Layout><CheckoutPage /></Layout></ProtectedRoute>,
   },
   {
     path: "/dashboard",
-    element: <Layout><UserDashboard /></Layout>,
+    element: <ProtectedRoute><Layout><UserDashboard /></Layout></ProtectedRoute>,
   },
   {
     path: "/dashboard/orders",
-    element: <Layout><UserDashboard /></Layout>,
+    element: <ProtectedRoute><Layout><UserDashboard /></Layout></ProtectedRoute>,
   },
   {
     path: "/dashboard/settings",
-    element: <Layout><UserDashboard /></Layout>,
+    element: <ProtectedRoute><Layout><UserDashboard /></Layout></ProtectedRoute>,
   },
   {
     path: "*",
