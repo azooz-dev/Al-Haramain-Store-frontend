@@ -1,0 +1,14 @@
+{
+  "cardInformation": {
+    "cardholderName": "اسم حامل البطاقة",
+    "cardholderNamePlaceholder": "أحمد محمد",
+    "cardNumber": "رقم البطاقة",
+    "cardNumberPlaceholder": "1234 5678 9012 3456",
+    "expiryDate": "تاريخ الانتهاء",
+    "expiryDatePlaceholder": "MM/YY",
+    "cvv": "CVV",
+    "cvvPlaceholder": "123",
+    "securityNote": "معلومات بطاقتك آمنة ومشفرة"
+  }
+}
+

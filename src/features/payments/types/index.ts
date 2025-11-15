@@ -1,14 +1,9 @@
-import { OrderItemRequest } from "@/features/orders/types";
+import { OrderRequest } from "@/features/orders/types";
 
-export interface CreatePaymentIntentRequest {
+export interface CreatePaymentIntentRequest extends OrderRequest {
 	amount: number;
 	currency?: string;
-	user_id: number;
-	items: OrderItemRequest[];
-	coupon_code?: string;
-	address_id: number;
-	total_amount: number;
-	payment_method: "cash_on_delivery" | "credit_card";
+	totalAmount: number;
 }
 
 export interface CreatePaymentIntentResponse {

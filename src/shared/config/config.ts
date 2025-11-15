@@ -7,5 +7,5 @@ export const APP_CONFIG = {
 	maxCartItems: 100,
 	apiBaseUrl: import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000",
 	sessionDomain: import.meta.env.VITE_SESSION_DOMAIN || "127.0.0.1",
-	stripePublishKey: import.meta.env.STRIPE_PUBLISH_KEY || "",
+	stripePublishKey: import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || "",
 } as const;

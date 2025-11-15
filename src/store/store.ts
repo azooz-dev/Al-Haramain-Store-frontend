@@ -18,6 +18,7 @@ import { offersApi } from "@/features/offers/services/offerApi";
 import { ordersApi } from "@/features/orders/services/ordersApi";
 import { addressApi } from "@/shared/services/addressesApi";
 import { usersApi } from "@/features/user/services/usersApi";
+import { stripeApi } from "@/features/payments/services/stripeApi";
 
 const persistConfig = {
 	key: "root",
@@ -44,6 +45,7 @@ const rootReducer = combineReducers({
 	[categoryApi.reducerPath]: categoryApi.reducer,
 	[addressApi.reducerPath]: addressApi.reducer,
 	[ordersApi.reducerPath]: ordersApi.reducer,
+	[stripeApi.reducerPath]: stripeApi.reducer,
 	[usersApi.reducerPath]: usersApi.reducer,
 });
 
@@ -66,7 +68,8 @@ export const store = configureStore({
 			.concat(ordersApi.middleware)
 			.concat(addressApi.middleware)
 			.concat(offersApi.middleware)
-			.concat(usersApi.middleware),
+			.concat(usersApi.middleware)
+			.concat(stripeApi.middleware),
 });
 
 // Persistor
