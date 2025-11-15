@@ -1,12 +1,7 @@
 import { useState, useCallback } from "react";
-import {
-	loadStripe,
-	Stripe,
-	StripeElements,
-	StripeElement,
-	StripeCardElement,
-} from "@stripe/stripe-js";
+import { loadStripe, Stripe, StripeElements } from "@stripe/stripe-js";
 import { BillingDetails, PaymentIntent } from "@stripe/stripe-js";
+import { CardNumberElement, CardExpiryElement, CardCvcElement } from "@stripe/react-stripe-js";
 import { APP_CONFIG } from "@/shared/config/config";
 import { useCreatePaymentIntentMutation } from "../services/stripeApi";
 import { StripePaymentError, CreatePaymentIntentRequest } from "../types";
@@ -21,8 +16,9 @@ interface UseStripePaymentReturn {
 	createPaymentIntent: (data: CreatePaymentIntentRequest) => Promise<string | null>;
 	confirmPayment: (
 		clientSecret: string,
-		cardElement: StripeElement,
-		BillingDetails: BillingDetails
+		billingDetails: BillingDetails,
+		stripeInstance: Stripe | null,
+		elementsInstance: StripeElements | null
 	) => Promise<PaymentIntent | null>;
 	initializeStripe: () => Promise<void>;
 }
@@ -58,7 +54,16 @@ export const useStripePayment = (): UseStripePaymentReturn => {
 			try {
 				setIsLoading(true);
 				setError(null);
-				const response = await createPaymentIntentMutation(data).unwrap();
+				const response = await createPaymentIntentMutation({
+					amount: data.amount,
+					userId: data.userId,
+					items: data.items,
+					addressId: data.addressId,
+					totalAmount: data.totalAmount,
+					paymentMethod: data.paymentMethod,
+					currency: data.currency || "usd",
+					couponCode: data.couponCode,
+				}).unwrap();
 
 				if (response.data.client_secret) {
 					return response.data.client_secret;
@@ -83,21 +88,43 @@ export const useStripePayment = (): UseStripePaymentReturn => {
 	const confirmPayment = useCallback(
 		async (
 			clientSecret: string,
-			cardElement: StripeElement,
-			billingDetails: BillingDetails
+			billingDetails: BillingDetails,
+			stripeInstance: Stripe | null,
+			elementsInstance: StripeElements | null
 		): Promise<PaymentIntent | null> => {
-			if (!stripe || !cardElement) return null;
+			if (!stripeInstance || !elementsInstance) {
+				console.error("Cannot confirm payment: Stripe or Elements not initialized");
+				setError({
+					type: "initialization_error",
+					message: "Stripe or Elements not initialized",
+				});
+				return null;
+			}
+
+			// Get card elements from Elements instance
+			const cardNumber = elementsInstance.getElement(CardNumberElement);
+			const cardExpiry = elementsInstance.getElement(CardExpiryElement);
+			const cardCvc = elementsInstance.getElement(CardCvcElement);
+
+			if (!cardNumber || !cardExpiry || !cardCvc) {
+				console.error("Card elements not found. Please enter your card details");
+				setError({
+					type: "element_error",
+					message: "Card elements not found. Please enter your card details",
+				});
+				return null;
+			}
 
 			setIsLoading(true);
 			setError(null);
 
 			try {
-				const { error: confirmError, paymentIntent } = await stripe.confirmCardPayment(
+				const { error: confirmError, paymentIntent } = await stripeInstance.confirmCardPayment(
 					clientSecret,
 					{
 						payment_method: {
-							card: cardElement as StripeCardElement,
-							billing_details: (billingDetails as BillingDetails) || {},
+							card: cardNumber,
+							billing_details: billingDetails || {},
 						},
 					}
 				);
@@ -122,6 +149,7 @@ export const useStripePayment = (): UseStripePaymentReturn => {
 				});
 				return null;
 			} catch (error) {
+				console.error("Payment confirmation exception:", error);
 				setError({
 					type: "confirmation_error",
 					message:
@@ -133,7 +161,7 @@ export const useStripePayment = (): UseStripePaymentReturn => {
 				setIsLoading(false);
 			}
 		},
-		[stripe]
+		[]
 	);
 
 	return {

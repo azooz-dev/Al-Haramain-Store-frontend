@@ -12,34 +12,52 @@ import { OrderSummary } from './OrderSummary';
 import type { Address } from '@/shared/types';
 import { useOrders } from '../hooks/useOrders';
 import { useFeatureTranslations } from '@/shared/hooks/useTranslation';
-import { OrderRequest, PaymentFormData } from '../types';
+import { OrderRequest } from '../types';
 import { useNavigation } from '@/shared/hooks/useNavigation';
 import { useAddress } from '@/shared/hooks/useAddress';
+import { useStripePayment } from '@/features/payments/hooks/useStripePayment';
+import { Elements, useStripe, useElements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+import { APP_CONFIG } from '@/shared/config/config';
 
-export const CheckoutPage: React.FC = () => {
+// Initialize Stripe promise (shared instance - same one used in Elements provider)
+const stripePromise = loadStripe(APP_CONFIG.stripePublishKey);
+
+// Main checkout component (uses Stripe hooks - must be inside Elements provider)
+const CheckoutContent: React.FC = () => {
   const { currentUser } = useAuth();
   const { isRTL } = useApp();
   const { t: orderT } = useFeatureTranslations("orders");
   const { cartItems, cartCalculations, handleSetDiscount, handleClearCart, discountAmount, discountType } = useCart();
   const { createOrder, isCreatingOrder, getCoupon, isLoadingCoupon } = useOrders();
   const { addresses } = useAddress();
+  const { navigateToHome, navigateToProducts, navigateToCart } = useNavigation();
+
+  // Get Stripe and Elements instances from Elements provider (now inside Elements context)
+  const stripe = useStripe();
+  const elements = useElements();
+  
+  // Stripe payment hook
+  const { 
+    createPaymentIntent,
+    confirmPayment,
+    isLoading: isStripeLoading,
+  } = useStripePayment();
+  
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedAddressId, setSelectedAddressId] = useState<number | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<'cash_on_delivery' | 'credit_card'>('cash_on_delivery');
   const [couponCode, setCouponCode] = useState('');
+  const [appliedCouponCode, setAppliedCouponCode] = useState<string | null>(null);
   const [orderComplete, setOrderComplete] = useState(false);
-  const [formData, setFormData] = useState<PaymentFormData>({
-    creditCardName: '',
-    creditCardNumber: '',
-    creditCardExpirationDate: '',
-    creditCardCvv: '',
-  });
-  const { navigateToHome, navigateToProducts, navigateToCart } = useNavigation();
+  const [cardholderName, setCardholderName] = useState('');
+  const [cardElementsReady, setCardElementsReady] = useState(false);
+
 
   const canProceedToStep2 = selectedAddressId !== null;
   const canProceedToStep3 = canProceedToStep2 && (
     paymentMethod === 'cash_on_delivery' ||
-    (paymentMethod === 'credit_card' && formData.creditCardNumber && formData.creditCardExpirationDate && formData.creditCardCvv && formData.creditCardName)
+    (paymentMethod === 'credit_card' && cardElementsReady)
   );
 
   const steps = [
@@ -48,13 +66,18 @@ export const CheckoutPage: React.FC = () => {
     { number: 3, title: orderT("checkoutPage.steps.review"), icon: Check },
   ];
 
+  const handleCardElementsReady = () => {
+    setCardElementsReady(true);
+  }
+
+
   const handleNextStep = () => {
     if (currentStep < 3) {
       setCurrentStep(currentStep + 1);
     } else {
       setCurrentStep(1);
     }
-  }
+  };
 
   const handlePreviousStep = () => {
     if (currentStep > 1) {
@@ -62,88 +85,164 @@ export const CheckoutPage: React.FC = () => {
     } else {
       setCurrentStep(3);
     }
-  }
+  };
 
   const handleApplyCoupon = async () => {
-    console.log('handleApplyCoupon', couponCode);
-    if (!couponCode.trim()) return;
+    if (!couponCode.trim() || appliedCouponCode === couponCode) return;
     try {
       const coupon = await getCoupon(couponCode);
       if (coupon) {
+        setAppliedCouponCode(coupon.data.code);
         handleSetDiscount(coupon.data.discount_amount, coupon.data.type as 'fixed' | 'percentage');
       }
     } catch (error) {
-      console.error('Error applying coupon:', error);
+      console.error('Error applying coupon:', error); // Temp message to added the notification later
     }
   };
 
   const handleRemoveCoupon = () => {
     handleSetDiscount(0, 'fixed');
-  }
+    setAppliedCouponCode(null);
+  };
 
   const handlePlaceOrder = async () => {
-    if (!currentUser?.identifier || !selectedAddressId) return;
+    if (!currentUser?.identifier || !selectedAddressId) {
+      console.log('Please complete all required fields'); // Temp message to added the notification later
+      return;
+    }
+
     try {
       const orderData: OrderRequest = {
-        user_id: currentUser.identifier,
-        address_id: selectedAddressId,
+        userId: currentUser.identifier,
+        addressId: selectedAddressId,
         paymentMethod,
         items: cartItems.map(item => ({
           orderable_type: item.orderable,
           orderable_id: item.identifier,
           quantity: item.quantity,
-          color_id: item.color?.id || null,
-          variant_id: item.variant?.id || null,
+          color_id: item.color?.id ?? undefined,
+          variant_id: item.variant?.id ?? undefined,
         })),
-        coupon_code: couponCode.trim() ? couponCode.trim() : undefined,
+        couponCode: appliedCouponCode?.trim() || undefined,
       };
 
-      const order = await createOrder(orderData);
-      if (order) {
-        handleClearCart();
-        handleSetDiscount(0, 'fixed');
-        setOrderComplete(true);
+      // CASH ON DELIVERY FLOW
+      if (paymentMethod === 'cash_on_delivery') {
+        const order = await createOrder(orderData);
+        if (order) {
+          handleClearCart();
+          handleSetDiscount(0, 'fixed');
+          setOrderComplete(true);
+        }
+        return;
+      }
+
+      // STRIPE CREDIT CARD FLOW
+      if (paymentMethod === 'credit_card') {
+        if (!stripe || !elements) {
+          console.error('Stripe not initialized'); // Temp message to added the notification later
+          return;
+        }
+
+        // Step 1: Create Payment Intent
+        const clientSecret = await createPaymentIntent({
+          amount: cartCalculations.total,
+          currency: 'usd',
+          ...orderData,
+          totalAmount: cartCalculations.total,
+        });
+
+        if (!clientSecret) {
+          console.error('Failed to create payment intent'); // Temp message to added the notification later
+          return;
+        }
+
+        // Step 2: Get selected address for billing details
+        const selectedAddress = addresses?.find((addr: Address) => addr.identifier === selectedAddressId);
+
+        if (!selectedAddress) {
+          console.error('Selected address not found'); // Temp message to added the notification later
+          return;
+        }
+
+        // Step 3: Confirm payment with Stripe (business logic handled in hook)
+        const paymentIntent = await confirmPayment(
+          clientSecret,
+          {
+            name: cardholderName || (currentUser.firstName && currentUser.lastName 
+              ? `${currentUser.firstName} ${currentUser.lastName}` 
+              : currentUser.email) || "",
+            address: {
+              line1: selectedAddress.street || "",
+              line2: null,
+              city: selectedAddress.city || "",
+              state: selectedAddress.state || "",
+              postal_code: selectedAddress.postalCode || "",
+              country: selectedAddress.country,
+            }
+          },
+          stripe,
+          elements
+        );
+
+        if (!paymentIntent) {
+          console.error('Payment failed'); // Temp message to added the notification later
+          return;
+        }
+
+        // Step 4: Create order with payment_intent_id
+        const order = await createOrder({
+          ...orderData,
+          paymentIntentId: paymentIntent.id,
+        });
+
+        if (order) {
+          handleClearCart();
+          handleSetDiscount(0, 'fixed');
+          setOrderComplete(true);
+        }
       }
     } catch (error) {
-      console.error('Error placing order:', error);
-      return false;
+      console.error('Error placing order:', error); // Temp message to added the notification later
     }
-  }
+  };
+
+  const isLoading = isCreatingOrder || isStripeLoading;
 
   if (orderComplete) {
-        return (
+    return (
       <div className="min-h-screen  from-amber-50 to-orange-50 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
         <Card className="w-full max-w-md text-center p-4">
-            <CardContent className="p-8">
+          <CardContent className="p-8">
             <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
               <Check className="w-8 h-8 text-green-600" />
-              </div>
+            </div>
             <h2 className="text-2xl font-bold mb-2">{orderT("checkoutPage.orderCreated")}</h2>
-              <p className="text-muted-foreground mb-6">
+            <p className="text-muted-foreground mb-6">
               {orderT("checkoutPage.orderCreatedDescription")}
-              </p>
-                <Button 
+            </p>
+            <Button
               onClick={() => navigateToHome()}
               className="w-full bg-amber-600 hover:bg-amber-700 text-white"
             >
               {orderT("checkoutPage.backToHome")}
-                </Button>
-            </CardContent>
-          </Card>
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
   if (cartItems.length === 0) {
-      return (
+    return (
       <div className="min-h-screen  from-amber-50 to-orange-50 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
-        <Card className="w-full max-w-md text-center">
+        <Card className="w-full max-w-md text-center p-4">
           <CardContent className="p-8">
             <h2 className="text-2xl font-bold mb-2">{orderT("checkoutPage.cartEmpty")}</h2>
             <p className="text-muted-foreground mb-6">
               {orderT("checkoutPage.cartEmptyDescription")}
             </p>
-            <Button 
+            <Button
               onClick={() => navigateToProducts()}
               className="w-full bg-amber-600 hover:bg-amber-700 text-white"
             >
@@ -151,14 +250,14 @@ export const CheckoutPage: React.FC = () => {
             </Button>
           </CardContent>
         </Card>
-          </div>
+      </div>
     );
   }
 
-    return (
+  return (
     <div className="min-h-screen  from-amber-50 to-orange-50 dark:from-gray-900 dark:to-gray-800">
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
+        <div className="container mx-auto px-4 py-8">
+          <div className="mb-8">
           <Button
             variant="ghost"
             onClick={() => navigateToCart()}
@@ -167,7 +266,7 @@ export const CheckoutPage: React.FC = () => {
             {isRTL ? <ArrowRight className="w-4 h-4 mr-2" /> : <ArrowLeft className="w-4 h-4 mr-2" />}
             {orderT("checkoutPage.back")}
           </Button>
-          
+
           <h1 className="text-3xl font-bold mb-2">{orderT("checkoutPage.title")}</h1>
           <p className="text-muted-foreground">{orderT("checkoutPage.description")}</p>
         </div>
@@ -217,27 +316,32 @@ export const CheckoutPage: React.FC = () => {
                 )}
 
                 {/* Step 2: Payment Information */}
-                {currentStep === 2 && (
-                  <PaymentStep
-                    paymentMethod={paymentMethod}
-                    onPaymentMethodChange={setPaymentMethod}
-                    formData={formData}
-                    setFormData={setFormData}
-                  />
+                {/* Keep PaymentStep mounted on step 3 for credit_card to keep Stripe Elements accessible */}
+                {/* Stripe Elements must remain in DOM for confirmPayment to retrieve them */}
+                {(currentStep === 2 || (currentStep === 3 && paymentMethod === 'credit_card')) && (
+                  <div className={currentStep !== 2 ? 'sr-only' : ''}>
+                    <PaymentStep
+                      paymentMethod={paymentMethod}
+                      onPaymentMethodChange={setPaymentMethod}
+                      onCardElementsReady={handleCardElementsReady}
+                      cardholderName={cardholderName}
+                      onCardholderNameChange={setCardholderName}
+                    />
+                  </div>
                 )}
 
                 {/* Step 3: Review Order */}
                 {currentStep === 3 && (
                   <ReviewStep
                     cartItems={cartItems}
-                    selectedAddress={addresses?.data?.data?.find((addr: Address) => addr.identifier === selectedAddressId) || null}
+                    selectedAddress={addresses?.find((addr: Address) => addr.identifier === selectedAddressId) || null}
                     paymentMethod={paymentMethod}
                   />
                 )}
 
                 {/* Navigation Buttons */}
                 <div className="flex justify-between mt-8">
-                  <Button 
+                  <Button
                     variant="outline"
                     onClick={handlePreviousStep}
                     disabled={currentStep === 1}
@@ -247,8 +351,8 @@ export const CheckoutPage: React.FC = () => {
                   </Button>
 
                   {currentStep < 3 ? (
-                  <Button 
-                    onClick={handleNextStep}
+                    <Button
+                      onClick={handleNextStep}
                       disabled={
                         (currentStep === 1 && !canProceedToStep2) ||
                         (currentStep === 2 && !canProceedToStep3)
@@ -261,15 +365,15 @@ export const CheckoutPage: React.FC = () => {
                   ) : (
                     <Button
                       onClick={handlePlaceOrder}
-                    disabled={isCreatingOrder}
+                      disabled={isLoading}
                       className="bg-green-600 hover:bg-green-700 text-white"
-                  >
-                    {isCreatingOrder ? (
+                    >
+                      {isLoading ? (
                         <div className="w-4 h-4 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin" />
                       ) : (
                         <Check className="w-4 h-4 mr-2" />
                       )}
-                      {isCreatingOrder 
+                      {isLoading
                         ? (orderT("checkoutPage.creatingOrder"))
                         : (orderT("checkoutPage.placeOrder"))
                       }
@@ -301,4 +405,13 @@ export const CheckoutPage: React.FC = () => {
       </div>
     </div>
   );
-}
+};
+
+// Export component wrapped with Elements provider (thin wrapper - only provides Stripe context)
+export const CheckoutPage: React.FC = () => {
+  return (
+    <Elements stripe={stripePromise}>
+      <CheckoutContent />
+    </Elements>
+  );
+};

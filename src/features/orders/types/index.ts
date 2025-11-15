@@ -83,11 +83,12 @@ export interface Coupon {
 }
 
 export interface OrderRequest {
-	user_id: number;
-	coupon_code?: string;
-	address_id: number;
+	userId: number;
+	couponCode?: string;
+	addressId: number;
 	paymentMethod: "cash_on_delivery" | "credit_card";
 	items: OrderItemRequest[];
+	paymentIntentId?: string;
 }
 
 export interface OrderItemRequest {

@@ -1,27 +1,30 @@
 import React from 'react';
 import { CreditCard, Truck, CheckCircle } from 'lucide-react';
-import { Input } from '@/shared/components/ui/input';
-import { Label } from '@/shared/components/ui/label';
 import { RadioGroup } from '@/shared/components/ui/radio-group';
-import { useApp } from '@/shared/contexts/AppContext';
-import { PaymentFormData } from '@/features/orders/types';
 import { useFeatureTranslations } from '@/shared/hooks/useTranslation';
+import { StripePaymentElement } from '@/features/payments/components/StripePaymentElement';
+import { StripeCardNumberElement, StripeCardExpiryElement, StripeCardCvcElement } from '@stripe/stripe-js';
 
 interface PaymentStepProps {
   paymentMethod: 'cash_on_delivery' | 'credit_card';
   onPaymentMethodChange: (paymentMethod: 'cash_on_delivery' | 'credit_card') => void;
-  formData: PaymentFormData;
-  setFormData: React.Dispatch<React.SetStateAction<PaymentFormData>>;
+  onCardElementsReady?: (cardElements: {
+    number: StripeCardNumberElement;
+    expiry: StripeCardExpiryElement;
+    cvc: StripeCardCvcElement;
+  }) => void;
+  cardholderName?: string;
+  onCardholderNameChange?: (name: string) => void;
 }
 
 export const PaymentStep: React.FC<PaymentStepProps> = ({
   paymentMethod,
   onPaymentMethodChange,
-  formData,
-  setFormData,
+  onCardElementsReady,
+  cardholderName = '',
+  onCardholderNameChange,
 }) => {
   const { t: featureT } = useFeatureTranslations("orders");
-  const { isRTL } = useApp();
 
   return (
     <div className="space-y-6">
@@ -36,39 +39,7 @@ export const PaymentStep: React.FC<PaymentStepProps> = ({
           onValueChange={(value) => onPaymentMethodChange(value as 'cash_on_delivery' | 'credit_card')}
           className="space-y-3"
         >
-          <div className="relative">
-            <div
-              onClick={() => onPaymentMethodChange('credit_card')}
-              className={`block cursor-pointer rounded-lg border-2 p-4 transition-all hover:shadow-md ${
-                paymentMethod === 'credit_card'
-                  ? 'border-amber-500 bg-amber-50 dark:bg-amber-900/20'
-                  : 'border-gray-200 dark:border-gray-700 hover:border-amber-300'
-              }`}
-            >
-              <div className="flex items-center gap-3">
-                {/* Payment method icon */}
-                <div className="p-2 rounded-lg bg-amber-100 dark:bg-amber-900/30">
-                  <CreditCard className="w-5 h-5 text-amber-600" />
-                </div>
-                
-                {/* Content */}
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <h5 className="font-medium">{featureT("paymentStep.paymentMethod.creditCard")}</h5>
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    {featureT("paymentStep.paymentMethod.creditCardDescription")}
-                  </p>
-                </div>
-                
-                {/* Selection indicator */}
-                {paymentMethod === 'credit_card' && (
-                  <CheckCircle className="w-5 h-5 text-amber-600" />
-                )}
-              </div>
-            </div>
-          </div>
-
+          {/* Cash on Delivery Option */}
           <div className="relative">
             <div
               onClick={() => onPaymentMethodChange('cash_on_delivery')}
@@ -79,12 +50,9 @@ export const PaymentStep: React.FC<PaymentStepProps> = ({
               }`}
             >
               <div className="flex items-center gap-3">
-                {/* Payment method icon */}
                 <div className="p-2 rounded-lg bg-green-100 dark:bg-green-900/30">
                   <Truck className="w-5 h-5 text-green-600" />
                 </div>
-                
-                {/* Content */}
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
                     <h5 className="font-medium">{featureT("paymentStep.paymentMethod.cashOnDelivery")}</h5>
@@ -93,9 +61,36 @@ export const PaymentStep: React.FC<PaymentStepProps> = ({
                     {featureT("paymentStep.paymentMethod.cashOnDeliveryDescription")}
                   </p>
                 </div>
-                
-                {/* Selection indicator */}
                 {paymentMethod === 'cash_on_delivery' && (
+                  <CheckCircle className="w-5 h-5 text-amber-600" />
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Credit Card Option */}
+          <div className="relative">
+            <div
+              onClick={() => onPaymentMethodChange('credit_card')}
+              className={`block cursor-pointer rounded-lg border-2 p-4 transition-all hover:shadow-md ${
+                paymentMethod === 'credit_card'
+                  ? 'border-amber-500 bg-amber-50 dark:bg-amber-900/20'
+                  : 'border-gray-200 dark:border-gray-700 hover:border-amber-300'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-amber-100 dark:bg-amber-900/30">
+                  <CreditCard className="w-5 h-5 text-amber-600" />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-2">
+                    <h5 className="font-medium">{featureT("paymentStep.paymentMethod.creditCard")}</h5>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    {featureT("paymentStep.paymentMethod.creditCardDescription")}
+                  </p>
+                </div>
+                {paymentMethod === 'credit_card' && (
                   <CheckCircle className="w-5 h-5 text-amber-600" />
                 )}
               </div>
@@ -104,67 +99,17 @@ export const PaymentStep: React.FC<PaymentStepProps> = ({
         </RadioGroup>
       </div>
 
-      {/* Credit Card Form */}
+      {/* Stripe Payment Form - Only show for credit card */}
       {paymentMethod === 'credit_card' && (
         <div className="space-y-4">
           <h5 className="font-medium">{featureT("paymentStep.creditCardInformation.title")}</h5>
-          
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="cardName">{featureT("paymentStep.creditCardInformation.cardholderName")}</Label>
-              <Input
-                id="cardName"
-                value={formData.creditCardName}
-                onChange={(e) => setFormData({ ...formData, creditCardName: e.target.value })}
-                placeholder={featureT("paymentStep.creditCardInformation.cardholderNamePlaceholder")}
-                className={isRTL ? 'text-right' : 'text-left'}
-                dir={isRTL ? 'rtl' : 'ltr'}
-              />
-            </div>
-            
-            <div>
-              <Label htmlFor="cardNumber">{featureT("paymentStep.creditCardInformation.cardNumber")}</Label>
-              <Input
-                id="cardNumber"
-                value={formData.creditCardNumber}
-                onChange={(e) => setFormData({ ...formData, creditCardNumber: e.target.value })}
-                placeholder={featureT("paymentStep.creditCardInformation.cardNumberPlaceholder")}
-                maxLength={19}
-                className={isRTL ? 'text-right' : 'text-left'}
-                dir="ltr"
-              />
-            </div>
-            
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="expiryDate">{featureT("paymentStep.creditCardInformation.expiryDate")}</Label>
-                <Input
-                  id="expiryDate"
-                  value={formData.creditCardExpirationDate}
-                  onChange={(e) => setFormData({ ...formData, creditCardExpirationDate: e.target.value })}
-                  placeholder={featureT("paymentStep.creditCardInformation.expiryDatePlaceholder")}
-                  maxLength={5}
-                  className={isRTL ? 'text-right' : 'text-left'}
-                  dir="ltr"
-                />
-              </div>
-              
-              <div>
-                <Label htmlFor="cvv">{featureT("paymentStep.creditCardInformation.cvv")}</Label>
-                <Input
-                  id="cvv"
-                  value={formData.creditCardCvv}
-                  onChange={(e) => setFormData({ ...formData, creditCardCvv: e.target.value })}
-                  placeholder={featureT("paymentStep.creditCardInformation.cvvPlaceholder")}
-                  maxLength={4}
-                  className={isRTL ? 'text-right' : 'text-left'}
-                  dir="ltr"
-                />
-              </div>
-            </div>
-          </div>
+          <StripePaymentElement 
+            onCardElementReady={onCardElementsReady}
+            cardholderName={cardholderName}
+            onCardholderNameChange={onCardholderNameChange}
+          />
         </div>
       )}
     </div>
   );
-}
+};
