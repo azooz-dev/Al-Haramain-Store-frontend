@@ -30,7 +30,16 @@ const CheckoutContent: React.FC = () => {
   const { t: orderT } = useFeatureTranslations("orders");
   const { cartItems, cartCalculations, handleSetDiscount, handleClearCart, discountAmount, discountType } = useCart();
   const { createOrder, isCreatingOrder, getCoupon, isLoadingCoupon } = useOrders();
-  const { addresses } = useAddress();
+  const {
+    addresses,
+    isLoadingAddresses,
+    isCreatingAddress,
+    isUpdatingAddress,
+    isDeletingAddress,
+    createAddress,
+    updateAddress,
+    deleteAddress,
+    } = useAddress();
   const { navigateToHome, navigateToProducts, navigateToCart } = useNavigation();
 
   // Get Stripe and Elements instances from Elements provider (now inside Elements context)
@@ -312,6 +321,14 @@ const CheckoutContent: React.FC = () => {
                     user={currentUser}
                     selectedAddressId={selectedAddressId}
                     onAddressSelect={setSelectedAddressId}
+                    addresses={addresses}
+                    isLoadingAddresses={isLoadingAddresses}
+                    isCreatingAddress={isCreatingAddress}
+                    isUpdatingAddress={isUpdatingAddress}
+                    isDeletingAddress={isDeletingAddress}
+                    createAddress={createAddress}
+                    updateAddress={updateAddress}
+                    deleteAddress={deleteAddress}
                   />
                 )}
 

@@ -6,13 +6,20 @@ import { useApp } from '@/shared/contexts/AppContext';
 import { AddressForm } from './AddressForm';
 import { AddressList } from './AddressList';
 import { AddressEmptyState } from './AddressEmptyState';
-import { useAddress } from '@/shared/hooks/useAddress';
-import { Address } from '@/shared/types';
+import { Address, AddressFormData, DeleteAddressRequest, UpdateAddressRequest } from '@/shared/types';
 import { useSharedTranslations } from '@/shared/hooks/useTranslation';
 
 interface AddressSelectorProps {
   selectedAddressId: number | null;
   onAddressSelect: (addressId: number) => void;
+  addresses: Address[];
+  isLoadingAddresses: boolean;
+  isCreatingAddress: boolean;
+  isUpdatingAddress: boolean;
+  isDeletingAddress: boolean;
+  createAddress: (addressData: AddressFormData) => void;
+  updateAddress: (addressData: UpdateAddressRequest) => void;
+  deleteAddress: (addressData: DeleteAddressRequest) => void;
   userId: number;
   showAddButtons: boolean;
   showEditButtons: boolean;
@@ -24,6 +31,14 @@ interface AddressSelectorProps {
 export const AddressSelector: React.FC<AddressSelectorProps> = ({
   selectedAddressId,
   onAddressSelect,
+  addresses,
+  isLoadingAddresses,
+  isCreatingAddress,
+  isUpdatingAddress,
+  isDeletingAddress,
+  createAddress,
+  updateAddress,
+  deleteAddress,
   userId,
   showAddButtons,
   showEditButtons,
@@ -34,16 +49,10 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({
   const { isRTL } = useApp();
   const [isAddressFormOpen, setIsAddressFormOpen] = useState(false);
   const [editingAddress, setEditingAddress] = useState<Address | null>(null);
-  const [deletingAddressId, setDeletingAddressId] = useState<number | null>(null);
-  const { deleteAddress, addresses, isLoadingAddresses } = useAddress();
   const { t: sharedT } = useSharedTranslations("shared");
 
-  console.log(addresses);
-
   const handleDeleteAddress = async (addressId: number) => {
-    setDeletingAddressId(addressId);
     await deleteAddress({ addressId, userId });
-    setDeletingAddressId(null);
   }
 
   const handleEditAddress = (address: Address) => {
@@ -99,6 +108,10 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({
             handleCloseAddressForm();
             setEditingAddress(null);
           }}
+          createAddress={createAddress}
+          updateAddress={updateAddress}
+          isCreatingAddress={isCreatingAddress}
+          isUpdatingAddress={isUpdatingAddress}
           editingAddress={editingAddress}
           userId={userId} 
           onSuccess={() => {
@@ -140,7 +153,7 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({
           onAddressSelect={onAddressSelect}
           onEditAddress={handleEditAddress}
           onDeleteAddress={handleDeleteAddress}
-          deletingAddressId={deletingAddressId}
+          isDeletingAddress={isDeletingAddress}
           mode={mode}
           showEditButtons={showEditButtons}
           showDeleteButtons={showDeleteButtons}
@@ -155,6 +168,10 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({
         }}
         editingAddress={editingAddress}
         userId={userId}
+        createAddress={createAddress}
+        updateAddress={updateAddress}
+        isCreatingAddress={isCreatingAddress}
+        isUpdatingAddress={isUpdatingAddress}
         onSuccess={() => {
           handleCloseAddressForm();
         }}

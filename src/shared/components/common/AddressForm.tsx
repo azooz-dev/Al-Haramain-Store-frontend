@@ -2,17 +2,20 @@ import React, { useEffect } from 'react';
 import { MapPin, Save, X } from 'lucide-react';
 import { Button } from '@/shared/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/shared/components/ui/dialog';
-import { Address, AddressFormData } from '@/shared/types';
+import { Address, AddressFormData, UpdateAddressRequest } from '@/shared/types';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useSharedTranslations } from '@/shared/hooks/useTranslation';
-import { useAddress } from '@/shared/hooks/useAddress';
 import { AddressFormFields } from './AddressFormFields';
 
 interface AddressFormProps {
   isOpen: boolean;
   onClose: () => void;
+  createAddress: (addressData: AddressFormData) => void;
+  updateAddress: (addressData: UpdateAddressRequest) => void;
+  isCreatingAddress: boolean;
+  isUpdatingAddress: boolean;
   editingAddress?: Address | null;
   userId: number;
   onSuccess?: () => void;
@@ -24,6 +27,10 @@ export const AddressForm: React.FC<AddressFormProps> = ({
   isOpen,
   onClose,
   editingAddress,
+  createAddress,
+  updateAddress,
+  isCreatingAddress,
+  isUpdatingAddress,
   userId,
   onSuccess,
   mode = 'modal',
@@ -31,7 +38,6 @@ export const AddressForm: React.FC<AddressFormProps> = ({
 }) => {
   const { t: sharedT } = useSharedTranslations("shared");
   const { t: validationT } = useSharedTranslations("validation");
-  const { createAddress, updateAddress, isCreatingAddress, isUpdatingAddress } = useAddress();
 
   const formSchema = z.object({
     label: z.string().nonempty(validationT("required")),
@@ -41,7 +47,7 @@ export const AddressForm: React.FC<AddressFormProps> = ({
     state: z.string().nonempty(validationT("required")),
     postalCode: z.string().nonempty(validationT("required"))
         .regex(/^\d{4,5}$/, validationT("form.invalidFormat")),
-    country: z.string().nonempty(validationT("required")),
+    country: z.enum(['SA', 'US', 'AE'] as const),
     isDefault: z.boolean().optional(),
   });
 
@@ -54,7 +60,7 @@ export const AddressForm: React.FC<AddressFormProps> = ({
       city: '',
       state: '',
       postalCode: '',
-      country: '',
+      country: 'SA' as 'SA' | 'US' | 'AE',
       isDefault: false,
     },
   });
@@ -62,6 +68,9 @@ export const AddressForm: React.FC<AddressFormProps> = ({
   // Reset form when editingAddress changes
   useEffect(() => {
     if (editingAddress) {
+      const countryValue = editingAddress.country && ['SA', 'US', 'AE'].includes(editingAddress.country)
+        ? editingAddress.country as 'SA' | 'US' | 'AE'
+        : 'SA' as 'SA' | 'US' | 'AE';
       form.reset({
         label: editingAddress.label || '',
         addressType: editingAddress.addressType as 'Home' | 'Work' | 'Other' || 'Home',
@@ -69,7 +78,7 @@ export const AddressForm: React.FC<AddressFormProps> = ({
         city: editingAddress.city || '',
         state: editingAddress.state || '',
         postalCode: editingAddress.postalCode || '',
-        country: editingAddress.country || '',
+        country: countryValue,
         isDefault: editingAddress.isDefault || false,
       });
     } else {
@@ -81,7 +90,7 @@ export const AddressForm: React.FC<AddressFormProps> = ({
         city: '',
         state: '',
         postalCode: '',
-        country: '',
+        country: 'SA' as 'SA' | 'US' | 'AE',
         isDefault: false,
       });
     }

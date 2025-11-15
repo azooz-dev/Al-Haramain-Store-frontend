@@ -3,17 +3,34 @@ import { User, Phone, Mail } from 'lucide-react';
 import { AddressSelector } from '@/shared/components/common/AddressSelector';
 import { useFeatureTranslations } from '@/shared/hooks/useTranslation';
 import { User as UserType } from '@/features/auth/types';
+import { Address, AddressFormData, UpdateAddressRequest, DeleteAddressRequest } from '@/shared/types';
 
 interface ShippingStepProps {
   user: UserType | null;
   selectedAddressId: number | null;
   onAddressSelect: (addressId: number) => void;
+  addresses: Address[];
+  isLoadingAddresses: boolean;
+  isCreatingAddress: boolean;
+  isUpdatingAddress: boolean;
+  isDeletingAddress: boolean;
+  createAddress: (addressData: AddressFormData) => void;
+  updateAddress: (addressData: UpdateAddressRequest) => void;
+  deleteAddress: (addressData: DeleteAddressRequest) => void;
 }
 
 export const ShippingStep: React.FC<ShippingStepProps> = ({
   user,
   selectedAddressId,
   onAddressSelect,
+  addresses,
+  isLoadingAddresses,
+  isCreatingAddress,
+  isUpdatingAddress,
+  isDeletingAddress,
+  createAddress,
+  updateAddress,
+  deleteAddress,
 }) => {
   const { t: featureT } = useFeatureTranslations("orders");
 
@@ -53,6 +70,14 @@ export const ShippingStep: React.FC<ShippingStepProps> = ({
         showEditButtons={true}
         showDeleteButtons={true}
         mode="selection"
+        addresses={addresses}
+        isLoadingAddresses={isLoadingAddresses}
+        isCreatingAddress={isCreatingAddress}
+        isUpdatingAddress={isUpdatingAddress}
+        isDeletingAddress={isDeletingAddress}
+        createAddress={createAddress}
+        updateAddress={updateAddress}
+        deleteAddress={deleteAddress}
       />
     </div>
   );

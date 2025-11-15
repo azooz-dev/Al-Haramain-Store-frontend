@@ -2,6 +2,7 @@ import React from 'react';
 import { Input } from '@/shared/components/ui/input';
 import { Label } from '@/shared/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/shared/components/ui/radio-group';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/components/ui/select';
 import { useApp } from '@/shared/contexts/AppContext';
 import { useSharedTranslations } from '@/shared/hooks/useTranslation';
 import { AddressFormData } from '@/shared/types';
@@ -31,6 +32,12 @@ export const AddressFormFields: React.FC<AddressFormFieldsProps> = ({
     { value: 'Home', label: sharedT("address.type.home") },
     { value: 'Work', label: sharedT("address.type.work") },
     { value: 'Other', label: sharedT("address.type.other") },
+  ];
+
+  const countries = [
+    { value: 'SA', label: sharedT("address.country.sa") },
+    { value: 'US', label: sharedT("address.country.us") },
+    { value: 'AE', label: sharedT("address.country.ae") },
   ];
 
     return (
@@ -134,15 +141,26 @@ export const AddressFormFields: React.FC<AddressFormFieldsProps> = ({
 
         {/* Country */}
         <div>
-          <Label htmlFor="country">{sharedT("address.country")}</Label>
-          <Input
-            id="country"
+          <Label htmlFor="country">{sharedT("address.countryLabel")}</Label>
+          <Select
             value={formData.country}
-            onChange={(e) => handleInputChange('country', e.target.value)}
+            onValueChange={(value) => handleInputChange('country', value)}
             disabled={disabled}
-            className={isRTL ? 'text-right' : 'text-left'}
-            placeholder={sharedT("address.countryPlaceholder")}
-          />
+          >
+            <SelectTrigger 
+              id="country"
+              className={isRTL ? 'text-right' : 'text-left'}
+            >
+              <SelectValue placeholder={sharedT("address.countryPlaceholder")} />
+            </SelectTrigger>
+            <SelectContent>
+              {countries.map((country) => (
+                <SelectItem key={country.value} value={country.value}>
+                  {country.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
 

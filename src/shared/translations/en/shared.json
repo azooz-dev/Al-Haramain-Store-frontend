@@ -113,6 +113,11 @@
       "addFirstAddress": "Start by adding your first delivery address to proceed with your order",
       "addAddress": "Add Address"
     },
+    "country": {
+      "sa": "Saudi Arabia",
+      "us": "United States",
+      "ae": "United Arab Emirates"
+    },
     "display": {
       "title": "Delivery Addresses",
       "noSavedAddresses": "No Saved Addresses",
@@ -134,8 +139,8 @@
     "statePlaceholder": "Enter your state or province",
     "postalCode": "Postal Code",
     "postalCodePlaceholder": "Enter postal code",
-    "country": "Country",
-    "countryPlaceholder": "Enter country code (2-3 letters)",
+    "countryLabel": "Country",
+    "countryPlaceholder": "Select country",
     "default": "Set as default address",
     "addAddress": "Add New Address",
     "editAddress": "Edit Address",
