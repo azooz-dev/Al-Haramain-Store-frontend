@@ -477,135 +477,6 @@ html {
 	font-size: var(--font-size);
 }
 
-/* Toast notification styles */
-.success-toast {
-	background: #ffffff !important;
-	border-left: 4px solid #10b981 !important;
-	color: #000000 !important;
-	z-index: 9999 !important;
-	opacity: 1 !important;
-}
-
-.success-toast[dir="rtl"] {
-	border-left: none !important;
-	border-right: 4px solid #10b981 !important;
-}
-
-.error-toast {
-	background: #ffffff !important;
-	border-left: 4px solid #ef4444 !important;
-	color: #000000 !important;
-	z-index: 9999 !important;
-	opacity: 1 !important;
-}
-
-.error-toast[dir="rtl"] {
-	border-left: none !important;
-	border-right: 4px solid #ef4444 !important;
-}
-
-.info-toast {
-	background: #ffffff !important;
-	border-left: 4px solid #3b82f6 !important;
-	color: #000000 !important;
-	z-index: 9999 !important;
-	opacity: 1 !important;
-}
-
-.info-toast[dir="rtl"] {
-	border-left: none !important;
-	border-right: 4px solid #3b82f6 !important;
-}
-
-.warning-toast {
-	background: #ffffff !important;
-	border-left: 4px solid #f59e0b !important;
-	color: #000000 !important;
-	z-index: 9999 !important;
-	opacity: 1 !important;
-}
-
-.warning-toast[dir="rtl"] {
-	border-left: none !important;
-	border-right: 4px solid #f59e0b !important;
-}
-
-/* Toast container z-index */
-.toaster {
-	z-index: 9999 !important;
-}
-
-[data-sonner-toaster] {
-	z-index: 9999 !important;
-}
-
-[data-sonner-toast] {
-	z-index: 9999 !important;
-}
-
-/* Ensure toast notifications appear above all other elements */
-[data-sonner-toaster] {
-	position: fixed !important;
-	top: 0 !important;
-	z-index: 9999 !important;
-	pointer-events: none !important;
-}
-
-/* LTR positioning */
-[data-sonner-toaster][data-position="top-right"] {
-	right: 0 !important;
-	left: auto !important;
-}
-
-[data-sonner-toaster][data-position="top-left"] {
-	left: 0 !important;
-	right: auto !important;
-}
-
-/* RTL positioning */
-[dir="rtl"] [data-sonner-toaster][data-position="top-right"] {
-	left: 0 !important;
-	right: auto !important;
-}
-
-[dir="rtl"] [data-sonner-toaster][data-position="top-left"] {
-	right: 0 !important;
-	left: auto !important;
-}
-
-[data-sonner-toaster] [data-sonner-toast] {
-	pointer-events: auto !important;
-}
-
-/* Force toast positioning above sticky header */
-[data-sonner-toast] {
-	position: relative !important;
-	z-index: 9999 !important;
-	margin-top: 1rem !important;
-}
-
-/* RTL-specific toast positioning */
-[dir="rtl"] [data-sonner-toast] {
-	text-align: right !important;
-}
-
-[dir="rtl"] [data-sonner-toast] .toast-title {
-	text-align: right !important;
-}
-
-[dir="rtl"] [data-sonner-toast] .toast-description {
-	text-align: right !important;
-}
-
-/* Toast container RTL positioning */
-.dark .success-toast,
-.dark .error-toast,
-.dark .info-toast,
-.dark .warning-toast {
-	background: hsl(var(--card)) !important;
-	color: hsl(var(--card-foreground)) !important;
-}
-
 /* RTL Support - Page Flip Effect */
 [dir="rtl"] {
 	text-align: right;
@@ -734,4 +605,26 @@ html {
 	-webkit-line-clamp: 2;
 	-webkit-box-orient: vertical;
 	overflow: hidden;
+}
+
+/* React Hot Toast Styles */
+.react-hot-toast {
+	z-index: 9999 !important;
+}
+
+/* RTL Support for Toast Container */
+[dir="rtl"] .react-hot-toast {
+	direction: rtl;
+}
+
+/* Toast positioning adjustments */
+.react-hot-toast > div {
+	direction: inherit;
+}
+
+/* Dark mode support */
+.dark .react-hot-toast > div {
+	background: hsl(var(--card)) !important;
+	color: hsl(var(--card-foreground)) !important;
+	border-color: hsl(var(--border)) !important;
 }
