@@ -13,7 +13,7 @@ interface AddressListProps {
   onAddressSelect: (addressId: number) => void;
   onEditAddress: (address: Address) => void;
   onDeleteAddress: (addressId: number) => void;
-  deletingAddressId: number | null;
+  isDeletingAddress: boolean;
   mode: 'selection' | 'display';
   showEditButtons: boolean;
   showDeleteButtons: boolean;
@@ -25,7 +25,7 @@ export const AddressList: React.FC<AddressListProps> = ({
   onAddressSelect,
   onEditAddress,
   onDeleteAddress,
-  deletingAddressId,
+  isDeletingAddress,
   mode,
   showEditButtons,
   showDeleteButtons,
@@ -146,10 +146,10 @@ export const AddressList: React.FC<AddressListProps> = ({
                           e.stopPropagation();
                           onDeleteAddress(address.identifier);
                         }}
-                        disabled={deletingAddressId === address.identifier}
+                        disabled={isDeletingAddress}
                         className="h-8 w-8 p-0 hover:bg-red-50 dark:hover:bg-red-900/20"
                       >
-                        {deletingAddressId === address.identifier ? (
+                        {isDeletingAddress ? (
                           <div className="w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
                         ) : (
                           <X className="w-4 h-4 text-red-600 dark:text-red-400" />
@@ -222,10 +222,10 @@ export const AddressList: React.FC<AddressListProps> = ({
                       e.stopPropagation();
                       onDeleteAddress(address.identifier);
                     }}
-                    disabled={deletingAddressId === address.identifier}
+                    disabled={isDeletingAddress}
                     className="h-8 w-8 p-0 hover:bg-red-50 dark:hover:bg-red-900/20"
                   >
-                    {deletingAddressId === address.identifier ? (
+                    {isDeletingAddress ? (
                       <div className="w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
                     ) : (
                       <X className="w-4 h-4 text-red-600 dark:text-red-400" />
