@@ -18,7 +18,10 @@
     "cartEmpty": "Your cart is empty",
     "cartEmptyDescription": "Add some items to your cart before proceeding to checkout.",
     "continueShopping": "Continue Shopping",
-    "back": "Back"
+    "back": "Back",
+    "pleaseCompleteAllRequiredFields": "Please complete all required fields",
+    "couponApplied": "Coupon applied successfully!",
+    "stripeNotInitialized": "Stripe payment system is not initialized. Please refresh the page."
   },
   "orderSummary": {
     "title": "Order Summary",

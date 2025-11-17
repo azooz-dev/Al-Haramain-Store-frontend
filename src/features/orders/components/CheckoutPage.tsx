@@ -19,6 +19,15 @@ import { useStripePayment } from '@/features/payments/hooks/useStripePayment';
 import { Elements, useStripe, useElements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { APP_CONFIG } from '@/shared/config/config';
+import { useToast } from '@/shared/hooks/useToast';
+import { ProcessedError } from '@/shared/types';
+import { OrderResponse } from '../types';
+import { CouponResponse } from '../types';
+import { CreatePaymentIntentRequest } from '@/features/payments/types';
+import { BillingDetails } from '@stripe/stripe-js';
+import { Stripe } from '@stripe/stripe-js';
+import { StripeElements } from '@stripe/stripe-js';
+import { PaymentIntent } from '@stripe/stripe-js';
 
 // Initialize Stripe promise (shared instance - same one used in Elements provider)
 const stripePromise = loadStripe(APP_CONFIG.stripePublishKey);
@@ -29,7 +38,15 @@ const CheckoutContent: React.FC = () => {
   const { isRTL } = useApp();
   const { t: orderT } = useFeatureTranslations("orders");
   const { cartItems, cartCalculations, handleSetDiscount, handleClearCart, discountAmount, discountType } = useCart();
-  const { createOrder, isCreatingOrder, getCoupon, isLoadingCoupon } = useOrders();
+  const { createOrder, isCreatingOrder, createOrderError, getCoupon, isLoadingCoupon, couponError } = useOrders() as {
+    createOrder: (orderData: OrderRequest) => Promise<OrderResponse>;
+    isCreatingOrder: boolean;
+    createOrderError: ProcessedError | undefined;
+    getCoupon: (code: string) => Promise<CouponResponse>;
+    isLoadingCoupon: boolean;
+    couponError: ProcessedError | undefined;
+  };
+  const { toast } = useToast();
   const {
     addresses,
     isLoadingAddresses,
@@ -41,7 +58,7 @@ const CheckoutContent: React.FC = () => {
     deleteAddress,
     } = useAddress();
   const { navigateToHome, navigateToProducts, navigateToCart } = useNavigation();
-
+  
   // Get Stripe and Elements instances from Elements provider (now inside Elements context)
   const stripe = useStripe();
   const elements = useElements();
@@ -51,7 +68,13 @@ const CheckoutContent: React.FC = () => {
     createPaymentIntent,
     confirmPayment,
     isLoading: isStripeLoading,
-  } = useStripePayment();
+    createPaymentIntentError,
+  } = useStripePayment() as {
+    createPaymentIntent: (data: CreatePaymentIntentRequest) => Promise<string | null>;
+    confirmPayment: (clientSecret: string, billingDetails: BillingDetails, stripeInstance: Stripe | null, elementsInstance: StripeElements | null) => Promise<PaymentIntent | null>;
+    isLoading: boolean;
+    createPaymentIntentError: ProcessedError | undefined;
+  };
   
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedAddressId, setSelectedAddressId] = useState<number | null>(null);
@@ -61,6 +84,7 @@ const CheckoutContent: React.FC = () => {
   const [orderComplete, setOrderComplete] = useState(false);
   const [cardholderName, setCardholderName] = useState('');
   const [cardElementsReady, setCardElementsReady] = useState(false);
+  const [couponAppliedMessage, setCouponAppliedMessage] = useState<string | null>(null);
 
 
   const canProceedToStep2 = selectedAddressId !== null;
@@ -98,14 +122,11 @@ const CheckoutContent: React.FC = () => {
 
   const handleApplyCoupon = async () => {
     if (!couponCode.trim() || appliedCouponCode === couponCode) return;
-    try {
-      const coupon = await getCoupon(couponCode);
-      if (coupon) {
-        setAppliedCouponCode(coupon.data.code);
-        handleSetDiscount(coupon.data.discount_amount, coupon.data.type as 'fixed' | 'percentage');
-      }
-    } catch (error) {
-      console.error('Error applying coupon:', error); // Temp message to added the notification later
+    const coupon = await getCoupon(couponCode);
+    if (coupon) {
+      setAppliedCouponCode(coupon.data.code);
+      handleSetDiscount(coupon.data.discount_amount, coupon.data.type as 'fixed' | 'percentage');
+      setCouponAppliedMessage(orderT("checkoutPage.couponApplied"));
     }
   };
 
@@ -116,7 +137,7 @@ const CheckoutContent: React.FC = () => {
 
   const handlePlaceOrder = async () => {
     if (!currentUser?.identifier || !selectedAddressId) {
-      console.log('Please complete all required fields'); // Temp message to added the notification later
+      toast.error(orderT("checkoutPage.pleaseCompleteAllRequiredFields"));
       return;
     }
 
@@ -137,19 +158,21 @@ const CheckoutContent: React.FC = () => {
 
       // CASH ON DELIVERY FLOW
       if (paymentMethod === 'cash_on_delivery') {
-        const order = await createOrder(orderData);
-        if (order) {
+        const response = await createOrder(orderData);
+        if (response.status === "success") {
           handleClearCart();
           handleSetDiscount(0, 'fixed');
           setOrderComplete(true);
+          toast.success(orderT("checkoutPage.orderCreated"))
+        } else {
+          toast.error(createOrderError?.data.message as string);
         }
-        return;
       }
 
       // STRIPE CREDIT CARD FLOW
       if (paymentMethod === 'credit_card') {
         if (!stripe || !elements) {
-          console.error('Stripe not initialized'); // Temp message to added the notification later
+            console.error(orderT("checkoutPage.stripeNotInitialized")); // Temp message to added the notification later
           return;
         }
 
@@ -162,7 +185,7 @@ const CheckoutContent: React.FC = () => {
         });
 
         if (!clientSecret) {
-          console.error('Failed to create payment intent'); // Temp message to added the notification later
+          toast.error(createPaymentIntentError?.data.message as string);
           return;
         }
 
@@ -200,15 +223,18 @@ const CheckoutContent: React.FC = () => {
         }
 
         // Step 4: Create order with payment_intent_id
-        const order = await createOrder({
+        const response = await createOrder({
           ...orderData,
           paymentIntentId: paymentIntent.id,
         });
 
-        if (order) {
+        if (response.status === "success") {
           handleClearCart();
           handleSetDiscount(0, 'fixed');
           setOrderComplete(true);
+          toast.success(orderT("checkoutPage.orderCreated"))
+        } else {
+          toast.error(createOrderError?.data.message as string);
         }
       }
     } catch (error) {
@@ -416,6 +442,8 @@ const CheckoutContent: React.FC = () => {
               total={cartCalculations.total}
               discountAmount={discountAmount}
               discountType={discountType}
+              couponError={couponError}
+              couponAppliedMessage={couponAppliedMessage}
             />
           </div>
         </div>

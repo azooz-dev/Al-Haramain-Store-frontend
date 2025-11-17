@@ -9,6 +9,7 @@ import { ImageWithFallback } from '@/shared/components/common/ImageWithFallback'
 import { useApp } from '@/shared/contexts/AppContext';
 import { useFeatureTranslations } from '@/shared/hooks/useTranslation';
 import { CartItem } from '@/features/cart/types';
+import { ProcessedError } from '@/shared/types';
 
 interface OrderSummaryProps {
   cartItems: CartItem[];
@@ -23,6 +24,8 @@ interface OrderSummaryProps {
   isLoadingCoupon: boolean;
   discountAmount: number;
   discountType: "fixed" | "percentage";
+  couponError: ProcessedError | undefined;
+  couponAppliedMessage: string | null;
 }
 
 export const OrderSummary: React.FC<OrderSummaryProps> = ({
@@ -38,6 +41,8 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
   isLoadingCoupon,
   discountAmount,
   discountType,
+  couponError,
+  couponAppliedMessage,
 }) => {
   const { isRTL } = useApp();
   const { t: featureT } = useFeatureTranslations("orders");
@@ -114,6 +119,24 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                   </Button>
                 )}
             </div>
+            
+            {/* Coupon Error Message */}
+            {couponError && (
+              <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                <p className="text-red-600 dark:text-red-400 text-sm text-center">
+                  {couponError.data.message}
+                </p>
+              </div>
+            )}
+
+            {/* Coupon Success Message */}
+            {couponAppliedMessage && !couponError && (
+              <div className="p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                <p className="text-green-600 dark:text-green-400 text-sm text-center">
+                  {couponAppliedMessage}
+                </p>
+              </div>
+            )}
             
             {discountAmount > 0 && (
               <div className="flex items-center justify-between p-2 bg-green-50 dark:bg-green-900/20 rounded-lg">

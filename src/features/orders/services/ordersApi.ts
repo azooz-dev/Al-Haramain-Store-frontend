@@ -4,6 +4,7 @@ import { getCookieValue } from "@/shared/utils/getCookieValue";
 import { APP_CONFIG } from "@/shared/config/config";
 import { RequestFailure } from "@/shared/types";
 import { CouponRequest, CouponResponse, OrderRequest, OrderResponse } from "../types";
+import { extractErrorMessage } from "@/shared/utils/extractErrorMessage";
 
 const rawBaseQuery = fetchBaseQuery({
 	baseUrl: APP_CONFIG.apiBaseUrl,
@@ -67,6 +68,9 @@ export const ordersApi = createApi({
 				method: "POST",
 				body: orderData,
 			}),
+			transformErrorResponse: (response: unknown) => {
+				return extractErrorMessage(response as RequestFailure);
+			},
 			invalidatesTags: ["Orders"],
 		}),
 
@@ -75,6 +79,9 @@ export const ordersApi = createApi({
 				url: `/api/coupons/${couponData.code}/${couponData.userId}`,
 				method: "GET",
 			}),
+			transformErrorResponse: (response: unknown) => {
+				return extractErrorMessage(response as RequestFailure);
+			},
 			providesTags: (_result, _error, { code, userId }) => [
 				{ type: "Coupon" as const, id: `${code}-${userId}` },
 			],

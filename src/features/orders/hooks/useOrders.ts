@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { useCreateOrderMutation, useLazyGetCouponQuery } from "../services/ordersApi";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { OrderRequest } from "../types";
+import { OrderRequest, OrderResponse } from "../types";
 
 export const useOrders = () => {
 	const { currentUser } = useAuth();
@@ -13,9 +13,9 @@ export const useOrders = () => {
 		useLazyGetCouponQuery();
 
 	const createOrder = useCallback(
-		async (orderData: OrderRequest) => {
+		async (orderData: OrderRequest): Promise<OrderResponse> => {
 			const response = await createOrderMutation(orderData).unwrap();
-			return response.data;
+			return response;
 		},
 		[createOrderMutation]
 	);

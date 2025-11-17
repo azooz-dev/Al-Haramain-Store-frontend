@@ -18,7 +18,10 @@
     "cartEmpty": "سلة التسوق فارغة",
     "cartEmptyDescription": "أضف بعض المنتجات إلى سلة التسوق قبل المتابعة إلى الدفع.",
     "continueShopping": "متابعة التسوق",
-    "back": "العودة"
+    "back": "العودة",
+    "pleaseCompleteAllRequiredFields": "يرجى إكمال جميع الحقول المطلوبة",
+    "couponApplied": "تم تطبيق القسيمة بنجاح!",
+    "stripeNotInitialized": "نظام الدفع غير مهيأ. يرجى تحديث الصفحة."
   },
   "orderSummary": {
     "title": "ملخص الطلب",
