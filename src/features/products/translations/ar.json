@@ -43,7 +43,9 @@
     "goBack": "العودة",
     "discountPercentage": "% خصم",
     "inStock": "متوفر",
-    "inStockAr": "متوفر"
+    "inStockAr": "متوفر",
+    "successAddingToCart": "تم إضافة المنتج إلى السلة بنجاح!",
+    "errorAddingToCart": "فشل إضافة المنتج إلى السلة. يرجى المحاولة مرة أخرى."
   },
   "image": {
     "new": "جديد"

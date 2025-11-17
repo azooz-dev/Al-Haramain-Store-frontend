@@ -8,7 +8,7 @@ import { useFeatureTranslations } from "@/shared/hooks/useTranslation";
 
 interface ProductActionsProps {
   product: Product;
-  onAddToCart: (quantity: number) => Promise<boolean>;
+  onAddToCart: (quantity: number) => void;
 }
 
 export const ProductActions: React.FC<ProductActionsProps> = ({
@@ -24,13 +24,9 @@ export const ProductActions: React.FC<ProductActionsProps> = ({
     setIsAddingToCart(true);
 
     try {
-      const success = await onAddToCart(quantity);
+      onAddToCart(quantity);
 
-      if (success) {
-        setQuantity(1);
-      }
-    } catch (error) {
-      console.error(error);
+      setQuantity(1);
     } finally {
       setIsAddingToCart(false);
     }

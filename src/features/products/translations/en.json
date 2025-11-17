@@ -43,7 +43,9 @@
     "goBack": "Go Back",
     "discountPercentage": "% OFF",
     "inStock": "in stock",
-    "inStockAr": "متوفر"
+    "inStockAr": "متوفر",
+    "successAddingToCart": "Product added to cart successfully!",
+    "errorAddingToCart": "Failed to add product to cart. Please try again."
   },
   "image": {
     "new": "New"

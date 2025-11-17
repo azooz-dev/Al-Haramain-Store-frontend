@@ -11,6 +11,7 @@ import { useFeatureTranslations } from "@/shared/hooks/useTranslation";
 import { ProductColor, ProductVariant } from "../../types";
 import { useParams, useNavigate } from "react-router-dom";
 import { useCart } from "@/features/cart/hooks/useCart";
+import { useToast } from "@/shared/hooks/useToast";
 
 export const ProductDetailPage: React.FC = () => {
   const { isRTL } = useApp();
@@ -23,6 +24,7 @@ export const ProductDetailPage: React.FC = () => {
   const { id } = useParams();
   const product = productsList.find((product) => product.identifier === parseInt(id || '0'));
   const { handleAddToCart } = useCart();
+  const { toast } = useToast();
 
   // State for selected color and variant
   const [selectedColorId, setSelectedColorId] = useState<number | null>(null);
@@ -67,8 +69,8 @@ export const ProductDetailPage: React.FC = () => {
     setSelectedVariantId(variantId);
   };
 
-  const onAddToCart = useCallback(async () => {
-    return handleAddToCart({
+  const onAddToCart = useCallback(() => {
+    const success = handleAddToCart({
       identifier: (product?.identifier as number) || 0,
       quantity: 1 as number,
       orderable: 'product',
@@ -80,7 +82,12 @@ export const ProductDetailPage: React.FC = () => {
       color: product?.colors?.[0] as { id: number; color_code: string; } || undefined,
       variant: product?.colors?.[0]?.variants?.[0] as { id: number; size: string; } || { id: 0, size: '' },
     });
-  }, [product, handleAddToCart]);
+    if (success) {
+      toast.success(productT("details.successAddingToCart"));
+    } else {
+      toast.error(productT("details.errorAddingToCart"));
+    }
+  }, [product, handleAddToCart, toast, productT]);
 
   if (isLoading) {
         return (
