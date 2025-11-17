@@ -9,7 +9,7 @@ import { ShippingStep } from './ShippingStep';
 import { PaymentStep } from './PaymentStep';
 import { ReviewStep } from './ReviewStep';
 import { OrderSummary } from './OrderSummary';
-import type { Address } from '@/shared/types';
+import { Address, AddressFormData, UpdateAddressRequest, DeleteAddressRequest, AddressResponse, DeleteAddressResponse } from '@/shared/types';
 import { useOrders } from '../hooks/useOrders';
 import { useFeatureTranslations } from '@/shared/hooks/useTranslation';
 import { OrderRequest } from '../types';
@@ -56,7 +56,22 @@ const CheckoutContent: React.FC = () => {
     createAddress,
     updateAddress,
     deleteAddress,
-    } = useAddress();
+    createAddressError,
+    updateAddressError,
+    deleteAddressError,
+  } = useAddress() as {
+    addresses: Address[];
+    isLoadingAddresses: boolean;
+    isCreatingAddress: boolean;
+    isUpdatingAddress: boolean;
+    isDeletingAddress: boolean;
+    createAddress: (addressData: AddressFormData) => Promise<AddressResponse>;
+    updateAddress: (addressData: UpdateAddressRequest) => Promise<AddressResponse>;
+    deleteAddress: (addressData: DeleteAddressRequest) => Promise<DeleteAddressResponse>;
+    createAddressError: ProcessedError | undefined;
+    updateAddressError: ProcessedError | undefined;
+    deleteAddressError: ProcessedError | undefined;
+  };
   const { navigateToHome, navigateToProducts, navigateToCart } = useNavigation();
   
   // Get Stripe and Elements instances from Elements provider (now inside Elements context)
@@ -355,6 +370,9 @@ const CheckoutContent: React.FC = () => {
                     createAddress={createAddress}
                     updateAddress={updateAddress}
                     deleteAddress={deleteAddress}
+                    createAddressError={createAddressError}
+                    updateAddressError={updateAddressError}
+                    deleteAddressError={deleteAddressError}
                   />
                 )}
 

@@ -10,6 +10,8 @@ import {
 } from "../types";
 import { APP_CONFIG } from "../config/config";
 import { getCookieValue } from "../utils/getCookieValue";
+import { extractErrorMessage } from "../utils/extractErrorMessage";
+import { RequestFailure } from "../types";
 
 const baseQuery = fetchBaseQuery({
 	baseUrl: APP_CONFIG.apiBaseUrl,
@@ -52,6 +54,9 @@ export const addressApi = createApi({
 				method: "POST",
 				body: addressData,
 			}),
+			transformErrorResponse: (response: unknown) => {
+				return extractErrorMessage(response as RequestFailure);
+			},
 			invalidatesTags: (_result, _error, { userId }) => [
 				{ type: "Address", id: "CURRENT" },
 				{ type: "Address", id: userId },
@@ -64,6 +69,9 @@ export const addressApi = createApi({
 				method: "PUT",
 				body: addressData.data,
 			}),
+			transformErrorResponse: (response: unknown) => {
+				return extractErrorMessage(response as RequestFailure);
+			},
 			invalidatesTags: (_result, _error, { userId }) => [
 				{ type: "Address", id: "CURRENT" },
 				{ type: "Address", id: userId },
@@ -75,6 +83,9 @@ export const addressApi = createApi({
 				url: `/api/users/${userId}/addresses/${addressId}`,
 				method: "DELETE",
 			}),
+			transformErrorResponse: (response: unknown) => {
+				return extractErrorMessage(response as RequestFailure);
+			},
 			invalidatesTags: (_result, _error, { userId }) => [
 				{ type: "Address", id: "CURRENT" },
 				{ type: "Address", id: userId },

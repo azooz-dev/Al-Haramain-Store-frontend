@@ -6,8 +6,9 @@ import { useApp } from '@/shared/contexts/AppContext';
 import { AddressForm } from './AddressForm';
 import { AddressList } from './AddressList';
 import { AddressEmptyState } from './AddressEmptyState';
-import { Address, AddressFormData, DeleteAddressRequest, UpdateAddressRequest } from '@/shared/types';
+import { Address, AddressFormData, DeleteAddressRequest, ProcessedError, UpdateAddressRequest, AddressResponse, DeleteAddressResponse } from '@/shared/types';
 import { useSharedTranslations } from '@/shared/hooks/useTranslation';
+import { useToast } from '@/shared/hooks/useToast';
 
 interface AddressSelectorProps {
   selectedAddressId: number | null;
@@ -17,9 +18,12 @@ interface AddressSelectorProps {
   isCreatingAddress: boolean;
   isUpdatingAddress: boolean;
   isDeletingAddress: boolean;
-  createAddress: (addressData: AddressFormData) => void;
-  updateAddress: (addressData: UpdateAddressRequest) => void;
-  deleteAddress: (addressData: DeleteAddressRequest) => void;
+  createAddressError: ProcessedError | undefined;
+  updateAddressError: ProcessedError | undefined;
+  deleteAddressError: ProcessedError | undefined;
+  createAddress: (addressData: AddressFormData) => Promise<AddressResponse>;
+  updateAddress: (addressData: UpdateAddressRequest) => Promise<AddressResponse>;
+  deleteAddress: (addressData: DeleteAddressRequest) => Promise<DeleteAddressResponse>;
   userId: number;
   showAddButtons: boolean;
   showEditButtons: boolean;
@@ -38,7 +42,10 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({
   isDeletingAddress,
   createAddress,
   updateAddress,
+  createAddressError,
+  updateAddressError,
   deleteAddress,
+  deleteAddressError,
   userId,
   showAddButtons,
   showEditButtons,
@@ -50,9 +57,14 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({
   const [isAddressFormOpen, setIsAddressFormOpen] = useState(false);
   const [editingAddress, setEditingAddress] = useState<Address | null>(null);
   const { t: sharedT } = useSharedTranslations("shared");
-
+  const { toast } = useToast();
   const handleDeleteAddress = async (addressId: number) => {
-    await deleteAddress({ addressId, userId });
+    const response = await deleteAddress({ addressId, userId });
+    if (response.status === "success") {
+      toast.success(response.message);
+    } else {
+      toast.error(deleteAddressError?.data.message as string);
+    }
   }
 
   const handleEditAddress = (address: Address) => {
@@ -112,6 +124,8 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({
           updateAddress={updateAddress}
           isCreatingAddress={isCreatingAddress}
           isUpdatingAddress={isUpdatingAddress}
+          createAddressError={createAddressError}
+          updateAddressError={updateAddressError}
           editingAddress={editingAddress}
           userId={userId} 
           onSuccess={() => {
@@ -172,6 +186,8 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({
         updateAddress={updateAddress}
         isCreatingAddress={isCreatingAddress}
         isUpdatingAddress={isUpdatingAddress}
+        createAddressError={createAddressError}
+        updateAddressError={updateAddressError}
         onSuccess={() => {
           handleCloseAddressForm();
         }}

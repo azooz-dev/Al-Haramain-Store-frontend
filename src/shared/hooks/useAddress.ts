@@ -14,7 +14,13 @@ import {
 	removeAddress,
 	selectAddresses,
 } from "@/store/slices/userSlice";
-import { AddressFormData, UpdateAddressRequest, DeleteAddressRequest } from "../types";
+import {
+	AddressFormData,
+	UpdateAddressRequest,
+	DeleteAddressRequest,
+	AddressResponse,
+	DeleteAddressResponse,
+} from "../types";
 
 export const useAddress = () => {
 	const { currentUser } = useAuth();
@@ -41,7 +47,7 @@ export const useAddress = () => {
 	}, [addressesData, dispatch]);
 
 	const createAddress = useCallback(
-		async (addressData: AddressFormData) => {
+		async (addressData: AddressFormData): Promise<AddressResponse> => {
 			if (!currentUser?.identifier) {
 				throw new Error("User not authenticated");
 			}
@@ -53,13 +59,13 @@ export const useAddress = () => {
 			if (response.status === "success") {
 				dispatch(addAddress(response.data));
 			}
-			return response.data;
+			return response;
 		},
 		[createAddressMutation, currentUser?.identifier, dispatch]
 	);
 
 	const updateAddress = useCallback(
-		async (addressData: UpdateAddressRequest) => {
+		async (addressData: UpdateAddressRequest): Promise<AddressResponse> => {
 			if (!currentUser?.identifier) {
 				throw new Error("User not authenticated");
 			}
@@ -71,13 +77,13 @@ export const useAddress = () => {
 			if (response.status === "success") {
 				dispatch(updateAddressAction(response.data));
 			}
-			return response.data;
+			return response;
 		},
 		[updateAddressMutation, currentUser?.identifier, dispatch]
 	);
 
 	const deleteAddress = useCallback(
-		async (addressData: DeleteAddressRequest) => {
+		async (addressData: DeleteAddressRequest): Promise<DeleteAddressResponse> => {
 			if (!currentUser?.identifier) {
 				throw new Error("User not authenticated");
 			}
@@ -89,7 +95,7 @@ export const useAddress = () => {
 			if (response.status === "success") {
 				dispatch(removeAddress(addressData.addressId));
 			}
-			return response.message;
+			return response;
 		},
 		[deleteAddressMutation, currentUser?.identifier, dispatch]
 	);

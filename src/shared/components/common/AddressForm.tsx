@@ -2,20 +2,23 @@ import React, { useEffect } from 'react';
 import { MapPin, Save, X } from 'lucide-react';
 import { Button } from '@/shared/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/shared/components/ui/dialog';
-import { Address, AddressFormData, UpdateAddressRequest } from '@/shared/types';
+import { Address, AddressFormData, ProcessedError, UpdateAddressRequest, AddressResponse } from '@/shared/types';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useSharedTranslations } from '@/shared/hooks/useTranslation';
 import { AddressFormFields } from './AddressFormFields';
+import { useToast } from '@/shared/hooks/useToast';
 
 interface AddressFormProps {
   isOpen: boolean;
   onClose: () => void;
-  createAddress: (addressData: AddressFormData) => void;
-  updateAddress: (addressData: UpdateAddressRequest) => void;
+  createAddress: (addressData: AddressFormData) => Promise<AddressResponse>;
+  updateAddress: (addressData: UpdateAddressRequest) => Promise<AddressResponse>;
   isCreatingAddress: boolean;
   isUpdatingAddress: boolean;
+  createAddressError: ProcessedError | undefined;
+  updateAddressError: ProcessedError | undefined;
   editingAddress?: Address | null;
   userId: number;
   onSuccess?: () => void;
@@ -31,6 +34,8 @@ export const AddressForm: React.FC<AddressFormProps> = ({
   updateAddress,
   isCreatingAddress,
   isUpdatingAddress,
+  createAddressError,
+  updateAddressError,
   userId,
   onSuccess,
   mode = 'modal',
@@ -38,7 +43,7 @@ export const AddressForm: React.FC<AddressFormProps> = ({
 }) => {
   const { t: sharedT } = useSharedTranslations("shared");
   const { t: validationT } = useSharedTranslations("validation");
-
+  const { toast } = useToast();
   const formSchema = z.object({
     label: z.string().nonempty(validationT("required")),
     addressType: z.enum(['Home', 'Work', 'Other']),
@@ -104,16 +109,26 @@ export const AddressForm: React.FC<AddressFormProps> = ({
           ([key, value]) => editingAddress?.[key as keyof typeof data] !== value
         )
       );
-      await updateAddress({
+      const response = await updateAddress({
         userId,
         addressId: editingAddress.identifier,
         data: {
           ...changedFields,
         },
       });
+      if (response.status === "success") {
+        toast.success(sharedT("address.updatedSuccessfully"));
+      } else {
+        toast.error(updateAddressError?.data.message as string);
+      }
       onSuccess?.();
     } else {
-      await createAddress({ ...data, isDefault: data.isDefault ?? false });
+      const response = await createAddress({ ...data, isDefault: data.isDefault ?? false });
+      if (response.status === "success") {
+        toast.success(sharedT("address.createdSuccessfully"));
+      } else {
+        toast.error(createAddressError?.data.message as string);
+      }
       onSuccess?.();
     }
   }

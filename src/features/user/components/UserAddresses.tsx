@@ -2,6 +2,8 @@ import React from 'react';
 import { Card, CardContent } from '@shared/components/ui/card';
 import { AddressSelector } from '@shared/components/common/AddressSelector';
 import { useAddress } from '@/shared/hooks/useAddress';
+import { Address, AddressFormData, AddressResponse, UpdateAddressRequest, DeleteAddressRequest, DeleteAddressResponse } from '@/shared/types';
+import { ProcessedError } from '@/shared/types';
 
 interface UserAddressesProps {
   userId: number;
@@ -16,8 +18,23 @@ export const UserAddresses: React.FC<UserAddressesProps> = ({ userId }) => {
     deleteAddress,
     isCreatingAddress,
     isUpdatingAddress,
-    isDeletingAddress
-  } = useAddress();
+    isDeletingAddress,
+    createAddressError,
+    updateAddressError,
+    deleteAddressError,
+  } = useAddress() as {
+    addresses: Address[];
+    isLoadingAddresses: boolean;
+    createAddress: (addressData: AddressFormData) => Promise<AddressResponse>;
+    updateAddress: (addressData: UpdateAddressRequest) => Promise<AddressResponse>;
+    deleteAddress: (addressData: DeleteAddressRequest) => Promise<DeleteAddressResponse>;
+    isCreatingAddress: boolean;
+    isUpdatingAddress: boolean;
+    isDeletingAddress: boolean;
+    createAddressError: ProcessedError | undefined;
+    updateAddressError: ProcessedError | undefined;
+    deleteAddressError: ProcessedError | undefined;
+  };
 
     return (
     <Card className="mb-6 p-4">
@@ -30,6 +47,9 @@ export const UserAddresses: React.FC<UserAddressesProps> = ({ userId }) => {
           isCreatingAddress={isCreatingAddress}
           isUpdatingAddress={isUpdatingAddress}
           isDeletingAddress={isDeletingAddress}
+          createAddressError={createAddressError}
+          updateAddressError={updateAddressError}
+          deleteAddressError={deleteAddressError}
           createAddress={createAddress}
           updateAddress={updateAddress}
           deleteAddress={deleteAddress}
