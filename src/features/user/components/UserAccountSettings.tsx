@@ -16,7 +16,8 @@ import type { User } from '@/features/auth/types';
 import { useUsers } from '../hooks/useUsers';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { ProcessedError } from '@/shared/types';
-import { UpdateUserRequest, DeleteUserRequest, DeleteUserResponse } from '../types';
+import { UpdateUserRequest, DeleteUserRequest, DeleteUserResponse, UpdateUserResponse } from '../types';
+import { useToast } from '@/shared/hooks/useToast';
 
 
 interface UserAccountSettingsProps {
@@ -31,7 +32,7 @@ export const UserAccountSettings: React.FC<UserAccountSettingsProps> = ({
   const { t: validationT } = useSharedTranslations("validation");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { updateUser, isUpdatingUser, deleteUser, isDeletingUser, updateUserError } = useUsers() as {
-    updateUser: (payload: UpdateUserRequest) => Promise<User | string>;
+    updateUser: (payload: UpdateUserRequest) => Promise<UpdateUserResponse>;
     isUpdatingUser: boolean;
     deleteUser: (payload: DeleteUserRequest) => Promise<DeleteUserResponse>;
     isDeletingUser: boolean;
@@ -44,6 +45,7 @@ export const UserAccountSettings: React.FC<UserAccountSettingsProps> = ({
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const { toast } = useToast();
 
   const formSchema = z.object({
     email: z.string().email(validationT("email.invalid")).nonempty(validationT("email.required")),
@@ -77,10 +79,11 @@ export const UserAccountSettings: React.FC<UserAccountSettingsProps> = ({
         email: form.getValues("email"),
       },
     });
-    if (typeof response !== "string") {
+    if (response.status === "success") {
       await handleSignOut();
-    } else {
       setIsDialogOpen(false);
+    } else {
+      toast.error(response.message);
     }
   }
 
@@ -98,13 +101,15 @@ export const UserAccountSettings: React.FC<UserAccountSettingsProps> = ({
         password_confirmation: data.newPasswordConfirmation,
       },
     });
-    if (typeof response !== "string") {
+    if (response.status === "success") {
       setSuccessMessage(userT("accountSettings.passwordChanged"));
       setIsChangingPassword(false);
       form.reset();
       setShowCurrentPassword(false);
       setShowNewPassword(false);
       setShowConfirmPassword(false);
+    } else {
+      toast.error(response.message);
     }
   }
 

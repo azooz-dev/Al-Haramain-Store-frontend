@@ -10,6 +10,7 @@ import {
 	DeleteUserRequest,
 	DeleteUserResponse,
 	CreateReviewRequest,
+	UpdateUserResponse,
 } from "../types";
 import { useCallback, useEffect } from "react";
 import { useAppDispatch } from "@/store/hooks";
@@ -43,13 +44,13 @@ export const useUsers = () => {
 	}, [userOrdersData, dispatch]);
 
 	const updateUser = useCallback(
-		async (payload: UpdateUserRequest): Promise<User | string> => {
+		async (payload: UpdateUserRequest): Promise<UpdateUserResponse> => {
 			const response = await updateUserMutation(payload).unwrap();
 			if (response.status === "success") {
 				dispatch(updateProfile(response.data));
-				return response.data;
+				return response;
 			}
-			return response.message;
+			return { data: {} as User, message: "", status: "error" };
 		},
 		[updateUserMutation, dispatch]
 	);

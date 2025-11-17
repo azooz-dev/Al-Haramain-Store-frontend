@@ -18,7 +18,8 @@
     "edit": "Edit Profile",
     "saving": "Saving...",
     "save": "Save Changes",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "updatedSuccessfully": "Profile updated successfully!"
   },
   "userReviews": {
     "title": "My Reviews"

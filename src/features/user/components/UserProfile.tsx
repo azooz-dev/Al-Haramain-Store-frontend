@@ -13,6 +13,9 @@ import { useSharedTranslations } from '@/shared/hooks/useTranslation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { ProcessedError } from '@/shared/types';
+import { UpdateUserRequest, UpdateUserResponse } from '../types';
+import { useToast } from '@/shared/hooks/useToast';
 
 interface UserProfileProps {
   user: User;
@@ -25,9 +28,15 @@ export const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
   const {
     updateUser,
     isUpdatingUser,
-  } = useUsers();
+    updateUserError,
+  } = useUsers() as {
+    updateUser: (payload: UpdateUserRequest) => Promise<UpdateUserResponse>;
+    isUpdatingUser: boolean;
+    updateUserError: ProcessedError | undefined;
+  };
   const [isEditing, setIsEditing] = useState(false);
   const isLoading = isUpdatingUser;
+  const { toast } = useToast();
 
   const formSchema = z.object({
     firstName: z.string().nonempty(validationT("firstName.required")),
@@ -51,10 +60,16 @@ export const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
         ([key, value]) => user[key as keyof User] !== value
       )
     );
-    await updateUser({
+    const response = await updateUser({
       userId: user.identifier,
       data: changedFields,
     });
+    if (response.status === "success") {
+      toast.success(userT("profile.updatedSuccessfully"));
+      setIsEditing(false);
+    } else {
+      toast.error(updateUserError?.data.message as string);
+    }
     setIsEditing(false);
   }
 
