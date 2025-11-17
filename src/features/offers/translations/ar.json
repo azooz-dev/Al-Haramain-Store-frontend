@@ -36,6 +36,7 @@
     "days": "أيام",
     "hours": "ساعات",
     "minutes": "دقائق",
+    "left": "متبقية",
     "offerExpired": "انتهى العرض",
     "offerExpiredDescription": "هذا العرض لم يعد متاحاً",
     "youSave": "توفر",
@@ -48,6 +49,8 @@
     "totalSavingsInOffer": "إجمالي التوفير في هذا العرض",
     "totalSavingsDescription": "وفر أكثر عند شراء المجموعة كاملة",
     "discount": "خصم",
-    "rating": "4.5"
+    "rating": "4.5",
+    "successAddingToCart": "تم إضافة العرض إلى السلة بنجاح!",
+    "errorAddingToCart": "فشل إضافة العرض إلى السلة. يرجى المحاولة مرة أخرى."
   }
 }

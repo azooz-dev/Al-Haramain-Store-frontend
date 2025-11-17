@@ -36,6 +36,7 @@
     "days": "Days",
     "hours": "Hours",
     "minutes": "Minutes",
+    "left": "left",
     "offerExpired": "Offer Expired",
     "offerExpiredDescription": "This offer is no longer available",
     "youSave": "You save",
@@ -48,6 +49,8 @@
     "totalSavingsInOffer": "Total Savings in This Offer",
     "totalSavingsDescription": "Save more when buying the complete collection",
     "discount": "discount",
-    "rating": "4.5"
+    "rating": "4.5",
+    "successAddingToCart": "Offer added to cart successfully!",
+    "errorAddingToCart": "Failed to add offer to cart. Please try again."
   }
 }

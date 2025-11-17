@@ -24,6 +24,7 @@ import { ProductCard } from '@/features/products/components/listing/ProductCard'
 import { APP_CONFIG } from '@/shared/config/config';
 import { useFeatureTranslations } from '@/shared/hooks/useTranslation';
 import { useCart } from '@/features/cart/hooks/useCart';
+import { useToast } from '@/shared/hooks/useToast';
 
 export const OffersDetailsPage: React.FC = () => {
   const { isRTL } = useApp();
@@ -39,12 +40,13 @@ export const OffersDetailsPage: React.FC = () => {
     discountPercentage
   } = useOffers(Number(offerId));
   const { handleAddToCart, getCartItem } = useCart();
+  const { toast } = useToast();
 
   const onAddToCart = useCallback(() => {
     const cartItem = getCartItem(offer?.identifier as number);
     const quantityToAdded = cartItem ? 1 : 1;
 
-    return handleAddToCart({
+    const success = handleAddToCart({
       identifier: (offer?.identifier as number) || 0,
       quantity: quantityToAdded,
       orderable: 'offer',
@@ -54,7 +56,13 @@ export const OffersDetailsPage: React.FC = () => {
       en: offer?.en as { title: string; details: string; } || { title: '', details: '' },
       ar: offer?.ar as { title: string; details: string; } || { title: '', details: '' },
     });
-  }, [offer, handleAddToCart, getCartItem]);
+
+    if (success) {
+      toast.success(offersT("details.successAddingToCart"));
+    } else {
+      toast.error(offersT("details.errorAddingToCart"));
+    }
+  }, [offer, handleAddToCart, getCartItem, toast, offersT]);
 
   if (isLoading) {
     return <OffersSkeleton />;
