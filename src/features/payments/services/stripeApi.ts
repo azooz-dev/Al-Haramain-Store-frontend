@@ -2,6 +2,8 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { getCookieValue } from "@/shared/utils/getCookieValue";
 import { APP_CONFIG } from "@/shared/config/config";
 import { CreatePaymentIntentRequest, CreatePaymentIntentResponse } from "../types";
+import { extractErrorMessage } from "@/shared/utils/extractErrorMessage";
+import { RequestFailure } from "@/shared/types";
 
 const rawBaseQuery = fetchBaseQuery({
 	baseUrl: APP_CONFIG.apiBaseUrl,
@@ -40,6 +42,9 @@ export const stripeApi = createApi({
 				method: "POST",
 				body: data,
 			}),
+			transformErrorResponse: (response: unknown) => {
+				return extractErrorMessage(response as RequestFailure);
+			},
 			invalidatesTags: ["StripePayment"],
 		}),
 	}),

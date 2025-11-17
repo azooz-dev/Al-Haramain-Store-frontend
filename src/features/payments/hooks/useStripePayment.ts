@@ -6,7 +6,7 @@ import { APP_CONFIG } from "@/shared/config/config";
 import { useCreatePaymentIntentMutation } from "../services/stripeApi";
 import { StripePaymentError, CreatePaymentIntentRequest } from "../types";
 import { extractErrorMessage } from "@/shared/utils/extractErrorMessage";
-import { RequestFailure } from "@/shared/types";
+import { ProcessedError, RequestFailure } from "@/shared/types";
 
 interface UseStripePaymentReturn {
 	stripe: Stripe | null;
@@ -21,6 +21,7 @@ interface UseStripePaymentReturn {
 		elementsInstance: StripeElements | null
 	) => Promise<PaymentIntent | null>;
 	initializeStripe: () => Promise<void>;
+	createPaymentIntentError: ProcessedError | undefined;
 }
 
 export const useStripePayment = (): UseStripePaymentReturn => {
@@ -28,7 +29,8 @@ export const useStripePayment = (): UseStripePaymentReturn => {
 	const [elements, setElements] = useState<StripeElements | null>(null);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [error, setError] = useState<StripePaymentError | null>(null);
-	const [createPaymentIntentMutation] = useCreatePaymentIntentMutation();
+	const [createPaymentIntentMutation, { error: createPaymentIntentError }] =
+		useCreatePaymentIntentMutation();
 
 	const initializeStripe = useCallback(async () => {
 		if (stripe) return;
@@ -172,5 +174,6 @@ export const useStripePayment = (): UseStripePaymentReturn => {
 		error,
 		confirmPayment,
 		initializeStripe,
+		createPaymentIntentError: createPaymentIntentError as ProcessedError | undefined,
 	};
 };
