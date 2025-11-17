@@ -5,6 +5,9 @@ import { useFavorites } from "../hooks/useFavorites";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useApp } from "@/shared/contexts/AppContext";
 import { useFeatureTranslations } from "@/shared/hooks/useTranslation";
+import { useToast } from "@/shared/hooks/useToast";
+import { FavoritesAddRequest, FavoritesRemoveRequest, Favorite } from "../types";
+import { ProcessedError } from "@/shared/types";
 
 interface FavoritesToggleButtonProps {
   productId: number;
@@ -38,7 +41,14 @@ export const FavoritesToggleButton: React.FC<FavoritesToggleButtonProps> = ({
   const { isRTL } = useApp();
   const { t: favoritesT } = useFeatureTranslations("favorites");
   const { isAuthenticated, currentUser } = useAuth();
-  const { toggleFavorite, isLoadingFavorites, isFavorite } = useFavorites();
+  const { toggleFavorite, isLoadingFavorites, isFavorite, addFavoriteError, removeFavoriteError } = useFavorites() as {
+    toggleFavorite: (payload: FavoritesAddRequest | FavoritesRemoveRequest) => Promise<boolean>;
+    isLoadingFavorites: boolean;
+    isFavorite: (productId: number) => Favorite | null;
+    addFavoriteError: ProcessedError | undefined;
+    removeFavoriteError: ProcessedError | undefined;
+  };
+  const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const defaultText = {
     add: favoritesT("toggleButton.add"),
@@ -59,13 +69,19 @@ export const FavoritesToggleButton: React.FC<FavoritesToggleButtonProps> = ({
     e.stopPropagation();
 
     setIsLoading(true);
-    await toggleFavorite({
+    const response = await toggleFavorite({
       userId: currentUser?.identifier as number,
       productId,
       colorId: colorId as number,
       variantId: variantId as number,
     });
     setIsLoading(false);
+    if (response) {
+      toast.success(favoritesT("toggleButton.successAddingToFavorites"));
+    } else {
+      const error = addFavoriteError || removeFavoriteError;
+      toast.error(error?.data.message as string);
+    }
   }
 
     return (

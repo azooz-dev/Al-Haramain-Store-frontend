@@ -14,13 +14,22 @@ import { useApp } from "@/shared/contexts/AppContext";
 import { useFavorites } from "../hooks/useFavorites";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { Favorite } from "../types";
+import { useToast } from "@/shared/hooks/useToast";
+import { ProcessedError } from "@/shared/types";
+import { FavoritesRemoveRequest } from "../types";
 
 export const FavoritesPage: React.FC = () => {
   const { isRTL } = useApp();
   const { t: favoritesT } = useFeatureTranslations("favorites");
   const { navigateToSignIn, navigateToProducts } = useNavigation();
   const { prefetchFavorites } = usePrefetch();
-  const { removeFavorite, isLoadingFavorites, filteredAndSortedFavorites } = useFavorites();
+  const { removeFavorite, isLoadingFavorites, filteredAndSortedFavorites, removeFavoriteError } = useFavorites() as {
+    removeFavorite: (payload: FavoritesRemoveRequest) => Promise<boolean>;
+    isLoadingFavorites: boolean;
+    filteredAndSortedFavorites: (searchQuery: string, sortBy: 'newest' | 'oldest' | 'price-low' | 'price-high' | 'price-asc' | 'price-desc') => Favorite[];
+    removeFavoriteError: ProcessedError | undefined;
+  };
+  const { toast } = useToast();
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'price-low' | 'price-high' | 'price-asc' | 'price-desc'>('newest');
@@ -35,10 +44,16 @@ export const FavoritesPage: React.FC = () => {
   const favorites = filteredAndSortedFavorites(searchQuery, sortBy);
 
   const handleRemoveFromFavorites = async (favoriteId: number) => {
-    await removeFavorite({
+    const response = await removeFavorite({
       userId: currentUser?.identifier as number,
       favoriteId: favoriteId,
     });
+    if (response) {
+      toast.success(favoritesT("toggleButton.successRemovingFromFavorites"));
+    } else {
+      const error = removeFavoriteError;
+      toast.error(error?.data.message as string);
+    }
   }
 
     const handleClearAll = () => {

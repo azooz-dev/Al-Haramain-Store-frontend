@@ -47,6 +47,8 @@
   },
   "toggleButton": {
     "add": "Add to Favorites",
-    "remove": "Remove from Favorites"
+    "remove": "Remove from Favorites",
+    "successAddingToFavorites": "Added to favorites successfully!",
+    "successRemovingFromFavorites": "Removed from favorites successfully!"
   }
 }

@@ -9,6 +9,8 @@ import {
 } from "../types";
 import { RootState } from "@store/store";
 import { getCookieValue } from "@/shared/utils/getCookieValue";
+import { extractErrorMessage } from "@/shared/utils/extractErrorMessage";
+import { RequestFailure } from "@/shared/types";
 
 const baseQuery = fetchBaseQuery({
 	baseUrl: `${APP_CONFIG.apiBaseUrl}/api`,
@@ -65,6 +67,9 @@ export const favoriteApi = createApi({
 				url: `/users/${userId}/products/${productId}/colors/${colorId}/variants/${variantId}/favorites`,
 				method: "POST",
 			}),
+			transformErrorResponse: (response: unknown) => {
+				return extractErrorMessage(response as RequestFailure);
+			},
 			invalidatesTags: (_, __, { userId }) => [
 				{ type: "Favorite", id: "LIST" },
 				{ type: "Favorite", id: userId }, // Invalidate user-specific cache
@@ -76,6 +81,9 @@ export const favoriteApi = createApi({
 				url: `/users/${userId}/favorites/${favoriteId}`,
 				method: "DELETE",
 			}),
+			transformErrorResponse: (response: unknown) => {
+				return extractErrorMessage(response as RequestFailure);
+			},
 			invalidatesTags: (_, __, { userId }) => [
 				{ type: "Favorite", id: "LIST" },
 				{ type: "Favorite", id: userId }, // Invalidate user-specific cache

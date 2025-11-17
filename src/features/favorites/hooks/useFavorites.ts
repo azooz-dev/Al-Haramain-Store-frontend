@@ -10,21 +10,18 @@ import {
 	setFavorites as setFavoritesSlice,
 	addToFavorites,
 	removeFromFavorites,
-	setFavoritesError as setFavoritesErrorSlice,
 	setFavoritesLoading,
 	selectFavoritesLoading,
 } from "@/store/slices/favoritesSlice";
 import { FavoritesRemoveRequest, FavoritesAddRequest, Favorite } from "../types";
-import { RequestFailure } from "@/shared/types";
-import { extractErrorMessage } from "@/shared/utils/extractErrorMessage";
 import { useApp } from "@/shared/contexts/AppContext";
 
 export const useFavorites = () => {
 	const { currentUser } = useAuth();
 	const { isRTL } = useApp();
 	const dispatch = useAppDispatch();
-	const [addFavoriteMutation] = useAddFavoriteMutation();
-	const [removeFavoriteMutation] = useRemoveFavoriteMutation();
+	const [addFavoriteMutation, { error: addFavoriteError }] = useAddFavoriteMutation();
+	const [removeFavoriteMutation, { error: removeFavoriteError }] = useRemoveFavoriteMutation();
 	const isLoadingFavorites = useAppSelector((state) => selectFavoritesLoading(state.favorites));
 	const { data: favorites, error: favoritesError } = useGetUserFavoritesQuery(
 		currentUser?.identifier as number,
@@ -37,10 +34,6 @@ export const useFavorites = () => {
 	useEffect(() => {
 		if (favorites) {
 			dispatch(setFavoritesSlice(favorites));
-		}
-		if (favoritesError) {
-			const error = extractErrorMessage(favoritesError as RequestFailure);
-			dispatch(setFavoritesErrorSlice(error));
 		}
 		if (isLoadingFavorites) {
 			dispatch(setFavoritesLoading(isLoadingFavorites));
@@ -60,50 +53,39 @@ export const useFavorites = () => {
 
 	const addFavorite = useCallback(
 		async (payload: FavoritesAddRequest): Promise<boolean> => {
-			try {
-				const response = await addFavoriteMutation(payload).unwrap();
-				if (response.status === "success") {
-					dispatch(addToFavorites(response.data));
-					isFavoriteByProductId(response.data.product.identifier);
-					return true;
-				}
-				return false;
-			} catch (error: unknown) {
-				console.log("error", error);
-				dispatch(setFavoritesErrorSlice(extractErrorMessage(error as RequestFailure)));
-				return false;
+			const response = await addFavoriteMutation(payload).unwrap();
+			if (response.status === "success") {
+				dispatch(addToFavorites(response.data));
+				isFavoriteByProductId(response.data.product.identifier);
+				return true;
 			}
+			return false;
 		},
 		[addFavoriteMutation, dispatch, isFavoriteByProductId]
 	);
 
 	const removeFavorite = useCallback(
 		async (payload: FavoritesRemoveRequest): Promise<boolean> => {
-			try {
-				const response = await removeFavoriteMutation(payload).unwrap();
-				if (response.status === "success") {
-					dispatch(removeFromFavorites(payload.favoriteId));
-					return true;
-				}
-				return false;
-			} catch (error: unknown) {
-				dispatch(setFavoritesErrorSlice(extractErrorMessage(error as RequestFailure)));
-				return false;
+			const response = await removeFavoriteMutation(payload).unwrap();
+			if (response.status === "success") {
+				dispatch(removeFromFavorites(payload.favoriteId));
+				return true;
 			}
+			return false;
 		},
 		[removeFavoriteMutation, dispatch]
 	);
 
 	const toggleFavorite = useCallback(
-		async (payload: FavoritesAddRequest | FavoritesRemoveRequest) => {
+		async (payload: FavoritesAddRequest | FavoritesRemoveRequest): Promise<boolean> => {
 			const isFavoriteExist = isFavoriteByProductId((payload as FavoritesAddRequest).productId);
 			if (isFavoriteExist && isFavoriteExist.identifier) {
-				await removeFavorite({
+				return await removeFavorite({
 					userId: (payload as FavoritesRemoveRequest).userId as number,
 					favoriteId: isFavoriteExist.identifier as number,
 				});
 			} else {
-				await addFavorite(payload as FavoritesAddRequest);
+				return await addFavorite(payload as FavoritesAddRequest);
 			}
 		},
 		[addFavorite, removeFavorite, isFavoriteByProductId]
@@ -161,5 +143,7 @@ export const useFavorites = () => {
 		filteredAndSortedFavorites,
 		setFavoritesLoading,
 		favoritesCount,
+		addFavoriteError,
+		removeFavoriteError,
 	};
 };
