@@ -69,7 +69,6 @@ export const useUsers = () => {
 
 	const createReview = useCallback(
 		async ({ userId, orderId, itemId, rating, comment, locale }: CreateReviewRequest) => {
-			console.log(locale);
 			const response = await createReviewMutation({
 				userId: userId,
 				orderId: orderId,

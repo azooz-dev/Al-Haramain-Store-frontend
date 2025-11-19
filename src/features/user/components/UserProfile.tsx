@@ -28,11 +28,9 @@ export const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
   const {
     updateUser,
     isUpdatingUser,
-    updateUserError,
   } = useUsers() as {
     updateUser: (payload: UpdateUserRequest) => Promise<UpdateUserResponse>;
     isUpdatingUser: boolean;
-    updateUserError: ProcessedError | undefined;
   };
   const [isEditing, setIsEditing] = useState(false);
   const isLoading = isUpdatingUser;
@@ -60,17 +58,16 @@ export const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
         ([key, value]) => user[key as keyof User] !== value
       )
     );
-    const response = await updateUser({
-      userId: user.identifier,
-      data: changedFields,
-    });
-    if (response.status === "success") {
+    try {
+      await updateUser({
+        userId: user.identifier,
+        data: changedFields,
+      });
       toast.success(userT("profile.updatedSuccessfully"));
       setIsEditing(false);
-    } else {
-      toast.error(updateUserError?.data.message as string);
+    } catch (error) {
+      toast.error((error as ProcessedError).data.message as string);
     }
-    setIsEditing(false);
   }
 
   const handleCancelEdit = () => {

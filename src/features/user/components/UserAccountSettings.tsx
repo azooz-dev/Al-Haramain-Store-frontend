@@ -31,12 +31,11 @@ export const UserAccountSettings: React.FC<UserAccountSettingsProps> = ({
   const { t: userT } = useFeatureTranslations('user');
   const { t: validationT } = useSharedTranslations("validation");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const { updateUser, isUpdatingUser, deleteUser, isDeletingUser, updateUserError } = useUsers() as {
+  const { updateUser, isUpdatingUser, deleteUser, isDeletingUser } = useUsers() as {
     updateUser: (payload: UpdateUserRequest) => Promise<UpdateUserResponse>;
     isUpdatingUser: boolean;
     deleteUser: (payload: DeleteUserRequest) => Promise<DeleteUserResponse>;
     isDeletingUser: boolean;
-    updateUserError: ProcessedError | undefined;
   };
   const { handleSignOut } = useAuth();
   const [successMessage, setSuccessMessage] = useState<string>("");
@@ -73,17 +72,17 @@ export const UserAccountSettings: React.FC<UserAccountSettingsProps> = ({
   }
 
   const handleEmailChange = async () => {
-    const response = await updateUser({
+    try {
+      await updateUser({
       userId: user.identifier,
       data: {
         email: form.getValues("email"),
-      },
-    });
-    if (response.status === "success") {
+        },
+      });
       await handleSignOut();
       setIsDialogOpen(false);
-    } else {
-      toast.error(response.message);
+    } catch (error) {
+      toast.error((error as ProcessedError).data.message as string);
     }
   }
 
@@ -93,32 +92,35 @@ export const UserAccountSettings: React.FC<UserAccountSettingsProps> = ({
 
   const handlePasswordChange = async (data: z.infer<typeof formSchema>) => {
     setSuccessMessage("");
-    const response = await updateUser({
+    try {
+      await updateUser({
       userId: user.identifier,
       data: {
         current_password: data.password,
         password: data.newPassword,
         password_confirmation: data.newPasswordConfirmation,
       },
-    });
-    if (response.status === "success") {
+      });
       setSuccessMessage(userT("accountSettings.passwordChanged"));
       setIsChangingPassword(false);
-      form.reset();
-      setShowCurrentPassword(false);
-      setShowNewPassword(false);
-      setShowConfirmPassword(false);
-    } else {
-      toast.error(response.message);
+    } catch (error) {
+      toast.error((error as ProcessedError).data.message as string);
     }
+    form.reset();
+    setShowCurrentPassword(false);
+    setShowNewPassword(false);
+    setShowConfirmPassword(false);
   }
 
   const handleDeleteAccount = async () => {
-    const response = await deleteUser({ userId: user.identifier });
-    if (response.data) {
-			await handleSignOut();
-		}
-	};
+    try {
+      await deleteUser({ userId: user.identifier });
+      await handleSignOut();
+      toast.success(userT("accountSettings.accountDeleted"));
+    } catch (error) {
+      toast.error((error as ProcessedError).data.message as string);
+    }
+  };
 
     return (
     <div className="space-y-6">
@@ -131,14 +133,6 @@ export const UserAccountSettings: React.FC<UserAccountSettingsProps> = ({
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {updateUserError && isEditingEmail && (
-            <Alert className="border-red-500 bg-red-50 dark:bg-red-950/20">
-              <AlertTriangle className="h-4 w-4 text-red-600 dark:text-red-400" />
-              <AlertDescription className="text-red-800 dark:text-red-200">
-                {updateUserError.data?.message}
-              </AlertDescription>
-            </Alert>
-          )}
           {isEditingEmail ? (
             <div className="space-y-4">
               <div className={`space-y-2 ${isRTL ? 'text-right' : 'text-left'}`}>
@@ -217,14 +211,6 @@ export const UserAccountSettings: React.FC<UserAccountSettingsProps> = ({
               <Check className="h-4 w-4 text-green-600 dark:text-green-400" />
               <AlertDescription className="text-green-800 dark:text-green-200">
                 {successMessage}
-              </AlertDescription>
-            </Alert>
-          )}
-          {updateUserError && isChangingPassword && (
-            <Alert className="border-red-500 bg-red-50 dark:bg-red-950/20">
-              <AlertTriangle className="h-4 w-4 text-red-600 dark:text-red-400" />
-              <AlertDescription className="text-red-800 dark:text-red-200">
-                {updateUserError.data?.message}
               </AlertDescription>
             </Alert>
           )}

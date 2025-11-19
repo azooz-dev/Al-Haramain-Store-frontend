@@ -17,8 +17,6 @@ interface AddressFormProps {
   updateAddress: (addressData: UpdateAddressRequest) => Promise<AddressResponse>;
   isCreatingAddress: boolean;
   isUpdatingAddress: boolean;
-  createAddressError: ProcessedError | undefined;
-  updateAddressError: ProcessedError | undefined;
   editingAddress?: Address | null;
   userId: number;
   onSuccess?: () => void;
@@ -34,8 +32,6 @@ export const AddressForm: React.FC<AddressFormProps> = ({
   updateAddress,
   isCreatingAddress,
   isUpdatingAddress,
-  createAddressError,
-  updateAddressError,
   userId,
   onSuccess,
   mode = 'modal',
@@ -51,7 +47,7 @@ export const AddressForm: React.FC<AddressFormProps> = ({
     city: z.string().nonempty(validationT("required")),
     state: z.string().nonempty(validationT("required")),
     postalCode: z.string().nonempty(validationT("required"))
-        .regex(/^\d{4,5}$/, validationT("form.invalidFormat")),
+        ,
     country: z.enum(['SA', 'US', 'AE'] as const),
     isDefault: z.boolean().optional(),
   });
@@ -109,27 +105,31 @@ export const AddressForm: React.FC<AddressFormProps> = ({
           ([key, value]) => editingAddress?.[key as keyof typeof data] !== value
         )
       );
-      const response = await updateAddress({
-        userId,
-        addressId: editingAddress.identifier,
-        data: {
-          ...changedFields,
-        },
-      });
-      if (response.status === "success") {
-        toast.success(sharedT("address.updatedSuccessfully"));
-      } else {
-        toast.error(updateAddressError?.data.message as string);
+      try {
+        const response = await updateAddress({
+          userId,
+          addressId: editingAddress.identifier,
+          data: {
+            ...changedFields,
+          },
+        });
+        if (response.status === "success") {
+          toast.success(sharedT("address.updatedSuccessfully"));
+        }
+        onSuccess?.();
+      } catch (error) {
+        toast.error((error as ProcessedError).data.message as string);
       }
-      onSuccess?.();
     } else {
-      const response = await createAddress({ ...data, isDefault: data.isDefault ?? false });
-      if (response.status === "success") {
-        toast.success(sharedT("address.createdSuccessfully"));
-      } else {
-        toast.error(createAddressError?.data.message as string);
+      try {
+        const response = await createAddress({ ...data, isDefault: data.isDefault ?? false });
+        if (response.status === "success") {
+          toast.success(sharedT("address.createdSuccessfully"));
+        }
+        onSuccess?.();
+      } catch (error) {
+        toast.error((error as ProcessedError).data.message as string);
       }
-      onSuccess?.();
     }
   }
 

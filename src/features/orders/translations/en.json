@@ -21,7 +21,9 @@
     "back": "Back",
     "pleaseCompleteAllRequiredFields": "Please complete all required fields",
     "couponApplied": "Coupon applied successfully!",
-    "stripeNotInitialized": "Stripe payment system is not initialized. Please refresh the page."
+    "stripeNotInitialized": "Stripe payment system is not initialized. Please refresh the page.",
+    "paymentFailed": "Payment failed",
+    "selectedAddressNotFound": "Selected address not found"
   },
   "orderSummary": {
     "title": "Order Summary",

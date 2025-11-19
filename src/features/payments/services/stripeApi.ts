@@ -4,6 +4,7 @@ import { APP_CONFIG } from "@/shared/config/config";
 import { CreatePaymentIntentRequest, CreatePaymentIntentResponse } from "../types";
 import { extractErrorMessage } from "@/shared/utils/extractErrorMessage";
 import { RequestFailure } from "@/shared/types";
+import { RootState } from "@store/store";
 
 const rawBaseQuery = fetchBaseQuery({
 	baseUrl: APP_CONFIG.apiBaseUrl,
@@ -31,9 +32,20 @@ const rawBaseQuery = fetchBaseQuery({
 	},
 });
 
+const baseQueryWithLocale: typeof rawBaseQuery = async (args, api, extra) => {
+	const language = (api.getState() as RootState)?.ui?.language || "en";
+
+	if (typeof args === "string") args = { url: args };
+	if (typeof args === "object") {
+		(args.headers = new Headers(args.headers as HeadersInit)).set("X-locale", language);
+	}
+
+	return await rawBaseQuery(args, api, extra);
+};
+
 export const stripeApi = createApi({
 	reducerPath: "stripeApi",
-	baseQuery: rawBaseQuery,
+	baseQuery: baseQueryWithLocale,
 	tagTypes: ["StripePayment"],
 	endpoints: (builder) => ({
 		createPaymentIntent: builder.mutation<CreatePaymentIntentResponse, CreatePaymentIntentRequest>({

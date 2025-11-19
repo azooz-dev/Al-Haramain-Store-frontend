@@ -612,14 +612,63 @@ html {
 	z-index: 9999 !important;
 }
 
+.rtl-toast-container {
+	left: 15px !important;
+}
+
+.ltr-toast-container {
+	left: 0 !important;
+}
+
 /* RTL Support for Toast Container */
 [dir="rtl"] .react-hot-toast {
-	direction: rtl;
+	direction: rtl !important;
+}
+
+/* RTL Support for Toast Container - Direct targeting */
+html[dir="rtl"] .react-hot-toast,
+html[dir="rtl"] .react-hot-toast > div {
+	direction: rtl !important;
+}
+
+/* Force RTL positioning - override react-hot-toast position classes */
+html[dir="rtl"] .react-hot-toast[class*="top-right"],
+html[dir="rtl"] .react-hot-toast[class*="top-left"] {
+	left: 1rem !important;
+	right: auto !important;
+}
+
+html[dir="ltr"] .react-hot-toast[class*="top-left"],
+html[dir="ltr"] .react-hot-toast[class*="top-right"] {
+	right: 1rem !important;
+	left: auto !important;
 }
 
 /* Toast positioning adjustments */
 .react-hot-toast > div {
 	direction: inherit;
+}
+
+/* RTL Toast Bar Content - Reverse flex direction */
+[dir="rtl"] .react-hot-toast > div > div {
+	flex-direction: row-reverse !important;
+	direction: rtl !important;
+}
+
+html[dir="rtl"] .react-hot-toast > div > div {
+	flex-direction: row-reverse !important;
+	direction: rtl !important;
+}
+
+/* RTL Toast Text Alignment */
+[dir="rtl"] .react-hot-toast > div > div > div {
+	text-align: right !important;
+	direction: rtl !important;
+}
+
+html[dir="rtl"] .react-hot-toast > div > div > div {
+	text-align: right !important;
+	direction: rtl !important;
 }
 
 /* Dark mode support */

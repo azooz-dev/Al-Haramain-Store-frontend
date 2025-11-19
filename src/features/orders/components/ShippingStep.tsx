@@ -4,7 +4,6 @@ import { AddressSelector } from '@/shared/components/common/AddressSelector';
 import { useFeatureTranslations } from '@/shared/hooks/useTranslation';
 import { User as UserType } from '@/features/auth/types';
 import { Address, AddressFormData, UpdateAddressRequest, DeleteAddressRequest, AddressResponse, DeleteAddressResponse } from '@/shared/types';
-import { ProcessedError } from '@/shared/types';
 
 interface ShippingStepProps {
   user: UserType | null;
@@ -18,9 +17,6 @@ interface ShippingStepProps {
   createAddress: (addressData: AddressFormData) => Promise<AddressResponse>;
   updateAddress: (addressData: UpdateAddressRequest) => Promise<AddressResponse>;
   deleteAddress: (addressData: DeleteAddressRequest) => Promise<DeleteAddressResponse>;
-  createAddressError: ProcessedError | undefined;
-  updateAddressError: ProcessedError | undefined;
-  deleteAddressError: ProcessedError | undefined;
 }
 
 export const ShippingStep: React.FC<ShippingStepProps> = ({
@@ -35,9 +31,6 @@ export const ShippingStep: React.FC<ShippingStepProps> = ({
   createAddress,
   updateAddress,
   deleteAddress,
-  createAddressError,
-  updateAddressError,
-  deleteAddressError,
 }) => {
   const { t: featureT } = useFeatureTranslations("orders");
 
@@ -85,9 +78,6 @@ export const ShippingStep: React.FC<ShippingStepProps> = ({
         createAddress={createAddress}
         updateAddress={updateAddress}
         deleteAddress={deleteAddress}
-        createAddressError={createAddressError}
-        updateAddressError={updateAddressError}
-        deleteAddressError={deleteAddressError}
       />
     </div>
   );

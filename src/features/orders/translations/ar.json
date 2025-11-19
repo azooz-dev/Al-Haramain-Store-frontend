@@ -21,7 +21,9 @@
     "back": "العودة",
     "pleaseCompleteAllRequiredFields": "يرجى إكمال جميع الحقول المطلوبة",
     "couponApplied": "تم تطبيق القسيمة بنجاح!",
-    "stripeNotInitialized": "نظام الدفع غير مهيأ. يرجى تحديث الصفحة."
+    "stripeNotInitialized": "نظام الدفع غير مهيأ. يرجى تحديث الصفحة.",
+    "paymentFailed": "فشل الدفع",
+    "selectedAddressNotFound": "لم يتم العثور على العنوان المحدد"
   },
   "orderSummary": {
     "title": "ملخص الطلب",

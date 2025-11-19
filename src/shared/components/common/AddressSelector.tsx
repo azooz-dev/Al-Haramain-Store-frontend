@@ -18,9 +18,6 @@ interface AddressSelectorProps {
   isCreatingAddress: boolean;
   isUpdatingAddress: boolean;
   isDeletingAddress: boolean;
-  createAddressError: ProcessedError | undefined;
-  updateAddressError: ProcessedError | undefined;
-  deleteAddressError: ProcessedError | undefined;
   createAddress: (addressData: AddressFormData) => Promise<AddressResponse>;
   updateAddress: (addressData: UpdateAddressRequest) => Promise<AddressResponse>;
   deleteAddress: (addressData: DeleteAddressRequest) => Promise<DeleteAddressResponse>;
@@ -42,10 +39,7 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({
   isDeletingAddress,
   createAddress,
   updateAddress,
-  createAddressError,
-  updateAddressError,
   deleteAddress,
-  deleteAddressError,
   userId,
   showAddButtons,
   showEditButtons,
@@ -59,11 +53,13 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({
   const { t: sharedT } = useSharedTranslations("shared");
   const { toast } = useToast();
   const handleDeleteAddress = async (addressId: number) => {
-    const response = await deleteAddress({ addressId, userId });
-    if (response.status === "success") {
-      toast.success(response.message);
-    } else {
-      toast.error(deleteAddressError?.data.message as string);
+    try {
+      const response = await deleteAddress({ addressId, userId });
+      if (response.status === "success") {
+        toast.success(response.message);
+      }
+    } catch (error) {
+      toast.error((error as ProcessedError).data.message as string);
     }
   }
 
@@ -124,8 +120,6 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({
           updateAddress={updateAddress}
           isCreatingAddress={isCreatingAddress}
           isUpdatingAddress={isUpdatingAddress}
-          createAddressError={createAddressError}
-          updateAddressError={updateAddressError}
           editingAddress={editingAddress}
           userId={userId} 
           onSuccess={() => {
@@ -186,8 +180,6 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({
         updateAddress={updateAddress}
         isCreatingAddress={isCreatingAddress}
         isUpdatingAddress={isUpdatingAddress}
-        createAddressError={createAddressError}
-        updateAddressError={updateAddressError}
         onSuccess={() => {
           handleCloseAddressForm();
         }}

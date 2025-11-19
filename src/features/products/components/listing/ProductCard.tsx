@@ -8,6 +8,8 @@ import { ProductInfo } from "../details/ProductInfo";
 import { ProductActions } from "../details/ProductActions";
 import { TransformedProduct } from "../../types";
 import { useCart } from "@/features/cart/hooks/useCart";
+import { useToast } from "@/shared/hooks/useToast";
+import { useFeatureTranslations } from "@/shared/hooks/useTranslation";
 
 interface ProductCardProps {
   product: TransformedProduct;
@@ -18,9 +20,11 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(({
 }) => {
   const [isHovering, setIsHovering] = useState(false);
   const { isRTL } = useApp();
+  const { t: productsT } = useFeatureTranslations("products");
   const { prefetchProduct } = usePrefetch();
   const { navigateToProductDetail } = useNavigation();
   const { handleAddToCart } = useCart();
+  const { toast } = useToast();
 
 
   const handleMouseEnter = useCallback(() => {
@@ -37,7 +41,7 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(({
   };
 
   const onAddToCart = useCallback(async () => {
-    return handleAddToCart({
+    const result = await handleAddToCart({
       identifier: product.identifier,
       quantity: 1 as number,
       orderable: 'product',
@@ -49,7 +53,12 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(({
       color: product.colors?.[0],
       variant: product.colors?.[0]?.variants?.[0],
     });
-  }, [product, handleAddToCart]);
+    if (result) {
+      toast.success(productsT("details.successAddingToCart"));
+    } else {
+      toast.error(productsT("details.errorAddingToCart"));
+    }
+  }, [product, handleAddToCart, toast, productsT]);
 
   const handleCardClick = useCallback(() => {
     // Navigate to product detail page using React Router

@@ -56,9 +56,6 @@ const CheckoutContent: React.FC = () => {
     createAddress,
     updateAddress,
     deleteAddress,
-    createAddressError,
-    updateAddressError,
-    deleteAddressError,
   } = useAddress() as {
     addresses: Address[];
     isLoadingAddresses: boolean;
@@ -68,9 +65,6 @@ const CheckoutContent: React.FC = () => {
     createAddress: (addressData: AddressFormData) => Promise<AddressResponse>;
     updateAddress: (addressData: UpdateAddressRequest) => Promise<AddressResponse>;
     deleteAddress: (addressData: DeleteAddressRequest) => Promise<DeleteAddressResponse>;
-    createAddressError: ProcessedError | undefined;
-    updateAddressError: ProcessedError | undefined;
-    deleteAddressError: ProcessedError | undefined;
   };
   const { navigateToHome, navigateToProducts, navigateToCart } = useNavigation();
   
@@ -85,7 +79,7 @@ const CheckoutContent: React.FC = () => {
     isLoading: isStripeLoading,
     createPaymentIntentError,
   } = useStripePayment() as {
-    createPaymentIntent: (data: CreatePaymentIntentRequest) => Promise<string | null>;
+    createPaymentIntent: (data: CreatePaymentIntentRequest) => Promise<{ clientSecret: string | null; error: ProcessedError | null }>;
     confirmPayment: (clientSecret: string, billingDetails: BillingDetails, stripeInstance: Stripe | null, elementsInstance: StripeElements | null) => Promise<PaymentIntent | null>;
     isLoading: boolean;
     createPaymentIntentError: ProcessedError | undefined;
@@ -179,20 +173,18 @@ const CheckoutContent: React.FC = () => {
           handleSetDiscount(0, 'fixed');
           setOrderComplete(true);
           toast.success(orderT("checkoutPage.orderCreated"))
-        } else {
-          toast.error(createOrderError?.data.message as string);
         }
       }
 
       // STRIPE CREDIT CARD FLOW
       if (paymentMethod === 'credit_card') {
         if (!stripe || !elements) {
-            console.error(orderT("checkoutPage.stripeNotInitialized")); // Temp message to added the notification later
+            console.error(orderT("checkoutPage.stripeNotInitialized"));
           return;
         }
 
         // Step 1: Create Payment Intent
-        const clientSecret = await createPaymentIntent({
+        const { clientSecret, error: paymentError } = await createPaymentIntent({
           amount: cartCalculations.total,
           currency: 'usd',
           ...orderData,
@@ -200,7 +192,8 @@ const CheckoutContent: React.FC = () => {
         });
 
         if (!clientSecret) {
-          toast.error(createPaymentIntentError?.data.message as string);
+          const errorMessage = paymentError?.data?.message || createPaymentIntentError?.data?.message || "Payment initialization failed";
+          toast.error(errorMessage as string);
           return;
         }
 
@@ -208,7 +201,7 @@ const CheckoutContent: React.FC = () => {
         const selectedAddress = addresses?.find((addr: Address) => addr.identifier === selectedAddressId);
 
         if (!selectedAddress) {
-          console.error('Selected address not found'); // Temp message to added the notification later
+          toast.error(orderT("checkoutPage.selectedAddressNotFound")); 
           return;
         }
 
@@ -233,7 +226,7 @@ const CheckoutContent: React.FC = () => {
         );
 
         if (!paymentIntent) {
-          console.error('Payment failed'); // Temp message to added the notification later
+          toast.error(orderT("checkoutPage.paymentFailed"));
           return;
         }
 
@@ -253,7 +246,7 @@ const CheckoutContent: React.FC = () => {
         }
       }
     } catch (error) {
-      console.error('Error placing order:', error); // Temp message to added the notification later
+      toast.error((error as ProcessedError).data.message as string);
     }
   };
 
@@ -370,9 +363,6 @@ const CheckoutContent: React.FC = () => {
                     createAddress={createAddress}
                     updateAddress={updateAddress}
                     deleteAddress={deleteAddress}
-                    createAddressError={createAddressError}
-                    updateAddressError={updateAddressError}
-                    deleteAddressError={deleteAddressError}
                   />
                 )}
 
@@ -427,7 +417,7 @@ const CheckoutContent: React.FC = () => {
                     <Button
                       onClick={handlePlaceOrder}
                       disabled={isLoading}
-                      className="bg-green-600 hover:bg-green-700 text-white"
+                      className="bg-green-600 hover:bg-green-700 text-white flex-row-reverse"
                     >
                       {isLoading ? (
                         <div className="w-4 h-4 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin" />

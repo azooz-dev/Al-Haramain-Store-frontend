@@ -3,7 +3,6 @@ import { Card, CardContent } from '@shared/components/ui/card';
 import { AddressSelector } from '@shared/components/common/AddressSelector';
 import { useAddress } from '@/shared/hooks/useAddress';
 import { Address, AddressFormData, AddressResponse, UpdateAddressRequest, DeleteAddressRequest, DeleteAddressResponse } from '@/shared/types';
-import { ProcessedError } from '@/shared/types';
 
 interface UserAddressesProps {
   userId: number;
@@ -19,9 +18,6 @@ export const UserAddresses: React.FC<UserAddressesProps> = ({ userId }) => {
     isCreatingAddress,
     isUpdatingAddress,
     isDeletingAddress,
-    createAddressError,
-    updateAddressError,
-    deleteAddressError,
   } = useAddress() as {
     addresses: Address[];
     isLoadingAddresses: boolean;
@@ -31,9 +27,6 @@ export const UserAddresses: React.FC<UserAddressesProps> = ({ userId }) => {
     isCreatingAddress: boolean;
     isUpdatingAddress: boolean;
     isDeletingAddress: boolean;
-    createAddressError: ProcessedError | undefined;
-    updateAddressError: ProcessedError | undefined;
-    deleteAddressError: ProcessedError | undefined;
   };
 
     return (
@@ -47,9 +40,6 @@ export const UserAddresses: React.FC<UserAddressesProps> = ({ userId }) => {
           isCreatingAddress={isCreatingAddress}
           isUpdatingAddress={isUpdatingAddress}
           isDeletingAddress={isDeletingAddress}
-          createAddressError={createAddressError}
-          updateAddressError={updateAddressError}
-          deleteAddressError={deleteAddressError}
           createAddress={createAddress}
           updateAddress={updateAddress}
           deleteAddress={deleteAddress}

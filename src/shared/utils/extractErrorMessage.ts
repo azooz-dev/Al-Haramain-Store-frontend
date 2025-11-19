@@ -11,7 +11,8 @@ export const extractErrorMessage = (error: RequestFailure): ProcessedError => {
 			if (Array.isArray(message)) {
 				errorMessage = message.join(", ");
 			} else {
-				errorMessage = Object.values(message).flat().join(", ");
+				// Only take the first item
+				errorMessage = Object.values(message).flat()[0];
 			}
 		}
 	}

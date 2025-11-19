@@ -13,7 +13,9 @@ interface UseStripePaymentReturn {
 	elements: StripeElements | null;
 	isLoading: boolean;
 	error: StripePaymentError | null;
-	createPaymentIntent: (data: CreatePaymentIntentRequest) => Promise<string | null>;
+	createPaymentIntent: (
+		data: CreatePaymentIntentRequest
+	) => Promise<{ clientSecret: string | null; error: ProcessedError | null }>;
 	confirmPayment: (
 		clientSecret: string,
 		billingDetails: BillingDetails,
@@ -68,18 +70,17 @@ export const useStripePayment = (): UseStripePaymentReturn => {
 				}).unwrap();
 
 				if (response.data.client_secret) {
-					return response.data.client_secret;
+					return { clientSecret: response.data.client_secret, error: null };
 				}
 
-				return null;
+				return { clientSecret: null, error: null };
 			} catch (error) {
+				const processedError = extractErrorMessage(error as RequestFailure);
 				setError({
 					type: "create_payment_intent_error",
-					message:
-						extractErrorMessage(error as RequestFailure)?.data?.message ||
-						"Failed to create payment intent",
+					message: processedError?.data?.message || "Failed to create payment intent",
 				});
-				return null;
+				return { clientSecret: null, error: processedError };
 			} finally {
 				setIsLoading(false);
 			}
