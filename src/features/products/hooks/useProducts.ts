@@ -30,8 +30,14 @@ export const useProducts = () => {
 		per_page: ProductsState.perPage,
 	});
 
-	const transformApiProduct = useCallback((product: Product): TransformedProduct => {
-		const primaryColor = product.colors?.[0];
+
+	const transformApiProduct = useCallback((product: Product): TransformedProduct | null => {
+		if (!product || !product.en || !product.ar) return null;
+		const reviews = product.reviews || [];
+		const colors = product.colors || [];
+		const categories = product.categories || [];
+
+		const primaryColor = colors[0];
 		const primaryImage = primaryColor?.images?.[0];
 		const primaryVariant = primaryColor?.variants?.[0];
 
@@ -42,14 +48,14 @@ export const useProducts = () => {
 			stock: product.stock,
 			en: product.en,
 			ar: product.ar,
-			colors: product.colors,
-			reviews: product.reviews,
-			categories: product.categories,
-			min_price: product.min_price,
-			max_price: product.max_price,
-			price_range: product.price_range,
-			createdDate: product.createdDate,
-			lastChange: product.lastChange,
+			colors: colors,
+			reviews: reviews,
+			categories: categories,
+			min_price: product.min_price || 0,
+			max_price: product.max_price || 0,
+			price_range: product.price_range || "",
+			createdDate: product.createdDate || new Date().toISOString(),
+			lastChange: product.lastChange || new Date().toISOString(),
 			price: primaryVariant?.price || 0,
 			amount_discount_price: primaryVariant?.amount_discount_price
 				? parseFloat(primaryVariant.amount_discount_price)
@@ -58,35 +64,47 @@ export const useProducts = () => {
 				? `${APP_CONFIG.apiBaseUrl}/storage/${primaryImage.image_url}`
 				: "https://images.unsplash.com/photo-1607748862156-7c548e7e98f4?w=400&h=400&fit=crop",
 			rating:
-				product.reviews.length > 0
-					? product.reviews.reduce((sum, review) => sum + parseFloat(review.rating), 0) /
-						product.reviews.length
+				reviews.length > 0
+					? reviews.reduce((sum, review) => sum + parseFloat(review.rating || "0"), 0) /
+					reviews.length
 					: 0,
-			reviewCount: product.reviews.length,
+			reviewCount: reviews.length,
 			isNew:
-				new Date(product.createdDate).getTime() > new Date().getTime() - 1000 * 60 * 60 * 24 * 30,
-			discount: primaryVariant?.amount_discount_price
+				product.createdDate ? (new Date(product.createdDate).getTime() > new Date().getTime() - 1000 * 60 * 60 * 24 * 30) : false,
+			discount: (primaryVariant?.price && primaryVariant?.amount_discount_price)
 				? Math.round(
-						((primaryVariant.price - parseFloat(primaryVariant.amount_discount_price)) /
-							primaryVariant.price) *
-							100
-					)
+					((primaryVariant.price - parseFloat(primaryVariant.amount_discount_price)) /
+						primaryVariant.price) *
+					100
+				)
 				: 0,
 			firstColorId: primaryColor?.id,
 			firstVariantId: primaryVariant?.id,
-			total_images_count: product.total_images_count,
-			available_sizes: product.available_sizes,
-			available_colors: product.available_colors,
+			total_images_count: product.total_images_count || 0,
+			available_sizes: product.available_sizes || [],
+			available_colors: product.available_colors || [],
 		};
 	}, []);
 
 	const transformedProducts = useMemo((): TransformedProduct[] => {
-		if (!productsData?.data?.data) return [];
+		if (!productsData) return [];
 
-		const apiProducts = Array.isArray(productsData.data.data)
-			? productsData?.data?.data
-			: Object.values(productsData.data.data);
-		return (apiProducts as Product[]).map((product) => transformApiProduct(product));
+		// Handle potential nested data structure
+		let apiProducts: Product[] = [];
+		if (Array.isArray(productsData.data)) {
+			apiProducts = productsData.data;
+		} else if (productsData.data && Array.isArray((productsData.data as any).data)) {
+			apiProducts = (productsData.data as any).data;
+		} else if (typeof productsData.data === 'object' && productsData.data !== null) {
+			apiProducts = Object.values(productsData.data.data).filter(item =>
+				typeof item === 'object' && item !== null && 'identifier' in item
+			) as Product[];
+		}
+
+		return apiProducts
+			.filter((product) => product !== null && product !== undefined)
+			.map((product) => transformApiProduct(product))
+			.filter((product): product is TransformedProduct => product !== null);
 	}, [productsData, transformApiProduct]);
 
 	const updatePaginationData = useCallback(() => {
@@ -213,7 +231,7 @@ export const useProducts = () => {
 				);
 
 			const matchesPrice =
-				!priceRange || (product.min_price >= priceRange[0] && product.max_price <= priceRange[1]);
+				!priceRange || (product.price >= priceRange[0] && product.price <= priceRange[1]);
 
 			return matchesSearch && matchesCategory && matchesPrice;
 		});
@@ -246,6 +264,7 @@ export const useProducts = () => {
 			}
 		});
 	}, [filteredProducts, ProductsState.sortBy]);
+
 
 	const computedState = useMemo(
 		() => ({

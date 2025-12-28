@@ -35,7 +35,7 @@ export const ProductsPage: React.FC = () => {
   const { categories } = useCategories();
   const { t: productT } = useFeatureTranslations("products");
 
-  const [ viewMode, setViewMode ] = useState<'grid' | 'list'>('grid');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [showFilters, setShowFilters] = useState(false);
 
   const handleCategoryToggle = (categoryId: number) => {
@@ -46,7 +46,7 @@ export const ProductsPage: React.FC = () => {
     clearFilters();
   }
 
-  
+
   return (
     <div className="min-h-screen py-8">
       <div className="container mx-auto px-4">

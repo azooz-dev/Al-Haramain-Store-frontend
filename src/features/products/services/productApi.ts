@@ -7,10 +7,10 @@ const baseQuery = fetchBaseQuery({
   credentials: "include",
   validateStatus: (response) => response.status >= 200 && response.status < 300,
   prepareHeaders: (headers) => {
-    const authToken = localStorage.getItem("auth_token");
-    if (authToken) {
-      headers.set("Authorization", `Bearer ${authToken}`);
-    }
+    headers.set("Content-Type", "application/json");
+    headers.set("Accept", "application/json");
+    headers.set("X-Requested-With", "XMLHttpRequest");
+    return headers;
   },
 });
 

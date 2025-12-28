@@ -33,9 +33,9 @@ export const ProductsList: React.FC<ProductsListProps> = ({
   }, [prefetchProduct]);
 
   if (isLoading) {
-        return (
-      <div className={`${viewMode === 'grid' 
-        ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6' 
+    return (
+      <div className={`${viewMode === 'grid'
+        ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6'
         : 'space-y-4'}`}>
         {Array.from({ length: 12 }).map((_, index) => (
           <ProductCardSkeleton key={`loading-${index}`} />
@@ -45,7 +45,7 @@ export const ProductsList: React.FC<ProductsListProps> = ({
   }
 
   if (products.length === 0) {
-        return (
+    return (
       <div className="text-center py-16">
         <div className="max-w-md mx-auto">
           <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-muted-foreground/20 flex items-center justify-center">
@@ -53,13 +53,13 @@ export const ProductsList: React.FC<ProductsListProps> = ({
               <path fillRule="evenodd" d="M3 4a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm2 2V5h1v1H5zM3 13a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1v-3zm2 2v-1h1v1H5zM13 4a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1V4zm2 2V5h1v1h-1z" clipRule="evenodd" />
             </svg>
           </div>
-          <h3 className={`text-xl font-semibold text-foreground mb-2 ${isRTL ? 'text-right' : 'text-left'}`}>
+          <h3 className="text-xl font-semibold text-foreground mb-2 text-center">
             {productT('listing.noProductsFound')}
           </h3>
-          <p className="text-muted-foreground mb-6">
+          <p className="text-muted-foreground mb-6 text-center">
             {productT('listing.noProductsFoundDescription')}
           </p>
-          <Button variant="outline" onClick={() => window.location.reload()}>
+          <Button variant="outline" onClick={() => window.location.reload()} className="mx-auto">
             {productT('listing.reloadPage')}
           </Button>
         </div>

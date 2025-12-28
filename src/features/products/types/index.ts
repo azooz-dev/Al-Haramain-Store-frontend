@@ -92,7 +92,7 @@ export interface ProductsResponse {
 		prev_page_url: string | null;
 		to: number;
 		total: number;
-	};
+	}
 	message: string;
 	status: string;
 }
