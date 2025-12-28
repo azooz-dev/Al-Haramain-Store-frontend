@@ -17,7 +17,8 @@ export const Footer: React.FC = () => {
     { key: "contact", label: shared('footer.quickLinks.contact'), path: "/contact" },
   ];
 
-	const { categories } = useCategories();
+  const { categories } = useCategories();
+
 
   return (
     <footer className="bg-gradient-to-br from-background to-muted text-foreground relative overflow-hidden border-t">

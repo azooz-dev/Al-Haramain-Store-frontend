@@ -22,7 +22,7 @@ const categoriesSlice = createSlice({
 		setCategories: (state, action: PayloadAction<CategoriesResponse>) => {
 			state.isLoading = false;
 			state.error = null;
-			state.categories = action.payload.data.data;
+			state.categories = action.payload?.data?.data ?? [];
 		},
 
 		setCurrentCategory: (state, action: PayloadAction<CategoryResponse>) => {

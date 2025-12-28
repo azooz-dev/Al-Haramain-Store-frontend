@@ -6,7 +6,7 @@ import { useNavigation } from "@/shared/hooks/useNavigation";
 import { Button } from "../../ui/button";
 
 interface Props {
-  categories: Category[];
+  categories: Category[] | undefined;
 }
 
 export const FooterCategories: React.FC<Props> = ({ categories }) => {
@@ -18,14 +18,14 @@ export const FooterCategories: React.FC<Props> = ({ categories }) => {
     <div className={`space-y-4 ${isRTL ? "text-right" : "text-left"}`}>
       <h3 className="text-lg font-semibold">{shared('footer.categories.title')}</h3>
       <ul className="space-y-2">
-        {categories.map((category) => (
+        {categories?.map((category) => (
           <li key={category.identifier}>
             <Button
               onClick={() => navigateToProducts()}
               variant="link"
               className="text-muted-foreground hover:text-amber-400 transition-colors text-sm md:text-base block py-1 hover:no-underline"
             >
-              { isRTL ? category.ar.title : category.en.title }
+              {isRTL ? category.ar.title : category.en.title}
             </Button>
           </li>
         ))}

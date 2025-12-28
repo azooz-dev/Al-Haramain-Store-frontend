@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { ArrowLeft, ArrowRight, Grid3x3, Star, Heart, Truck } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent } from "@/shared/components/ui/card";
@@ -9,10 +9,11 @@ import { ImageWithFallback } from "@/shared/components/common/ImageWithFallback"
 import { CategorySkeleton } from "./CategorySkeleton";
 import { APP_CONFIG } from "@/shared/config/config";
 import { useFeatureTranslations } from "@/shared/hooks/useTranslation";
+import { useNavigation } from "@/shared/hooks/useNavigation";
 
 export const CategoryDetailsPage: React.FC = () => {
-  const { id } = useParams <{id: string}>();
-  const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
+  const { navigateToHome } = useNavigation();
   const { isRTL } = useApp();
   const url = APP_CONFIG.apiBaseUrl;
 
@@ -33,7 +34,7 @@ export const CategoryDetailsPage: React.FC = () => {
           <p className="text-muted-foreground mb-8">
             {categoryT("details.errorDescription")}
           </p>
-          <Button onClick={() => navigate(-1)} className="px-8 py-3">
+          <Button onClick={() => navigateToHome()} className="px-8 py-3">
             {isRTL ? <ArrowRight className="h-4 w-4 mr-2" /> : <ArrowLeft className="h-4 w-4 mr-2" />}
             {categoryT("details.goBack")}
           </Button>
@@ -43,7 +44,7 @@ export const CategoryDetailsPage: React.FC = () => {
   }
 
   if (!category) {
-        return (
+    return (
       <div className="min-h-screen bg-gradient-to-br from-muted/30 via-background to-muted/20 flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-4xl font-bold text-muted-foreground mb-4">
@@ -52,7 +53,7 @@ export const CategoryDetailsPage: React.FC = () => {
           <p className="text-muted-foreground mb-8">
             {isRTL ? categoryT("details.categoryNotFoundDescription") : categoryT("details.categoryNotFoundDescription")}
           </p>
-          <Button onClick={() => navigate(-1)} className="px-8 py-3">
+          <Button onClick={() => navigateToHome()} className="px-8 py-3">
             {isRTL ? <ArrowRight className="h-4 w-4 mr-2" /> : <ArrowLeft className="h-4 w-4 mr-2" />}
             {isRTL ? categoryT("details.goBack") : categoryT("details.goBack")}
           </Button>
@@ -60,19 +61,19 @@ export const CategoryDetailsPage: React.FC = () => {
       </div>
     );
   }
-  
+
   const categoryTitle = category ? (isRTL ? category.ar.title : category.en.title) : "";
   const categoryDetails = category ? (isRTL ? category.ar.details : category.en.details) : "";
   const categoryImage = category ? `${url}/storage/${category.image}` : "";
 
-    return (
+  return (
     <div className="min-h-screen bg-gradient-to-br from-muted/30 via-background to-muted/20">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className={`mb-8 ${isRTL ? 'text-right' : 'text-left'}`}>
           <Button
             variant="ghost"
-            onClick={() => navigate(-1)}
+            onClick={() => navigateToHome()}
             className={`mb-6 ${isRTL ? 'flex-row-reverse' : ''}`}
           >
             {isRTL ? (
@@ -87,7 +88,7 @@ export const CategoryDetailsPage: React.FC = () => {
               </>
             )}
           </Button>
-          
+
           <div className="text-center">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl mb-6">
               <Grid3x3 className="h-8 w-8 text-white" />
@@ -112,7 +113,7 @@ export const CategoryDetailsPage: React.FC = () => {
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                
+
                 {/* Decorative Elements */}
                 <div className="absolute top-8 left-8 w-3 h-3 bg-amber-400 rounded-full animate-pulse" />
                 <div className="absolute top-12 right-12 w-2 h-2 bg-orange-300 rounded-full animate-bounce" />
@@ -135,7 +136,7 @@ export const CategoryDetailsPage: React.FC = () => {
                   {isRTL ? categoryT("details.highQuality") : categoryT("details.highQuality")}
                 </h3>
                 <p className="text-muted-foreground">
-                  {isRTL 
+                  {isRTL
                     ? categoryT("details.madeFromTheBestRawMaterials")
                     : categoryT("details.madeFromTheBestRawMaterials")
                   }
@@ -152,7 +153,7 @@ export const CategoryDetailsPage: React.FC = () => {
                   {isRTL ? categoryT("details.carefullyDesigned") : categoryT("details.carefullyDesigned")}
                 </h3>
                 <p className="text-muted-foreground">
-                  {isRTL 
+                  {isRTL
                     ? categoryT("details.everyProductIsCarefullyDesignedForQualityAndBeauty")
                     : 'Every product is carefully designed for quality and beauty'
                   }
@@ -169,7 +170,7 @@ export const CategoryDetailsPage: React.FC = () => {
                   {isRTL ? categoryT("details.fastShipping") : categoryT("details.fastShipping")}
                 </h3>
                 <p className="text-muted-foreground">
-                  {isRTL 
+                  {isRTL
                     ? categoryT("details.weDeliverYourProductsQuicklyAndSafelyToYourDoorstep")
                     : categoryT("details.weDeliverYourProductsQuicklyAndSafelyToYourDoorstep")
                   }

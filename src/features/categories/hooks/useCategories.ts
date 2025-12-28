@@ -79,7 +79,7 @@ export const useCategories = (categoryId?: number) => {
 	}, [categoryData, categoryError, existingCategory, categoryId, dispatch]);
 
 	return {
-		categories,
+		categories: categoriesData?.data?.data,
 		category: currentCategory || existingCategory,
 		isLoading: isLoading || categoriesLoading || (shouldFetchCategory ? categoryLoading : false),
 		error,
