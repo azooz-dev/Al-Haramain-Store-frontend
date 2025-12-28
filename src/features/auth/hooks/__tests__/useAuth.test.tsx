@@ -12,9 +12,15 @@ import React from "react";
 // Mock useAuthActions hook
 jest.mock("../useAuthActions", () => ({
   useAuthActions: () => ({
-    login: jest.fn(),
-    register: jest.fn(),
-    logout: jest.fn(),
+    handleSignIn: jest.fn(),
+    handleSignUp: jest.fn(),
+    handleSignOut: jest.fn(),
+    handleVerifyEmail: jest.fn(),
+    handleResendOTP: jest.fn(),
+    handleForgetPassword: jest.fn(),
+    handleResetPassword: jest.fn(),
+    handleClearError: jest.fn(),
+    handleSetAuthLoading: jest.fn(),
   }),
 }));
 
@@ -125,15 +131,15 @@ describe("useAuth", () => {
   });
 
   describe("action availability", () => {
-    it("should provide login, register, and logout actions", () => {
+    it("should provide auth action handlers", () => {
       const store = createTestStore();
       const { result } = renderHook(() => useAuth(), {
         wrapper: createWrapper(store),
       });
 
-      expect(result.current.login).toBeDefined();
-      expect(result.current.register).toBeDefined();
-      expect(result.current.logout).toBeDefined();
+      expect(result.current.handleSignIn).toBeDefined();
+      expect(result.current.handleSignUp).toBeDefined();
+      expect(result.current.handleSignOut).toBeDefined();
     });
   });
 });

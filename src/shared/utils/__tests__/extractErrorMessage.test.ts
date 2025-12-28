@@ -1,4 +1,5 @@
 import { extractErrorMessage } from "../extractErrorMessage";
+import type { RequestFailure } from "@/shared/types";
 
 describe("extractErrorMessage", () => {
   describe("with string message", () => {
@@ -94,13 +95,13 @@ describe("extractErrorMessage", () => {
 
   describe("with invalid/missing data", () => {
     it("should return default message for null error", () => {
-      const result = extractErrorMessage(null as unknown as { status: number; data: { message: string } });
+      const result = extractErrorMessage(null as unknown as RequestFailure);
 
       expect(result.data.message).toBe("An error occurred");
     });
 
     it("should return default message for undefined error", () => {
-      const result = extractErrorMessage(undefined as unknown as { status: number; data: { message: string } });
+      const result = extractErrorMessage(undefined as unknown as RequestFailure);
 
       expect(result.data.message).toBe("An error occurred");
     });
@@ -110,7 +111,7 @@ describe("extractErrorMessage", () => {
         status: 500,
       };
 
-      const result = extractErrorMessage(error as { status: number; data: { message: string } });
+      const result = extractErrorMessage(error as unknown as RequestFailure);
 
       expect(result.data.message).toBe("An error occurred");
     });

@@ -21,10 +21,15 @@ export interface NavigationParams {
 	dashboardTab?: DashboardTab;
 }
 
+// Recursive type for nested validation errors (e.g., { user: { profile: { name: string[] } } })
+export type ValidationErrors =
+	| string[]
+	| { [key: string]: ValidationErrors };
+
 export interface RequestFailure {
 	status: number;
 	data: {
-		message: string | { [key: string]: string[] };
+		message: string | ValidationErrors;
 		status: string;
 	};
 }
