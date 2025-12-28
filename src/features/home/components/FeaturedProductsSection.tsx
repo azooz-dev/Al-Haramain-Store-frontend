@@ -53,8 +53,8 @@ export const FeaturedProductsSection: React.FC = () => {
               <p className="text-muted-foreground mb-6">
                 {homeT("featuredProducts.errorDescription")}
               </p>
-              <Button 
-                onClick={() => window.location.reload()} 
+              <Button
+                onClick={() => window.location.reload()}
                 variant="outline"
                 className="px-8 py-3 rounded-full border-red-600 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
               >
@@ -67,7 +67,7 @@ export const FeaturedProductsSection: React.FC = () => {
     );
   }
 
-    return (
+  return (
     <section className="py-16 bg-background/50">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
@@ -84,7 +84,7 @@ export const FeaturedProductsSection: React.FC = () => {
 
         {productsList.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {productsList.slice(0, 8).map((product) => (
+            {productsList.slice(0, 6).map((product) => (
               <ProductCard
                 key={product.identifier}
                 product={product}
@@ -106,7 +106,7 @@ export const FeaturedProductsSection: React.FC = () => {
             onClick={() => navigateToProducts()}
             className="px-8 py-3 rounded-full border-amber-600 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20"
           >
-              {homeT("featuredProducts.allProducts")}
+            {homeT("featuredProducts.allProducts")}
             {isRTL ? (
               <ArrowRight className="ml-2 h-4 w-4" />
             ) : (

@@ -16,6 +16,7 @@ export const CategoriesSection: React.FC = () => {
   const { navigateToCategoriesDetails } = useNavigation();
   const { categories, isLoading } = useCategories();
 
+
   const categoryColors = [
     "from-amber-500 to-orange-600",
     "from-emerald-500 to-teal-600",
@@ -25,26 +26,45 @@ export const CategoriesSection: React.FC = () => {
     "from-gray-500 to-slate-600"
   ];
 
+
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        {Array.from({ length: 6 }).map((_, index) => (
-          <Card key={index} className="overflow-hidden bg-card/50 backdrop-blur-md border border-white/20 dark:border-white/10 shadow-xl">
-            <CardContent className="p-0 relative">
-              <Skeleton className="h-48 w-full" />
-              <div className="p-6 space-y-3">
-                <Skeleton className="h-6 w-full" />
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-3/4" />
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      <section className="py-16 bg-gradient-to-br from-muted/30 via-background to-muted/20">
+        <div className="container mx-auto px-4">
+          {/* Header Section Skeleton */}
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl mb-6">
+              <Grid3x3 className="h-8 w-8 text-white" />
+            </div>
+            <h2 className="text-3xl md:text-4xl mb-4">
+              {homeT("categories.title")}
+            </h2>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              {homeT("categories.description")}
+            </p>
+          </div>
+
+          {/* Cards Grid Skeleton */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <Card key={index} className="overflow-hidden bg-card/50 backdrop-blur-md border border-white/20 dark:border-white/10 shadow-xl">
+                <CardContent className="p-0 relative">
+                  <Skeleton className="h-48 w-full" />
+                  <div className="p-6 space-y-3">
+                    <Skeleton className="h-6 w-full" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-3/4" />
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
     )
   }
 
-    return (
+  return (
     <section className="py-16 bg-gradient-to-br from-muted/30 via-background to-muted/20">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
@@ -61,7 +81,7 @@ export const CategoriesSection: React.FC = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {
-            categories.slice(0, 6).map((category, index) => (
+            (categories ?? []).slice(0, 6).map((category, index) => (
               <Card
                 key={category.identifier}
                 className="group overflow-hidden bg-gradient-to-br from-card/90 to-card/60 backdrop-blur-md border border-white/20 dark:border-white/10 shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 cursor-pointer"
@@ -126,7 +146,7 @@ export const CategoriesSection: React.FC = () => {
                 </CardContent>
               </Card>
             )
-          )}
+            )}
         </div>
       </div>
     </section>

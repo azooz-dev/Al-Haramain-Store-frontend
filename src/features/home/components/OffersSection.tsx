@@ -17,7 +17,7 @@ export const OffersSection: React.FC = () => {
   const offer = offers[0];
 
   if (isLoading) {
-        return (
+    return (
       <section className="py-20 bg-gradient-to-br from-muted/30 via-background to-muted/20">
         <div className="container mx-auto px-4">
           <div className="text-center py-16">
@@ -28,7 +28,7 @@ export const OffersSection: React.FC = () => {
               {homeT("offers.title")}
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              {isRTL 
+              {isRTL
                 ? homeT("offers.description")
                 : homeT("offers.description")
               }
@@ -43,7 +43,7 @@ export const OffersSection: React.FC = () => {
   }
 
   if (offers.length === 0) {
-        return (
+    return (
       <section className="py-20 bg-gradient-to-br from-muted/30 via-background to-muted/20">
         <div className="container mx-auto px-4">
           <div className="text-center py-16">
@@ -62,7 +62,7 @@ export const OffersSection: React.FC = () => {
     );
   }
 
-    return (
+  return (
     <section className="py-20 bg-gradient-to-br from-muted/30 via-background to-muted/20">
       <div className="container mx-auto px-4">
         {/* Header */}
@@ -74,7 +74,7 @@ export const OffersSection: React.FC = () => {
             {homeT("offers.title")}
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            {isRTL 
+            {isRTL
               ? homeT("offers.description")
               : homeT("offers.description")
             }
@@ -83,13 +83,13 @@ export const OffersSection: React.FC = () => {
 
         {/* Main Creative Banner */}
         <div className="relative group mb-12">
-          <div 
+          <div
             className="relative h-32 md:h-40 lg:h-48 rounded-3xl overflow-hidden cursor-pointer transform hover:scale-[1.02] transition-all duration-500 shadow-2xl hover:shadow-3xl"
             onClick={() => navigateToOffers()}
           >
             {/* Background Gradient */}
             <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500" />
-            
+
             {/* Background Image Overlay */}
             {offer?.picture && (
               <div className="absolute inset-0 opacity-20">
@@ -100,12 +100,12 @@ export const OffersSection: React.FC = () => {
                 />
               </div>
             )}
-            
+
             {/* Decorative Elements */}
             <div className="absolute top-4 right-4 w-2 h-2 bg-white/60 rounded-full animate-ping" />
             <div className="absolute bottom-6 left-6 w-3 h-3 bg-white/40 rounded-full animate-pulse" />
             <div className="absolute top-1/2 left-1/4 w-1 h-1 bg-white/80 rounded-full animate-bounce" />
-            
+
             {/* Content */}
             <div className={`relative h-full flex items-center justify-between px-8 md:px-12 lg:px-16 ${isRTL ? 'flex-row-reverse' : 'flex-row-reverse'}`}>
               {/* Left Side - CTA Button */}
@@ -122,7 +122,7 @@ export const OffersSection: React.FC = () => {
                   {isRTL ? <ArrowLeft className="ml-2 h-4 w-4" /> : <ArrowRight className="ml-2 h-4 w-4" />}
                 </Button>
               </div>
-              
+
               {/* Right Side - Offer Text */}
               <div className={`flex-1 ${isRTL ? '' : 'flex-row-reverse'}`}>
                 <div className="space-y-2">
@@ -147,7 +147,7 @@ export const OffersSection: React.FC = () => {
                 </div>
               </div>
             </div>
-            
+
             {/* Hover Overlay */}
             <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
               <div className="text-center text-white">
