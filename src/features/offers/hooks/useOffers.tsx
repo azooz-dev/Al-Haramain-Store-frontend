@@ -58,7 +58,7 @@ export const useOffers = (offerId?: number) => {
         price: product.variant.price || 0,
         amount_discount_price: product.variant.amount_discount_price ? parseFloat(product.variant.amount_discount_price) : 0,
         image: product.image.image_url ? `${url}/storage/${product.image.image_url}` : '',
-        discount: product.variant.amount_discount_price && product.variant.price ? 
+        discount: product.variant.amount_discount_price && product.variant.price ?
           Math.round(((product.variant.price - parseFloat(product.variant.amount_discount_price)) / product.variant.price) * 100) : 0,
         firstColorId: product.color.id,
         firstVariantId: product.variant.id,
@@ -74,7 +74,7 @@ export const useOffers = (offerId?: number) => {
   }, [url]);
 
   useEffect(() => {
-    if (offersData) {
+    if (offersData?.data?.data && Array.isArray(offersData.data.data)) {
       dispatch(setOffers(transformApiOffer(offersData.data.data)));
     }
     if (offersError) {
