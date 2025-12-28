@@ -1,7 +1,4 @@
-import { RootState } from "./../../../store/store";
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { APP_CONFIG } from "@/shared/config/config";
-import { getCookieValue } from "@/shared/utils/getCookieValue";
+import { createApi } from "@reduxjs/toolkit/query/react";
 import {
 	DeleteUserRequest,
 	DeleteUserResponse,
@@ -14,39 +11,11 @@ import {
 } from "../types";
 import { extractErrorMessage } from "@/shared/utils/extractErrorMessage";
 import type { RequestFailure } from "@/shared/types";
-
-const rawBaseQuery = fetchBaseQuery({
-	baseUrl: APP_CONFIG.apiBaseUrl,
-	credentials: "include",
-	validateStatus: (response) => response.status >= 200 && response.status < 300,
-	prepareHeaders: (headers, { getState }) => {
-		const language = (getState() as RootState)?.ui?.language || "en";
-		headers.set("X-locale", language);
-
-		const csrfToken =
-			document.querySelector('meta[name="csrf-token"]')?.getAttribute("content") ||
-			getCookieValue("XSRF-TOKEN") ||
-			getCookieValue("csrf-token");
-
-		if (csrfToken) {
-			headers.set("X-CSRF-TOKEN", csrfToken);
-		}
-
-		const authToken = localStorage.getItem("auth_token");
-		if (authToken) {
-			headers.set("Authorization", `Bearer ${authToken}`);
-		}
-
-		headers.set("Content-Type", "application/json");
-		headers.set("Accept", "application/json");
-		headers.set("X-Requested-With", "XMLHttpRequest");
-		return headers;
-	},
-});
+import { baseQueryWithReauth } from "@/shared/api/baseQuery";
 
 export const usersApi = createApi({
 	reducerPath: "usersApi",
-	baseQuery: rawBaseQuery,
+	baseQuery: baseQueryWithReauth,
 	tagTypes: ["User"],
 	endpoints: (builder) => ({
 		updateUser: builder.mutation<UpdateUserResponse, UpdateUserRequest>({

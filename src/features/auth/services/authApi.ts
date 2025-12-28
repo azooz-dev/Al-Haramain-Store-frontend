@@ -18,72 +18,12 @@ import {
 	DeleteUserAccountRequest,
 	LogoutResponse,
 } from "./../types/index";
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { RootState } from "@store/store";
-import { APP_CONFIG } from "@/shared/config/config";
-import { getCookieValue } from "@/shared/utils/getCookieValue";
-import { RequestFailure } from "@/shared/types";
-
-const rawBaseQuery = fetchBaseQuery({
-	baseUrl: APP_CONFIG.apiBaseUrl,
-	credentials: "include",
-	validateStatus: (response) => response.status >= 200 && response.status < 300,
-	prepareHeaders: (headers) => {
-		// Add CSRF token if present (from meta tag or cookie)
-		const csrfToken =
-			document.querySelector('meta[name="csrf-token"]')?.getAttribute("content") ||
-			getCookieValue("XSRF-TOKEN") ||
-			getCookieValue("csrf-token");
-
-		if (csrfToken) {
-			headers.set("X-CSRF-TOKEN", csrfToken);
-		}
-
-		// Get auth token from localStorage and set in Authentication header
-		const authToken = localStorage.getItem("auth_token");
-		if (authToken) {
-			headers.set("Authorization", `Bearer ${authToken}`);
-		}
-
-		headers.set("Content-Type", "application/json");
-		headers.set("Accept", "application/json");
-		headers.set("X-Requested-With", "XMLHttpRequest");
-
-		return headers;
-	},
-});
-
-const baseQueryWithLocale: typeof rawBaseQuery = async (args, api, extra) => {
-	const language = (api.getState() as RootState)?.ui?.language || "en";
-
-	if (typeof args === "string") args = { url: args };
-	if (typeof args === "object" && args.url !== "/sanctum/csrf-cookie") {
-		(args.headers = new Headers(args.headers as HeadersInit)).set("X-locale", language);
-	}
-
-	const result = await rawBaseQuery(args, api, extra);
-
-	// Handle error responses and ensure they have the correct structure
-	if (result.error) {
-		const error = result.error as RequestFailure;
-		if (error.data && typeof error.data === "object") {
-			// Ensure the error has the correct structure
-			result.error = {
-				status: error.status || 500,
-				data: {
-					message: error.data.message || "An error occurred",
-					status: error.data.status || "error",
-				},
-			};
-		}
-	}
-
-	return result;
-};
+import { createApi } from "@reduxjs/toolkit/query/react";
+import { baseQueryWithReauth } from "@/shared/api/baseQuery";
 
 export const authApi = createApi({
 	reducerPath: "authApi",
-	baseQuery: baseQueryWithLocale,
+	baseQuery: baseQueryWithReauth,
 	tagTypes: ["User"],
 	endpoints: (builder) => ({
 		// Get CSRF cookie

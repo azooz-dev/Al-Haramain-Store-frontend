@@ -1,5 +1,4 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { RootState } from "@store/store";
+import { createApi } from "@reduxjs/toolkit/query/react";
 import {
 	CreateAddressRequest,
 	AddressResponse,
@@ -8,44 +7,13 @@ import {
 	DeleteAddressResponse,
 	AddressesResponse,
 } from "../types";
-import { APP_CONFIG } from "../config/config";
-import { getCookieValue } from "../utils/getCookieValue";
 import { extractErrorMessage } from "../utils/extractErrorMessage";
 import { RequestFailure } from "../types";
-
-const baseQuery = fetchBaseQuery({
-	baseUrl: APP_CONFIG.apiBaseUrl,
-	credentials: "include",
-	validateStatus: (response) => response.status >= 200 && response.status < 300,
-	prepareHeaders: (headers, { getState }) => {
-		const language = (getState() as RootState)?.ui?.language || "en";
-		headers.set("X-locale", language);
-
-		// Get CSRF token from meta tag or cookie
-		const csrfToken =
-			document.querySelector('meta[name="csrf-token"]')?.getAttribute("content") ||
-			getCookieValue("XSRF-TOKEN") ||
-			getCookieValue("csrf-token");
-
-		if (csrfToken) {
-			headers.set("X-CSRF-TOKEN", csrfToken);
-		}
-
-		const authToken = localStorage.getItem("auth_token");
-		if (authToken) {
-			headers.set("Authorization", `Bearer ${authToken}`);
-		}
-
-		headers.set("Content-Type", "application/json");
-		headers.set("Accept", "application/json");
-		headers.set("X-Requested-With", "XMLHttpRequest");
-		return headers;
-	},
-});
+import { baseQueryWithReauth } from "@/shared/api/baseQuery";
 
 export const addressApi = createApi({
 	reducerPath: "addressesApi",
-	baseQuery: baseQuery,
+	baseQuery: baseQueryWithReauth,
 	tagTypes: ["Address"],
 	endpoints: (builder) => ({
 		createAddress: builder.mutation<AddressResponse, CreateAddressRequest>({

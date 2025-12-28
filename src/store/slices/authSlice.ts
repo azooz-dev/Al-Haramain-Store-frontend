@@ -1,6 +1,26 @@
-import { LoginResponse, RegisterResponse, VerifyEmailResponse, ProcessedError } from './../../features/auth/types/index';
+import { LoginResponse, RegisterResponse, VerifyEmailResponse } from './../../features/auth/types/index';
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { User } from "@/features/auth/types";
+import { ProcessedError } from "@/shared/types";
+
+/**
+ * Safely extracts error message as a string, handling cases where
+ * the message might be an object (validation errors from API)
+ */
+const getErrorMessage = (payload: ProcessedError): string => {
+  const message = payload?.data?.message;
+  if (typeof message === 'string') {
+    return message;
+  }
+  if (typeof message === 'object' && message !== null) {
+    // Handle validation error objects like { Email: ["error message"] }
+    const values = Object.values(message).flat();
+    for (const val of values) {
+      if (typeof val === 'string') return val;
+    }
+  }
+  return 'An error occurred';
+};
 
 interface AuthState {
   isAuthenticated: boolean;
@@ -9,7 +29,6 @@ interface AuthState {
   error: string | null;
   otpEmail: string | null;
   otpVerified: boolean;
-  token: string | null;
 };
 
 const initialState: AuthState = {
@@ -19,7 +38,6 @@ const initialState: AuthState = {
   error: null,
   otpEmail: null,
   otpVerified: false,
-  token: null
 };
 
 const authSlice = createSlice({
@@ -35,7 +53,6 @@ const authSlice = createSlice({
     loginSuccess: (state, action: PayloadAction<LoginResponse>) => {
       state.isAuthenticated = true;
       state.currentUser = action.payload.data.user;
-      state.token = action.payload.data.token;
       state.isLoading = false;
       state.error = null;
       state.otpEmail = null;
@@ -46,7 +63,7 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.currentUser = null;
       state.isLoading = false;
-      state.error = action.payload.data.message;
+      state.error = getErrorMessage(action.payload);
     },
     // Registration actions
     registerStart: (state) => {
@@ -57,7 +74,6 @@ const authSlice = createSlice({
     registerSuccess: (state, action: PayloadAction<RegisterResponse>) => {
       state.isAuthenticated = true;
       state.currentUser = action.payload.data;
-      state.token = null;
       state.isLoading = false;
       state.error = null;
       state.otpEmail = null;
@@ -65,7 +81,7 @@ const authSlice = createSlice({
     },
 
     registerFailure: (state, action: PayloadAction<ProcessedError>) => {
-      state.error = action.payload.data.message;
+      state.error = getErrorMessage(action.payload);
       state.isLoading = false;
       state.otpEmail = null;
       state.otpVerified = false;
@@ -75,7 +91,6 @@ const authSlice = createSlice({
     otpSuccess: (state, action: PayloadAction<VerifyEmailResponse>) => {
       state.isAuthenticated = true;
       state.currentUser = action.payload.data.user;
-      state.token = action.payload.data.token;
       state.isLoading = false;
       state.error = null;
       state.otpEmail = null;
@@ -84,7 +99,7 @@ const authSlice = createSlice({
 
     otpFailure: (state, action: PayloadAction<ProcessedError>) => {
       state.isLoading = false;
-      state.error = action.payload.data.message;
+      state.error = getErrorMessage(action.payload);
       state.otpVerified = false;
     },
 
@@ -92,7 +107,6 @@ const authSlice = createSlice({
     logout: (state) => {
       state.isAuthenticated = false;
       state.currentUser = null;
-      state.token = null;
       state.isLoading = false;
       state.error = null;
       state.otpEmail = null;
@@ -100,7 +114,7 @@ const authSlice = createSlice({
     },
 
     logoutFailure: (state, action: PayloadAction<ProcessedError>) => {
-      state.error = action.payload.data.message;
+      state.error = getErrorMessage(action.payload);
       state.isLoading = false;
       state.otpEmail = null;
       state.otpVerified = false;
@@ -136,7 +150,6 @@ export const {
 // Selectors
 export const selectIsAuthenticated = (state: { auth: AuthState }) => state.auth.isAuthenticated;
 export const selectCurrentUser = (state: { auth: AuthState }) => state.auth.currentUser;
-export const selectAuthToken = (state: { auth: AuthState }) => state.auth.token;
 export const selectAuthLoading = (state: { auth: AuthState }) => state.auth.isLoading;
 export const selectAuthError = (state: { auth: AuthState }) => state.auth.error;
 export const selectOTPEmail = (state: { auth: AuthState }) => state.auth.otpEmail;

@@ -71,8 +71,6 @@ export const useAuthActions = () => {
 			const response = await login({ email: payload.email, password: payload.password }).unwrap();
 
 			if (response.data.user) {
-				// Store the token in localStorage for persistence
-				if (response.data.token) localStorage.setItem("auth_token", response.data.token);
 				dispatch(
 					loginSuccess({ data: response.data, message: response.message, status: response.status })
 				);
@@ -116,7 +114,8 @@ export const useAuthActions = () => {
 			}
 			return { success: false, requiresOTP: false };
 		} catch (error: unknown) {
-			dispatch(registerFailure(error as ProcessedError));
+			const errorData = extractErrorMessage(error as RequestFailure);
+			dispatch(registerFailure(errorData as ProcessedError));
 			return { success: false };
 		}
 	};
@@ -125,9 +124,9 @@ export const useAuthActions = () => {
 		try {
 			await logout().unwrap();
 		} catch (error) {
-			dispatch(logoutFailure(error as ProcessedError));
+			const errorData = extractErrorMessage(error as RequestFailure);
+			dispatch(logoutFailure(errorData as ProcessedError));
 		} finally {
-			localStorage.removeItem("auth_token");
 			dispatch(logoutAction());
 		}
 	};
@@ -136,9 +135,7 @@ export const useAuthActions = () => {
 		try {
 			const response = await verifyEmail(payload).unwrap();
 
-			if (response.data.user && response.data.token) {
-				// Store the token in localStorage for persistence
-				localStorage.setItem("auth_token", response.data.token);
+			if (response.data.user) {
 				dispatch(otpSuccess(response));
 
 				navigateToHome();
@@ -146,7 +143,8 @@ export const useAuthActions = () => {
 			}
 			return false;
 		} catch (error: unknown) {
-			dispatch(otpFailure(error as ProcessedError));
+			const errorData = extractErrorMessage(error as RequestFailure);
+			dispatch(otpFailure(errorData as ProcessedError));
 			return false;
 		}
 	};
