@@ -52,32 +52,42 @@ export const useFavorites = () => {
 	);
 
 	const addFavorite = useCallback(
-		async (payload: FavoritesAddRequest): Promise<boolean> => {
-			const response = await addFavoriteMutation(payload).unwrap();
-			if (response.status === "success") {
-				dispatch(addToFavorites(response.data));
-				isFavoriteByProductId(response.data.product.identifier);
-				return true;
+		async (payload: FavoritesAddRequest): Promise<{ success: boolean; error?: string }> => {
+			try {
+				const response = await addFavoriteMutation(payload).unwrap();
+				if (response.status === "success") {
+					dispatch(addToFavorites(response.data));
+					isFavoriteByProductId(response.data.product.identifier);
+					return { success: true };
+				}
+				return { success: false, error: "Failed to add to favorites" };
+			} catch (error: unknown) {
+				const errorMessage = (error as { data?: { message?: string } })?.data?.message || "Failed to add to favorites";
+				return { success: false, error: errorMessage };
 			}
-			return false;
 		},
 		[addFavoriteMutation, dispatch, isFavoriteByProductId]
 	);
 
 	const removeFavorite = useCallback(
-		async (payload: FavoritesRemoveRequest): Promise<boolean> => {
-			const response = await removeFavoriteMutation(payload).unwrap();
-			if (response.status === "success") {
-				dispatch(removeFromFavorites(payload.favoriteId));
-				return true;
+		async (payload: FavoritesRemoveRequest): Promise<{ success: boolean; error?: string }> => {
+			try {
+				const response = await removeFavoriteMutation(payload).unwrap();
+				if (response.status === "success") {
+					dispatch(removeFromFavorites(payload.favoriteId));
+					return { success: true };
+				}
+				return { success: false, error: "Failed to remove from favorites" };
+			} catch (error: unknown) {
+				const errorMessage = (error as { data?: { message?: string } })?.data?.message || "Failed to remove from favorites";
+				return { success: false, error: errorMessage };
 			}
-			return false;
 		},
 		[removeFavoriteMutation, dispatch]
 	);
 
 	const toggleFavorite = useCallback(
-		async (payload: FavoritesAddRequest | FavoritesRemoveRequest): Promise<boolean> => {
+		async (payload: FavoritesAddRequest | FavoritesRemoveRequest): Promise<{ success: boolean; error?: string }> => {
 			const isFavoriteExist = isFavoriteByProductId((payload as FavoritesAddRequest).productId);
 			if (isFavoriteExist && isFavoriteExist.identifier) {
 				return await removeFavorite({
