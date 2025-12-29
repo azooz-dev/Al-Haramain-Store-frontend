@@ -1,0 +1,1051 @@
+# Al-Haramain Store Frontend - Technical Documentation
+
+**Version:** 1.0.0  
+**Last Updated:** 2025-12-29  
+**Repository:** al-haramain-store-frontend
+
+---
+
+## Table of Contents
+
+1. [Project Overview](#1-project-overview)
+2. [Technology Stack](#2-technology-stack)
+3. [Frontend Architecture](#3-frontend-architecture)
+4. [State and Data Management](#4-state-and-data-management)
+5. [Component Design](#5-component-design)
+6. [Styling and Design System](#6-styling-and-design-system)
+7. [Performance Optimization](#7-performance-optimization)
+8. [Error Handling and Edge Cases](#8-error-handling-and-edge-cases)
+9. [Testing Strategy](#9-testing-strategy)
+10. [Environment and Configuration](#10-environment-and-configuration)
+11. [Security and Best Practices](#11-security-and-best-practices)
+12. [Scalability and Maintainability](#12-scalability-and-maintainability)
+13. [Developer Experience](#13-developer-experience)
+14. [Deployment and Production Readiness](#14-deployment-and-production-readiness)
+15. [Future Improvements](#15-future-improvements)
+
+---
+
+## 1. Project Overview
+
+### Purpose
+
+Al-Haramain Store is an e-commerce frontend application designed for a retail store specializing in Islamic and Arabic products. The application provides a complete shopping experience including product browsing, cart management, user authentication, order processing, and payment integration.
+
+### Business Problem
+
+The application addresses the need for a modern, bilingual (English/Arabic) e-commerce platform that:
+
+- Supports right-to-left (RTL) layouts for Arabic users
+- Provides a responsive, mobile-first shopping experience
+- Handles secure payment processing via Stripe
+- Manages user accounts, favorites, and order history
+
+### Target Users
+
+- **End Customers:** Consumers browsing and purchasing products
+- **Registered Users:** Authenticated customers with personalized features (favorites, order history, address management)
+
+### Non-Functional Goals
+
+| Goal | Implementation Evidence |
+|------|------------------------|
+| Performance | React.lazy code-splitting, RTK Query caching (5-10 min), memoization patterns |
+| Scalability | Feature-based modular architecture, isolated domain boundaries |
+| Maintainability | TypeScript strict mode, ESLint enforcement, consistent folder structure |
+| Accessibility | Radix UI primitives with built-in ARIA support |
+| Internationalization | Full bilingual EN/AR support with RTL layout switching |
+
+---
+
+## 2. Technology Stack
+
+### Core Framework
+
+| Technology | Version | Rationale |
+|-----------|---------|-----------|
+| React | 19.1.1 | Latest stable with concurrent features and improved hydration |
+| TypeScript | 5.9.3 | Strict type safety with `strict: true`, `noUnusedLocals`, `noUnusedParameters` |
+| Vite | 7.1.7 | Fast HMR, native ESM, optimized production builds |
+
+### State Management
+
+| Technology | Version | Purpose |
+|-----------|---------|---------|
+| Redux Toolkit | 2.9.0 | Global state with RTK Query for data fetching |
+| React Redux | 9.2.0 | React bindings with typed hooks |
+| Redux Persist | 6.0.0 | Persistence for `auth`, `cart`, `favorites`, `ui` slices |
+
+**Rationale:** RTK Query provides automatic caching, request deduplication, and loading/error states. The hybrid approach (slices + RTK Query APIs) separates UI state from server state effectively.
+
+### UI Layer
+
+| Technology | Version | Purpose |
+|-----------|---------|---------|
+| Radix UI | Various | Accessible, unstyled component primitives |
+| Tailwind CSS | 3.4.1 | Utility-first styling with design tokens |
+| tailwindcss-animate | 1.0.7 | Animation utilities |
+| Lucide React | 0.545.0 | Icon library |
+| class-variance-authority | 0.7.1 | Component variant management |
+| clsx / tailwind-merge | Latest | Class name composition |
+
+### Form Management
+
+| Technology | Version | Purpose |
+|-----------|---------|---------|
+| React Hook Form | 7.64.0 | Performant form state management |
+| Zod | 4.1.12 | Schema validation with TypeScript inference |
+| @hookform/resolvers | 5.2.2 | Zod-RHF integration |
+
+### Routing
+
+| Technology | Version | Notes |
+|-----------|---------|-------|
+| React Router DOM | 7.9.3 | Data router pattern with `createBrowserRouter` |
+
+### Payment Integration
+
+| Technology | Version |
+|-----------|---------|
+| @stripe/react-stripe-js | 5.3.0 |
+| @stripe/stripe-js | 8.4.0 |
+
+### Testing
+
+| Technology | Version | Purpose |
+|-----------|---------|---------|
+| Jest | 30.2.0 | Unit/integration testing |
+| Testing Library | 16.3.0 | React component testing |
+| Playwright | 1.57.0 | End-to-end testing |
+| MSW | 2.12.7 | API mocking |
+
+### Code Quality
+
+| Tool | Purpose |
+|------|---------|
+| ESLint 9 | Linting with TypeScript and React plugins |
+| Prettier | Code formatting |
+| TypeScript ESLint | Type-aware linting rules |
+
+---
+
+## 3. Frontend Architecture
+
+### Architectural Pattern
+
+The application follows a **Feature-Based Modular Architecture** with clear separation between:
+
+- **Features:** Domain-specific modules (auth, products, cart, etc.)
+- **Shared:** Cross-cutting concerns (components, hooks, utilities)
+- **Store:** Centralized state management
+
+### Folder Structure
+
+```
+src/
+├── App.tsx                    # Root component with providers
+├── main.tsx                   # Entry point with env validation
+├── vite-env.d.ts              # Vite type declarations
+│
+├── features/                  # Domain modules
+│   ├── auth/                  # Authentication
+│   │   ├── components/        # SignIn, SignUp, OTP, etc.
+│   │   ├── hooks/             # useAuth
+│   │   ├── services/          # authApi (RTK Query)
+│   │   ├── translations/      # en/, ar/
+│   │   └── types/             # TypeScript interfaces
+│   │
+│   ├── products/              # Product catalog
+│   │   ├── components/
+│   │   │   ├── details/       # Product detail views
+│   │   │   ├── filters/       # Filter controls
+│   │   │   ├── listing/       # Product grids
+│   │   │   ├── pages/         # Page components
+│   │   │   └── shared/        # Shared product UI
+│   │   ├── hooks/             # useProducts
+│   │   ├── services/          # productApi
+│   │   ├── translations/
+│   │   └── types/
+│   │
+│   ├── cart/                  # Shopping cart
+│   ├── categories/            # Category browsing
+│   ├── favorites/             # Wishlist functionality
+│   ├── home/                  # Landing page
+│   ├── offers/                # Promotional offers
+│   ├── orders/                # Order management
+│   ├── payments/              # Stripe integration
+│   └── user/                  # User dashboard/profile
+│
+├── shared/                    # Cross-cutting code
+│   ├── api/                   # Base query configuration
+│   ├── components/
+│   │   ├── common/            # Shared business components
+│   │   ├── layout/            # Header, Footer, Layout
+│   │   └── ui/                # 48 Radix-based primitives
+│   ├── config/                # App configuration, env validation
+│   ├── contexts/              # AppContext (theme, language, RTL)
+│   ├── hooks/                 # useTranslation, useNavigation, etc.
+│   ├── routing/               # AppRouter, ProtectedRoute
+│   ├── services/              # addressesApi
+│   ├── translations/          # Global translations (en/, ar/)
+│   ├── types/                 # Shared TypeScript types
+│   └── utils/                 # Utility functions
+│
+├── store/                     # Redux configuration
+│   ├── store.ts               # Store configuration
+│   ├── hooks.ts               # Typed dispatch/selector hooks
+│   ├── ReduxProvider.tsx      # Provider wrapper
+│   └── slices/                # 8 state slices
+│       ├── authSlice.ts
+│       ├── cartSlice.ts
+│       ├── favoritesSlice.ts
+│       ├── productSlice.ts
+│       ├── categoriesSlice.ts
+│       ├── offersSlice.ts
+│       ├── userSlice.ts
+│       └── uiSlice.ts
+│
+├── style/
+│   └── global.css             # Design tokens, animations, RTL
+│
+└── test/                      # Test infrastructure
+    ├── setup.ts               # Jest configuration
+    ├── test-utils.tsx         # Custom render utilities
+    ├── mocks/                 # Mock handlers
+    └── polyfills.ts           # Test polyfills
+```
+
+### Architecture Diagram
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                           App.tsx                                   │
+│  ┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐  │
+│  │  ReduxProvider   │→ │   AppProvider    │→ │    AppRouter     │  │
+│  │  (Redux + Persist)│  │ (Theme/Language) │  │ (Routes)         │  │
+│  └──────────────────┘  └──────────────────┘  └──────────────────┘  │
+└─────────────────────────────────────────────────────────────────────┘
+                                    │
+                    ┌───────────────┼───────────────┐
+                    ▼               ▼               ▼
+            ┌──────────────┐ ┌──────────────┐ ┌──────────────┐
+            │   Features   │ │    Shared    │ │    Store     │
+            └──────────────┘ └──────────────┘ └──────────────┘
+                    │               │               │
+    ┌───────────────┼───────────────┤               │
+    ▼               ▼               ▼               ▼
+┌────────┐   ┌────────┐   ┌────────────────┐  ┌─────────────┐
+│  auth  │   │products│   │   components   │  │   8 Slices  │
+│  cart  │   │ orders │   │   ui (48)      │  │  9 RTK APIs │
+│  ...   │   │  ...   │   │   layout       │  │             │
+└────────┘   └────────┘   └────────────────┘  └─────────────┘
+
+Data Flow:
+┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐
+│ Component│ →  │  Action  │ →  │  Reducer │ →  │  State   │
+│          │ ←  │  Hook    │ ←  │ Selector │ ←  │          │
+└──────────┘    └──────────┘    └──────────┘    └──────────┘
+      │
+      ▼
+┌──────────────────────────────────────────────────────────┐
+│                     RTK Query API                        │
+│  ┌─────────┐  ┌─────────────┐  ┌────────────────────┐   │
+│  │ Request │→ │ baseQuery   │→ │ Auto Cache/Refetch │   │
+│  │         │  │ (CSRF/Auth) │  │                    │   │
+│  └─────────┘  └─────────────┘  └────────────────────┘   │
+└──────────────────────────────────────────────────────────┘
+```
+
+### Separation of Concerns
+
+| Layer | Responsibility | Location |
+|-------|----------------|----------|
+| View | React components, presentation | `features/*/components/`, `shared/components/` |
+| State | Redux slices, selectors | `store/slices/` |
+| Data | RTK Query APIs, caching | `features/*/services/`, `shared/services/` |
+| Business Logic | Custom hooks | `features/*/hooks/`, `shared/hooks/` |
+| Configuration | Environment, app config | `shared/config/` |
+
+### Dependency Boundaries
+
+- Features may import from `shared/` and `store/`
+- Features must NOT import from other features
+- `shared/` may import from `store/` only for typed hooks
+- `store/` imports feature types and services to construct APIs
+
+---
+
+## 4. State and Data Management
+
+### Global vs Local State Strategy
+
+| State Type | Storage | Examples |
+|------------|---------|----------|
+| Server State | RTK Query cache | Products, orders, user data |
+| Persistent UI State | Redux + Persist | Auth, cart, favorites, UI preferences |
+| Ephemeral UI State | React useState | Form inputs, modals, loading spinners |
+
+### Redux Store Configuration
+
+```typescript
+// store/store.ts - Key configuration
+const persistConfig = {
+  key: "root",
+  storage,
+  whitelist: ["auth", "cart", "favorites", "ui"],
+};
+
+const rootReducer = combineReducers({
+  // Slices (8 total)
+  auth: authSlice,
+  cart: cartSlice,
+  favorites: favoritesSlice,
+  products: productsSlice,
+  categories: categoriesSlice,
+  ui: uiSlice,
+  user: userSlice,
+  offers: offersSlice,
+
+  // RTK Query APIs (9 total)
+  [authApi.reducerPath]: authApi.reducer,
+  [productApi.reducerPath]: productApi.reducer,
+  [favoriteApi.reducerPath]: favoriteApi.reducer,
+  [offersApi.reducerPath]: offersApi.reducer,
+  [categoryApi.reducerPath]: categoryApi.reducer,
+  [addressApi.reducerPath]: addressApi.reducer,
+  [ordersApi.reducerPath]: ordersApi.reducer,
+  [stripeApi.reducerPath]: stripeApi.reducer,
+  [usersApi.reducerPath]: usersApi.reducer,
+});
+```
+
+### API/Data-Fetching Layer
+
+The base query configuration in `shared/api/baseQuery.ts` provides:
+
+1. **Cookie-based authentication:** `credentials: "include"`
+2. **CSRF protection:** Automatic token injection from meta tag or cookie
+3. **Locale header:** Derives language from UI state
+4. **401 handling:** Automatic logout dispatch for protected pages
+
+```typescript
+export const baseQueryWithReauth: BaseQueryFn<...> = async (args, api, extraOptions) => {
+  // Add locale header
+  const language = (api.getState() as RootState)?.ui?.language || "en";
+  headers.set("X-locale", language);
+
+  const result = await rawBaseQuery(args, api, extraOptions);
+
+  // Handle 401 - only logout if not on public pages
+  if (result.error && result.error.status === 401) {
+    if (!isPublicPath) {
+      api.dispatch(logout());
+    }
+  }
+
+  return result;
+};
+```
+
+### Caching Strategy
+
+RTK Query caching is explicitly configured per endpoint:
+
+| Endpoint | Cache Duration | Tag Strategy |
+|----------|---------------|--------------|
+| `getProducts` | 5 minutes | `Products`, individual `Product` tags |
+| `getProduct` | 10 minutes | Single `Product` tag + `Products` list |
+
+### Loading and Error States
+
+Error handling is centralized in `extractErrorMessage.ts`:
+
+```typescript
+const getFirstStringValue = (value: unknown): string | null => {
+  if (typeof value === "string") return value;
+  if (Array.isArray(value)) { /* recursive extraction */ }
+  if (typeof value === "object") { /* object traversal */ }
+  return null;
+};
+```
+
+This handles:
+- Simple string messages
+- Validation error objects (`{ Email: ["error message"] }`)
+- Nested API responses
+
+---
+
+## 5. Component Design
+
+### Component Classification
+
+| Category | Location | Purpose | Example |
+|----------|----------|---------|---------|
+| Pages | `features/*/components/pages/` | Route-level containers | `ProductDetailPage` |
+| Feature Components | `features/*/components/` | Domain-specific UI | `ProductActions`, `CartItem` |
+| Layout Components | `shared/components/layout/` | Page structure | `Layout`, `Header`, `Footer` |
+| UI Primitives | `shared/components/ui/` | Reusable building blocks | `Button`, `Card`, `Dialog` |
+| Common Components | `shared/components/common/` | Shared business UI | Loaders, empty states |
+
+### UI Component Library (48 Components)
+
+Based on Radix UI primitives with consistent styling:
+
+```
+accordion      alert-dialog   alert         aspect-ratio   avatar
+badge          breadcrumb     button        calendar       card
+carousel       chart          checkbox      collapsible    command
+context-menu   dialog         drawer        dropdown-menu  form
+hover-card     input-otp      input         label          menubar
+navigation-menu pagination    popover       progress       radio-group
+resizable      scroll-area    select        separator      sheet
+sidebar        skeleton       slider        spinner        switch
+table          tabs           textarea      toaster        toggle-group
+toggle         tooltip
+```
+
+### Component Variant Pattern
+
+Using class-variance-authority (CVA):
+
+```typescript
+// Example pattern from button.tsx
+const buttonVariants = cva(
+  "inline-flex items-center justify-center...",
+  {
+    variants: {
+      variant: {
+        default: "bg-primary text-primary-foreground...",
+        destructive: "bg-destructive...",
+        outline: "border border-input...",
+        secondary: "bg-secondary...",
+        ghost: "hover:bg-accent...",
+        link: "text-primary underline-offset-4...",
+      },
+      size: {
+        default: "h-10 px-4 py-2",
+        sm: "h-9 rounded-md px-3",
+        lg: "h-11 rounded-md px-8",
+        icon: "h-10 w-10",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "default",
+    },
+  }
+);
+```
+
+### Smart vs Presentational Components
+
+| Type | Characteristics | Location |
+|------|-----------------|----------|
+| Smart (Container) | Hooks, state, API calls | `features/*/hooks/`, pages |
+| Presentational | Props-driven, no side effects | `shared/components/ui/` |
+
+Feature hooks like `useProducts` encapsulate all data logic:
+- API queries
+- State selectors
+- Transformation functions
+- Pagination logic
+- Filter management
+
+---
+
+## 6. Styling and Design System
+
+### Methodology
+
+- **Tailwind CSS** for utility-first styling
+- **CSS Variables** for design tokens (colors, spacing, radii)
+- **Dark Mode** via `.dark` class on `<html>`
+
+### Design Tokens
+
+Defined in `global.css`:
+
+```css
+:root {
+  --background: #ffffff;
+  --foreground: oklch(0.145 0 0);
+  --primary: #030213;
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.95 0.0058 264.53);
+  --muted: #ececf0;
+  --destructive: #d4183d;
+  --radius: 0.625rem;
+  /* ... 40+ semantic tokens */
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  /* Dark mode overrides */
+}
+```
+
+### Tailwind Configuration
+
+```javascript
+// tailwind.config.js
+extend: {
+  colors: {
+    border: "var(--border)",
+    background: "var(--background)",
+    foreground: "var(--foreground)",
+    primary: {
+      DEFAULT: "var(--primary)",
+      foreground: "var(--primary-foreground)",
+    },
+    // Semantic color palette
+  },
+  borderRadius: {
+    lg: "var(--radius)",
+    md: "calc(var(--radius) - 2px)",
+    sm: "calc(var(--radius) - 4px)",
+  },
+  fontFamily: {
+    sans: ["Inter", "system-ui", "sans-serif"],
+  },
+}
+```
+
+### RTL Support
+
+Comprehensive RTL handling in CSS:
+
+```css
+[dir="rtl"] {
+  text-align: right;
+}
+
+[dir="rtl"] .rtl\:flex-row-reverse {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .mobile-menu-content {
+  transform: translateX(-100%);
+  animation: slideInLeft 0.3s ease-out forwards;
+}
+```
+
+### Animation System
+
+Custom keyframes for enhanced UX:
+
+- `dropdownSlideIn/Out` - Dropdown menus with 3D perspective
+- `mobileMenuSlideIn/Out` - Mobile navigation with backdrop blur
+- `slideInRight/Left` - RTL-aware slide animations
+- `backdropFadeIn` - Modal overlays
+
+### Accessibility
+
+- Radix UI primitives provide ARIA attributes
+- Focus ring styling via `outline-color: var(--ring)`
+- Semantic color contrast in design tokens
+
+---
+
+## 7. Performance Optimization
+
+### Code Splitting
+
+All page components use React.lazy with Suspense:
+
+```typescript
+// shared/routing/AppRouter.tsx
+const HomePage = lazy(() => 
+  import("@/features/home/components/HomePage")
+    .then(m => ({ default: m.HomePage }))
+);
+
+const withSuspense = (Component: React.LazyExoticComponent<...>) => (
+  <Suspense fallback={<PageLoader />}>
+    <Component />
+  </Suspense>
+);
+```
+
+**18 route-level chunks** are lazy-loaded, reducing initial bundle size.
+
+### RTK Query Optimizations
+
+| Optimization | Configuration | Impact |
+|--------------|---------------|--------|
+| Cache Duration | 5-10 minutes | Reduces redundant API calls |
+| Tag Invalidation | Granular product tags | Targeted cache updates |
+| Request Deduplication | Built-in | Prevents duplicate in-flight requests |
+
+### Redux Persist
+
+Only essential slices are persisted:
+
+```javascript
+whitelist: ["auth", "cart", "favorites", "ui"]
+```
+
+This ensures:
+- Session persistence without full state serialization
+- Fast hydration on page load
+- Reduced localStorage usage
+
+### Memoization Patterns
+
+The codebase uses:
+- `useMemo` for expensive computations
+- `useCallback` for stable function references
+- RTK Query's built-in result caching
+
+### Build Optimization
+
+Vite provides:
+- ESM-based development with native browser imports
+- Rollup-based production bundling with tree-shaking
+- Automatic chunk splitting at dynamic imports
+
+---
+
+## 8. Error Handling and Edge Cases
+
+### Error Extraction Utility
+
+`shared/utils/extractErrorMessage.ts` handles varied API error formats:
+
+```typescript
+export const extractErrorMessage = (error: RequestFailure): ProcessedError => {
+  // Handles:
+  // - { data: { message: "string" } }
+  // - { data: { message: { Email: ["error"] } } }
+  // - Nested structures via recursive extraction
+};
+```
+
+### Slice-Level Error Handling
+
+Auth slice demonstrates the pattern:
+
+```typescript
+loginFailure: (state, action: PayloadAction<ProcessedError>) => {
+  state.isAuthenticated = false;
+  state.currentUser = null;
+  state.isLoading = false;
+  state.error = getErrorMessage(action.payload);
+},
+```
+
+### 401 Unauthorized Handling
+
+Centralized in `baseQueryWithReauth`:
+
+```typescript
+const PUBLIC_PATHS = ["/login", "/register", "/forgot-password", ...];
+
+if (result.error?.status === 401 && !isPublicPath) {
+  api.dispatch(logout());
+}
+```
+
+### User Feedback
+
+- Toast notifications via `react-hot-toast` (styled in `toaster.tsx`)
+- Form validation errors via React Hook Form + Zod
+- Loading states with `Skeleton` components
+
+### Defensive Patterns
+
+- Optional chaining throughout (`product?.reviews?.length`)
+- Nullish coalescing for defaults
+- Type guards and narrowing
+
+---
+
+## 9. Testing Strategy
+
+### Test Types
+
+| Type | Tool | Location | Purpose |
+|------|------|----------|---------|
+| Unit | Jest | `**/__tests__/*.test.ts(x)` | Isolated function/hook testing |
+| Integration | RTL | `**/__tests__/*.test.tsx` | Component interaction testing |
+| E2E | Playwright | `e2e/*.spec.ts` | User flow testing |
+
+### Test Infrastructure
+
+**Jest Configuration (`jest.config.cjs`):**
+
+```javascript
+{
+  preset: "ts-jest",
+  testEnvironment: "jsdom",
+  setupFilesAfterEnv: ["<rootDir>/src/test/setup.ts"],
+  coverageThreshold: {
+    global: {
+      branches: 70,
+      functions: 70,
+      lines: 70,
+      statements: 70,
+    },
+  },
+}
+```
+
+**Test Utilities (`test/test-utils.tsx`):**
+- Custom render with Redux provider
+- Mock store configuration
+- Common test helpers
+
+**Test Setup (`test/setup.ts`):**
+- `@testing-library/jest-dom` matchers
+- `window.matchMedia` mock
+- `ResizeObserver`/`IntersectionObserver` mocks
+- `localStorage` mock
+
+### E2E Test Coverage
+
+```
+e2e/
+├── auth.spec.ts          # Login/signup flows
+├── cart.spec.ts          # Cart operations
+├── homepage.spec.ts      # Landing page verification
+├── navigation.spec.ts    # Routing tests
+└── products.spec.ts      # Product browsing
+```
+
+### Coverage Philosophy
+
+- **70% threshold** enforced for all metrics
+- Excludes: `main.tsx`, type definitions, test utilities
+- Focus on business logic hooks and critical UI paths
+
+---
+
+## 10. Environment and Configuration
+
+### Environment Variables
+
+**Required (validated in production):**
+
+| Variable | Purpose |
+|----------|---------|
+| `VITE_API_BASE_URL` | Backend API endpoint |
+| `VITE_SESSION_DOMAIN` | Cookie domain for auth |
+
+**Optional:**
+
+| Variable | Purpose |
+|----------|---------|
+| `VITE_STRIPE_PUBLISHABLE_KEY` | Stripe payment integration |
+
+### Environment Validation
+
+Executed at app startup (`main.tsx`):
+
+```typescript
+import { validateEnv } from './shared/config/env';
+
+validateEnv(); // Throws in production if required vars missing
+
+createRoot(document.getElementById('root')!).render(...);
+```
+
+### Configuration Object
+
+`shared/config/config.ts` provides typed access:
+
+```typescript
+export const APP_CONFIG = {
+  name: "Al-Haramain Store",
+  version: "1.0.0",
+  defaultLanguage: "en",
+  supportedLanguages: ["en", "ar"],
+  itemsPerPage: 6,
+  maxCartItems: 100,
+  apiBaseUrl: import.meta.env.VITE_API_BASE_URL || "http://localhost",
+  sessionDomain: import.meta.env.VITE_SESSION_DOMAIN || "localhost",
+  stripePublishKey: import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || "",
+} as const;
+```
+
+### Build-Time vs Runtime
+
+| Stage | Variables | Access |
+|-------|-----------|--------|
+| Build-time | `VITE_*` | `import.meta.env.*` |
+| Runtime | None | Configuration baked into build |
+
+---
+
+## 11. Security and Best Practices
+
+### Authentication Security
+
+| Measure | Implementation |
+|---------|----------------|
+| Cookie-based auth | `credentials: "include"` in all API requests |
+| CSRF protection | X-CSRF-TOKEN header from meta tag or cookie |
+| Session validation | 401 responses trigger automatic logout |
+| No localStorage tokens | Tokens stored in HTTP-only cookies (server-side) |
+
+### XSS Protection
+
+- React's built-in JSX escaping
+- No `dangerouslySetInnerHTML` usage detected
+- Zod validation on all form inputs
+
+### API Security
+
+```typescript
+// All requests include:
+headers.set("Content-Type", "application/json");
+headers.set("Accept", "application/json");
+headers.set("X-Requested-With", "XMLHttpRequest"); // CSRF signal
+```
+
+### Sensitive Data Handling
+
+- Stripe keys accessed via environment variables
+- No sensitive data in Redux persist (auth slice stores user, not tokens)
+- HTTPS enforcement assumed in production
+
+### Dependency Security
+
+- Regular updates indicated by latest package versions
+- ESLint security plugins could be added for enhanced checking
+
+---
+
+## 12. Scalability and Maintainability
+
+### Adding New Features
+
+1. Create feature directory: `src/features/<feature-name>/`
+2. Add sub-directories: `components/`, `hooks/`, `services/`, `types/`, `translations/`
+3. Create RTK Query API in `services/<feature>Api.ts`
+4. Add slice to `store/slices/` if needed
+5. Register API reducer and middleware in `store/store.ts`
+6. Add routes to `AppRouter.tsx`
+
+### Feature Isolation
+
+Each feature is self-contained:
+
+```
+features/products/
+├── components/
+│   ├── details/     # Product detail UI
+│   ├── filters/     # Filter components
+│   ├── listing/     # Grid/list views
+│   ├── pages/       # Route pages
+│   └── shared/      # Intra-feature shared
+├── hooks/           # useProducts
+├── services/        # productApi
+├── translations/    # en/, ar/ JSON
+└── types/           # Product interfaces
+```
+
+### Refactoring Safety
+
+- TypeScript strict mode catches breaking changes
+- ESLint enforces consistent patterns
+- Test coverage provides regression safety
+- Feature isolation limits blast radius
+
+### Code Organization Patterns
+
+| Pattern | Enforcement |
+|---------|-------------|
+| Path aliases | `@/`, `@features/`, `@shared/`, `@store/` |
+| Named exports | Feature hooks and components |
+| Barrel exports | Not heavily used (explicit imports preferred) |
+
+---
+
+## 13. Developer Experience
+
+### Local Setup
+
+```bash
+# Clone repository
+git clone <repository-url>
+cd al-haramain-store-frontend
+
+# Install dependencies
+npm install
+
+# Configure environment
+cp .env.example .env
+# Edit .env with required values:
+# VITE_API_BASE_URL=http://localhost:8000
+# VITE_SESSION_DOMAIN=localhost
+
+# Start development server
+npm run dev
+# Server runs on http://localhost:5174
+```
+
+### Common Commands
+
+| Command | Purpose |
+|---------|---------|
+| `npm run dev` | Start Vite dev server (port 5174) |
+| `npm run build` | TypeScript check + production build |
+| `npm run preview` | Preview production build |
+| `npm run lint` | Run ESLint |
+| `npm run test` | Run Jest tests |
+| `npm run test:watch` | Jest in watch mode |
+| `npm run test:coverage` | Generate coverage report |
+
+### Code Conventions
+
+- **Components:** PascalCase files, named exports
+- **Hooks:** `use` prefix, camelCase
+- **Utilities:** camelCase functions
+- **Types:** PascalCase interfaces, exported from `types/` directories
+- **Translations:** Kebab-case keys, organized by feature
+
+### Tooling Productivity
+
+- **Vite HMR:** Sub-second hot reload
+- **TypeScript:** IntelliSense, refactoring support
+- **Path Aliases:** Clean imports via `@/`, `@features/`, etc.
+- **ESLint:** Auto-fix on save (if configured in IDE)
+
+---
+
+## 14. Deployment and Production Readiness
+
+### Build Pipeline
+
+```bash
+npm run build
+# 1. TypeScript compilation check
+# 2. Vite production build
+# 3. Output to dist/
+```
+
+### Build Output
+
+- Static HTML/CSS/JS files
+- Chunk splitting at route boundaries
+- Minified and tree-shaken bundles
+- Source maps for error tracking
+
+### Hosting Requirements
+
+| Requirement | Notes |
+|-------------|-------|
+| Static hosting | Any CDN or static server |
+| SPA fallback | All routes should serve `index.html` |
+| HTTPS | Required for Stripe integration |
+| CORS | Backend must allow frontend origin |
+
+### Production Configuration
+
+`.env` for production:
+
+```
+VITE_API_BASE_URL=https://api.example.com
+VITE_SESSION_DOMAIN=example.com
+VITE_STRIPE_PUBLISHABLE_KEY=pk_live_xxx
+```
+
+### CSR Implications
+
+- Client-side rendering only (no SSR)
+- SEO dependent on meta tags in `index.html`
+- Initial load requires JavaScript execution
+- Consider prerendering for SEO-critical pages
+
+### Monitoring Considerations
+
+- Error tracking (Sentry, etc.) not currently integrated
+- Performance monitoring could be added via Web Vitals
+
+---
+
+## 15. Future Improvements
+
+Based on current architecture analysis, the following enhancements would be reasonable:
+
+### High Priority
+
+1. **Error Boundary Implementation**
+   - Global error boundary for uncaught exceptions
+   - Feature-level error boundaries for isolation
+
+2. **SEO Enhancement**
+   - React Helmet for dynamic meta tags
+   - Consider SSG/SSR for product pages
+
+3. **Error Tracking Integration**
+   - Sentry or similar for production error monitoring
+
+### Medium Priority
+
+4. **Performance Monitoring**
+   - Web Vitals reporting
+   - Bundle size tracking in CI
+
+5. **Accessibility Audit**
+   - WCAG compliance testing
+   - Keyboard navigation verification
+
+6. **Offline Support**
+   - Service worker for PWA capabilities
+   - Offline cart persistence
+
+### Low Priority
+
+7. **Storybook Integration**
+   - Component documentation
+   - Visual regression testing
+
+8. **API Schema Validation**
+   - Zod schemas for API responses
+   - Runtime type checking in development
+
+9. **Internationalization Enhancement**
+   - Date/number formatting per locale
+   - Currency localization
+
+---
+
+## Appendix
+
+### Path Alias Reference
+
+| Alias | Path |
+|-------|------|
+| `@/` | `./src/` |
+| `@features/` | `./src/features/` |
+| `@shared/` | `./src/shared/` |
+| `@store/` | `./src/store/` |
+
+### RTK Query API Summary
+
+| API | Endpoints | Cache Tags |
+|-----|-----------|------------|
+| authApi | login, register, logout, verify | - |
+| productApi | getProducts, getProduct | Products, Product |
+| categoryApi | getCategories, getCategory | Category |
+| favoriteApi | get, add, remove | Favorites |
+| offersApi | getOffers, getOffer | Offers |
+| ordersApi | get, create, update | Orders |
+| addressApi | CRUD operations | Address |
+| stripeApi | payment intents | - |
+| usersApi | profile operations | User |
+
+### Redux Slice Summary
+
+| Slice | Persisted | Purpose |
+|-------|-----------|---------|
+| auth | Yes | Authentication state |
+| cart | Yes | Shopping cart items |
+| favorites | Yes | Wishlist IDs |
+| ui | Yes | Theme, language, RTL |
+| products | No | Product list state |
+| categories | No | Category state |
+| offers | No | Offers state |
+| user | No | User profile state |
