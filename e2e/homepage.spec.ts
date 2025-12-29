@@ -10,7 +10,7 @@ test.describe("Homepage", () => {
     await page.waitForLoadState("networkidle");
 
     // Check main content is visible
-    await expect(page.locator("main").or(page.locator("#root"))).toBeVisible();
+    await expect(page.getByRole("main")).toBeVisible();
   });
 
   test("displays featured products section", async ({ page }) => {

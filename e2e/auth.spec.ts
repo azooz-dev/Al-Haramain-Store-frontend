@@ -5,8 +5,8 @@ test.describe("Authentication Pages", () => {
     await page.goto("/signin");
     await page.waitForLoadState("networkidle");
 
-    // Check page loaded
-    await expect(page.locator("main").or(page.locator("#root"))).toBeVisible();
+    // Check page loaded - use getByRole for best practice
+    await expect(page.getByRole("main")).toBeVisible();
   });
 
   test("signin page has email input", async ({ page }) => {
@@ -31,8 +31,8 @@ test.describe("Authentication Pages", () => {
     await page.goto("/signup");
     await page.waitForLoadState("networkidle");
 
-    // Check page loaded
-    await expect(page.locator("main").or(page.locator("#root"))).toBeVisible();
+    // Check page loaded - use getByRole for best practice
+    await expect(page.getByRole("main")).toBeVisible();
   });
 
   test("signup page has email input", async ({ page }) => {

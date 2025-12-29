@@ -5,8 +5,8 @@ test.describe("Cart Page", () => {
     await page.goto("/cart");
     await page.waitForLoadState("networkidle");
 
-    // Check page loaded
-    await expect(page.locator("main").or(page.locator("#root"))).toBeVisible();
+    // Check page loaded - use getByRole for best practice
+    await expect(page.getByRole("main")).toBeVisible();
   });
 
   test("cart icon visible in header", async ({ page }) => {
