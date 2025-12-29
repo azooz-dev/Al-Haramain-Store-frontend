@@ -6,8 +6,6 @@ import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useApp } from "@/shared/contexts/AppContext";
 import { useFeatureTranslations } from "@/shared/hooks/useTranslation";
 import { useToast } from "@/shared/hooks/useToast";
-import { FavoritesAddRequest, FavoritesRemoveRequest, Favorite } from "../types";
-import { ProcessedError } from "@/shared/types";
 
 interface FavoritesToggleButtonProps {
   productId: number;
@@ -41,13 +39,7 @@ export const FavoritesToggleButton: React.FC<FavoritesToggleButtonProps> = ({
   const { isRTL } = useApp();
   const { t: favoritesT } = useFeatureTranslations("favorites");
   const { isAuthenticated, currentUser } = useAuth();
-  const { toggleFavorite, isLoadingFavorites, isFavorite, addFavoriteError, removeFavoriteError } = useFavorites() as {
-    toggleFavorite: (payload: FavoritesAddRequest | FavoritesRemoveRequest) => Promise<boolean>;
-    isLoadingFavorites: boolean;
-    isFavorite: (productId: number) => Favorite | null;
-    addFavoriteError: ProcessedError | undefined;
-    removeFavoriteError: ProcessedError | undefined;
-  };
+  const { toggleFavorite, isLoadingFavorites, isFavorite } = useFavorites();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const defaultText = {
@@ -76,33 +68,31 @@ export const FavoritesToggleButton: React.FC<FavoritesToggleButtonProps> = ({
       variantId: variantId as number,
     });
     setIsLoading(false);
-    if (response) {
+
+    if (response.success) {
       toast.success(favoritesT("toggleButton.successAddingToFavorites"));
     } else {
-      const error = addFavoriteError || removeFavoriteError;
-      toast.error(error?.data.message as string);
+      toast.error(response.error || favoritesT("toggleButton.errorAddingToFavorites"));
     }
   }
 
-    return (
+  return (
     <Button
       size={size}
       variant={variant}
-      className={`transition-all duration-200 ${
-        isFavorite(productId) 
-          ? favoritedStyles
-          : unfavoritedStyles
-      } ${isLoadingFavorites ? 'opacity-70 cursor-not-allowed' : ''} ${className}`}
+      className={`transition-all duration-200 ${isFavorite(productId)
+        ? favoritedStyles
+        : unfavoritedStyles
+        } ${isLoadingFavorites ? 'opacity-70 cursor-not-allowed' : ''} ${className}`}
       onClick={handleClick}
       disabled={isLoading}
     >
       {isLoading ? (
         <Loader2 className={`h-4 w-4 animate-spin ${showText ? (isRTL ? 'ml-2' : 'mr-2') : ''}`} />
       ) : (
-        <Heart 
-          className={`h-4 w-4 transition-all duration-200 ${
-            isFavorite(productId) && isAuthenticated ? 'fill-current' : ''
-          } ${showText ? (isRTL ? 'ml-2' : 'mr-2') : ''}`} 
+        <Heart
+          className={`h-4 w-4 transition-all duration-200 ${isFavorite(productId) && isAuthenticated ? 'fill-current' : ''
+            } ${showText ? (isRTL ? 'ml-2' : 'mr-2') : ''}`}
         />
       )}
       {showText && !isLoading && (
