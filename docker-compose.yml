@@ -1,0 +1,46 @@
+# ===========================================
+# Al-Haramain Store Frontend - Standalone Docker Compose
+# ===========================================
+# For frontend-only development (without backend)
+# Useful for UI work when backend is not needed
+#
+# Usage: docker-compose up
+# ===========================================
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: alharamain_frontend_standalone
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=development
+      - VITE_API_BASE_URL=${VITE_API_BASE_URL:-http://localhost:80}
+      - VITE_SESSION_DOMAIN=${VITE_SESSION_DOMAIN:-localhost}
+      - VITE_STRIPE_PUBLISHABLE_KEY=${VITE_STRIPE_PUBLISHABLE_KEY:-}
+      - VITE_APP_NAME=${VITE_APP_NAME:-Al-Haramain Store}
+    volumes:
+      # Mount source code for hot-reload
+      - .:/app
+      # Preserve node_modules from container
+      - /app/node_modules
+    stdin_open: true
+    tty: true
+
+  # ===========================================
+  # Production Build Test (optional)
+  # ===========================================
+  # Uncomment to test production build locally
+  # frontend-prod:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #     args:
+  #       VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:80}
+  #       VITE_SESSION_DOMAIN: ${VITE_SESSION_DOMAIN:-localhost}
+  #       VITE_STRIPE_PUBLISHABLE_KEY: ${VITE_STRIPE_PUBLISHABLE_KEY:-}
+  #   container_name: alharamain_frontend_prod_test
+  #   ports:
+  #     - '8000:80'
