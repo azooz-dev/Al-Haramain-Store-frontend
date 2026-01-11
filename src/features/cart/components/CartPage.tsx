@@ -34,17 +34,17 @@ export const CartPage: React.FC = () => {
     return 0;
   };
 
-  const handleQuantityChange = (identifier: number, quantity: number) => {
+  const handleQuantityChange = (identifier: number, orderable: "product" | "offer", quantity: number) => {
     if (quantity === 0) {
-      handleRemoveItem(identifier);
+      handleRemoveItem(identifier, orderable);
     } else {
-      handleUpdateQuantity(identifier, quantity);
+      handleUpdateQuantity(identifier, orderable, quantity);
     }
   }
 
 
   if (cartItems.length === 0) {
-        return (
+    return (
       <div className="min-h-screen py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-md mx-auto text-center">
@@ -58,14 +58,14 @@ export const CartPage: React.FC = () => {
                   {cartT('ourProductsDescription')}
                 </p>
                 <div className="space-y-3">
-                  <Button 
+                  <Button
                     onClick={() => navigateToProducts()}
                     className="w-full bg-amber-600 hover:bg-amber-700"
                   >
                     <ShoppingBag className="h-4 w-4 mr-2" />
                     {cartT('startShopping')}
                   </Button>
-                  <Button 
+                  <Button
                     variant="outline"
                     onClick={() => navigateToHome()}
                     className="w-full"
@@ -81,7 +81,7 @@ export const CartPage: React.FC = () => {
     );
   }
 
-    return (
+  return (
     <div className="min-h-screen py-8">
       <div className="container mx-auto px-4">
         {/* Header */}
@@ -100,7 +100,7 @@ export const CartPage: React.FC = () => {
           <div className="lg:col-span-2 space-y-4">
 
             {/* Cart Items List */}
-              {cartItems.map((item: CartItem) => (
+            {cartItems.map((item: CartItem) => (
               <Card key={item.identifier} className="bg-card/50 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300 p-4">
                 <CardContent className="p-6">
                   <div className="flex flex-col md:flex-row gap-6">
@@ -115,7 +115,7 @@ export const CartPage: React.FC = () => {
                         size="sm"
                         variant="secondary"
                         className="absolute -top-2 -right-2 w-6 h-6 p-0 rounded-full shadow-lg hover:bg-red-100 hover:text-red-600 transition-colors"
-                        onClick={() => handleRemoveItem(item.identifier)}
+                        onClick={() => handleRemoveItem(item.identifier, item.orderable)}
                       >
                         <Trash2 className="h-3 w-3" />
                       </Button>
@@ -164,82 +164,82 @@ export const CartPage: React.FC = () => {
                               {cartT('save')} ${(getPriceAsNumber(item.price) - getPriceAsNumber(item.amount_discount_price)).toFixed(2)}
                             </span>
                           )}
-                      </div>
-
-                      {/* Controls Row */}
-                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                        {/* Quantity Controls */}
-                        <div className="flex items-center justify-center sm:justify-start gap-3">
-                          <span className="text-sm text-muted-foreground whitespace-nowrap">
-                            {cartT('quantity')}:
-                          </span>
-                          <div className="flex items-center border border-border rounded-lg bg-background">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleQuantityChange(item.identifier, item.quantity - 1)}
-                              className="h-8 w-8 p-0 rounded-none hover:bg-muted"
-                              disabled={item.quantity <= 1}
-                            >
-                              <Minus className="h-3 w-3" />
-                            </Button>
-                            <span className="px-4 py-1 text-center min-w-[3rem] text-sm font-medium">
-                              {item.quantity}
-                            </span>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleQuantityChange(item.identifier, item.quantity + 1)}
-                              className="h-8 w-8 p-0 rounded-none hover:bg-muted"
-                            >
-                              <Plus className="h-3 w-3" />
-                            </Button>
-                          </div>
                         </div>
 
-                        {/* Item Total */}
-                        <div className="text-center sm:text-right">
-                          <div className="text-lg">
+                        {/* Controls Row */}
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                          {/* Quantity Controls */}
+                          <div className="flex items-center justify-center sm:justify-start gap-3">
+                            <span className="text-sm text-muted-foreground whitespace-nowrap">
+                              {cartT('quantity')}:
+                            </span>
+                            <div className="flex items-center border border-border rounded-lg bg-background">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleQuantityChange(item.identifier, item.orderable, item.quantity - 1)}
+                                className="h-8 w-8 p-0 rounded-none hover:bg-muted"
+                                disabled={item.quantity <= 1}
+                              >
+                                <Minus className="h-3 w-3" />
+                              </Button>
+                              <span className="px-4 py-1 text-center min-w-[3rem] text-sm font-medium">
+                                {item.quantity}
+                              </span>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleQuantityChange(item.identifier, item.orderable, item.quantity + 1)}
+                                className="h-8 w-8 p-0 rounded-none hover:bg-muted"
+                              >
+                                <Plus className="h-3 w-3" />
+                              </Button>
+                            </div>
+                          </div>
+
+                          {/* Item Total */}
+                          <div className="text-center sm:text-right">
+                            <div className="text-lg">
                               {cartT('total')}: <span className="text-xl text-primary">
                                 {isRTL ?
                                   ((getPriceAsNumber(item.amount_discount_price) || getPriceAsNumber(item.price)) * item.quantity).toFixed(2).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[Number(d)]) + "$"
                                   : ((getPriceAsNumber(item.amount_discount_price) || getPriceAsNumber(item.price)) * item.quantity).toFixed(2) + "$"}</span>
+                            </div>
                           </div>
                         </div>
-                      </div>
 
-                      {/* Additional Actions */}
-                      <div className="flex justify-center sm:justify-start gap-2 pt-2">
-                        { item.orderable === 'product' && (
-                        <FavoritesToggleButton
-                          productId={item.identifier}
-                          colorId={item.color?.id}
-                          variantId={item.variant?.id}
-                          size="sm"
-                          variant="outline"
-                          className="text-xs"
-                          showText={true}
-                          customStyles={{
-                            unfavorited: "text-amber-600 hover:text-amber-700 hover:bg-amber-50 dark:hover:bg-amber-900/20"
-                          }}
-                        />
-                        )}
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => handleRemoveItem(item.identifier)}
-                          className="text-xs text-red-600 hover:text-red-700 hover:bg-red-50"
-                        >
-                          {cartT('remove')}
-                        </Button>
+                        {/* Additional Actions */}
+                        <div className="flex justify-center sm:justify-start gap-2 pt-2">
+                          {item.orderable === 'product' && (
+                            <FavoritesToggleButton
+                              productId={item.identifier}
+                              colorId={item.color?.id}
+                              variantId={item.variant?.id}
+                              size="sm"
+                              variant="outline"
+                              className="text-xs"
+                              showText={true}
+                              customStyles={{
+                                unfavorited: "text-amber-600 hover:text-amber-700 hover:bg-amber-50 dark:hover:bg-amber-900/20"
+                              }}
+                            />
+                          )}
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => handleRemoveItem(item.identifier, item.orderable)}
+                            className="text-xs text-red-600 hover:text-red-700 hover:bg-red-50"
+                          >
+                            {cartT('remove')}
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
                 </CardContent>
               </Card>
-              ))}
-                
+            ))}
+
           </div>
 
           {/* Order Summary */}
@@ -297,31 +297,31 @@ export const CartPage: React.FC = () => {
                     <span>{isRTL ? cartCalculations.subtotal.toFixed(2).replace(/\d/g, (d: string) => '٠١٢٣٤٥٦٧٨٩'[Number(d)]) + "$" : cartCalculations.subtotal.toFixed(2) + "$"}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span>{ cartT('shipping') }</span>
+                    <span>{cartT('shipping')}</span>
                     <span>{cartCalculations.shipping === 0 ? cartT('free') : `$${cartCalculations.shipping.toFixed(2)}`}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span>{cartT('tax') }</span>
-                    <span>{ isRTL ? cartCalculations.tax.toFixed(2).replace(/\d/g, (d: string) => '٠١٢٣٤٥٦٧٨٩'[Number(d)]) + "$" : cartCalculations.tax.toFixed(2) + "$"}</span>
+                    <span>{cartT('tax')}</span>
+                    <span>{isRTL ? cartCalculations.tax.toFixed(2).replace(/\d/g, (d: string) => '٠١٢٣٤٥٦٧٨٩'[Number(d)]) + "$" : cartCalculations.tax.toFixed(2) + "$"}</span>
                   </div>
                   <Separator />
                   <div className="flex justify-between text-lg">
-                    <span>{cartT('total') }</span>
+                    <span>{cartT('total')}</span>
                     <span className="text-primary">{isRTL ? cartCalculations.total.toFixed(2).replace(/\d/g, (d: string) => '٠١٢٣٤٥٦٧٨٩'[Number(d)]) + "$" : cartCalculations.total.toFixed(2) + "$"}</span>
                   </div>
                 </div>
 
                 {/* Action Buttons */}
                 <div className="space-y-3 pt-4">
-                  <Button 
+                  <Button
                     onClick={() => navigateToCheckout()}
                     className="w-full bg-amber-600 hover:bg-amber-700 text-white text-lg py-3"
                   >
                     {cartT('proceedTo')}
-                    {isRTL ? (<ArrowLeft className="h-5 w-5 ml-2" />) : (<ArrowRight className="h-5 w-5 ml-2"/>)} 
+                    {isRTL ? (<ArrowLeft className="h-5 w-5 ml-2" />) : (<ArrowRight className="h-5 w-5 ml-2" />)}
                   </Button>
-                  
-                  <Button 
+
+                  <Button
                     variant="outline"
                     onClick={() => navigateToProducts()}
                     className="w-full"
@@ -332,7 +332,7 @@ export const CartPage: React.FC = () => {
 
                 {/* Payment Methods */}
                 <div className="pt-2">
-                  <p className="text-xs text-muted-foreground text-center mb-2">{isRTL ? "نحن نقبل" : "We accept" }</p>
+                  <p className="text-xs text-muted-foreground text-center mb-2">{isRTL ? "نحن نقبل" : "We accept"}</p>
                   <div className="flex justify-center space-x-2">
                     <div className="w-8 h-6 bg-gradient-to-r from-blue-600 to-blue-700 rounded text-white text-xs flex items-center justify-center ml-2">
                       VISA

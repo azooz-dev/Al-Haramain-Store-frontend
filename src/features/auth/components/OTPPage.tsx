@@ -37,7 +37,7 @@ export const OTPPage: React.FC = () => {
     verificationAttempts: z.number().int().positive(validationT("verificationAttempts.required")),
     isResending: z.boolean(),
   });
-  
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -54,7 +54,7 @@ export const OTPPage: React.FC = () => {
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
-    
+
     if (resendTimer > 0) {
       timer = setTimeout(() => {
         setResendTimer(resendTimer - 1);
@@ -85,12 +85,12 @@ export const OTPPage: React.FC = () => {
 
     // only allow digits
     const digit = value.replace(/\D/g, '').slice(0, 1);
-    
+
     // Update local state immediately for instant UI response
     const newDigits = [...otpDigits];
     newDigits[index] = digit;
     setOtpDigits(newDigits);
-    
+
     // Update form state
     const otp = newDigits.join('');
     form.setValue("otp", otp);
@@ -110,7 +110,7 @@ export const OTPPage: React.FC = () => {
   const handleKeyDown = (index: number, event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Backspace') {
       const newDigits = [...otpDigits];
-      
+
       if (newDigits[index]) {
         // Clear current input
         newDigits[index] = '';
@@ -119,7 +119,7 @@ export const OTPPage: React.FC = () => {
         newDigits[index - 1] = '';
         inputOTPRef.current[index - 1].focus();
       }
-      
+
       setOtpDigits(newDigits);
       form.setValue("otp", newDigits.join(''));
     } else if (event.key === 'ArrowLeft' && index > 0) {
@@ -134,20 +134,20 @@ export const OTPPage: React.FC = () => {
   const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
     e.preventDefault();
     const pastedData = e.clipboardData.getData('text').replace(/\D/g, '') as string;
-    
+
     if (pastedData.length === 6) {
       // Clear error when pasting
       if (error) {
         handleClearError();
       }
-      
+
       const newDigits = pastedData.split('');
       setOtpDigits(newDigits);
       form.setValue("otp", pastedData);
-      
+
       // Focus last input
       inputOTPRef.current[5]?.focus();
-      
+
       // Auto-verify immediately for pasted data
       handleVerifyOTP(pastedData);
     }
@@ -159,15 +159,15 @@ export const OTPPage: React.FC = () => {
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   }
 
-  const maskedEmail = email ? email.replace(/(.{2})(.*)(@.*)/, (_1: string, start: string, middle: string, end: string) => 
+  const maskedEmail = email ? email.replace(/(.{2})(.*)(@.*)/, (_1: string, start: string, middle: string, end: string) =>
     start + '*'.repeat(Math.min(middle.length, 4)) + end) : 'your email';
 
   const handleVerifyOTP = async (otp: string) => {
     if (otp.length !== 6 || !email) return;
-    
+
     form.setValue("isVerifying", true);
     form.setValue("verificationAttempts", form.getValues("verificationAttempts") + 1);
-    
+
     try {
       await handleVerifyEmail({ code: otp, email: email as string });
       // Success - navigation will be handled by the auth hook
@@ -179,12 +179,12 @@ export const OTPPage: React.FC = () => {
 
   const handleResendClick = async () => {
     if (!email) return;
-    
+
     form.setValue("isResending", true);
     setCanResend(false);
     setResendTimer(60);
     setResendSuccess(false);
-    
+
     try {
       await handleResendOTP({ email });
       setResendSuccess(true);
@@ -197,7 +197,7 @@ export const OTPPage: React.FC = () => {
     }
   }
 
-    return (
+  return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100 dark:from-gray-900 dark:via-amber-900/20 dark:to-gray-900 flex items-center justify-center p-4">
       {/* Background decorations */}
       <div className="absolute inset-0 overflow-hidden">
@@ -218,16 +218,16 @@ export const OTPPage: React.FC = () => {
               <CardTitle className="text-2xl bg-gradient-to-r from-amber-600 to-orange-600 dark:from-amber-400 dark:to-orange-400 bg-clip-text text-transparent">
                 {authT("otp.title")}
               </CardTitle>
-              
+
               <div className="flex items-center justify-center gap-2">
                 <Badge className="bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-200">
                   <Mail className="w-3 h-3 mr-1" />
                   {maskedEmail}
                 </Badge>
               </div>
-              
+
               <p className="text-sm text-muted-foreground">
-                {isRTL 
+                {isRTL
                   ? authT("otp.subtitle")
                   : 'Enter the 6-digit verification code sent to your email'
                 }
@@ -288,7 +288,7 @@ export const OTPPage: React.FC = () => {
                       <>
                         <AlertCircle className="w-4 h-4 text-amber-500" />
                         <span className="text-amber-600 dark:text-amber-400">
-                          {isRTL 
+                          {isRTL
                             ? authT("otp.verificationAttempts", { attempts: form.getValues("verificationAttempts") })
                             : `Attempt ${form.getValues("verificationAttempts")} of 3`
                           }
@@ -340,7 +340,7 @@ export const OTPPage: React.FC = () => {
                   <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
                     <Timer className="w-4 h-4" />
                     <span>
-                      {isRTL 
+                      {isRTL
                         ? authT("otp.resendAvailable", { time: formatTimer(resendTimer) })
                         : authT("otp.resendAvailable", { time: formatTimer(resendTimer) })
                       }
@@ -354,7 +354,7 @@ export const OTPPage: React.FC = () => {
                 <div className="text-center">
                   <div className="flex items-center justify-center gap-2 text-sm p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
                     <span className="text-green-600 dark:text-green-400">
-                      {isRTL 
+                      {isRTL
                         ? authT("otp.newCodeSent")
                         : 'New code sent! Please check your email'
                       }
@@ -389,7 +389,7 @@ export const OTPPage: React.FC = () => {
                 {authT("otp.securityNotice")}
               </p>
               <p>
-                {isRTL 
+                {isRTL
                   ? authT("otp.securityNoticeSubtitle")
                   : authT("otp.securityNoticeSubtitle")
                 }

@@ -89,7 +89,7 @@ describe("cartSlice", () => {
         totalPrice: 80,
       };
 
-      const state = cartReducer(stateWithItem, removeFromCart(1));
+      const state = cartReducer(stateWithItem, removeFromCart({ identifier: 1, orderable: "product" }));
 
       expect(state.items).toHaveLength(0);
       expect(state.totalItems).toBe(0);
@@ -105,7 +105,7 @@ describe("cartSlice", () => {
         totalItems: 2,
       };
 
-      const state = cartReducer(stateWithItems, removeFromCart(1));
+      const state = cartReducer(stateWithItems, removeFromCart({ identifier: 1, orderable: "product" }));
 
       expect(state.items).toHaveLength(1);
       expect(state.items[0].identifier).toBe(2);
@@ -120,7 +120,7 @@ describe("cartSlice", () => {
         items: [item],
       };
 
-      const state = cartReducer(stateWithItem, updateQuantity({ identifier: 1, quantity: 5 }));
+      const state = cartReducer(stateWithItem, updateQuantity({ identifier: 1, orderable: "product", quantity: 5 }));
 
       expect(state.items[0].quantity).toBe(5);
       expect(state.totalItems).toBe(5);
@@ -133,7 +133,7 @@ describe("cartSlice", () => {
         items: [item],
       };
 
-      const state = cartReducer(stateWithItem, updateQuantity({ identifier: 1, quantity: 3 }));
+      const state = cartReducer(stateWithItem, updateQuantity({ identifier: 1, orderable: "product", quantity: 3 }));
 
       expect(state.totalPrice).toBe(150); // 50 * 3
     });

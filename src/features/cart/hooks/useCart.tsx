@@ -19,7 +19,7 @@ export const useCart = () => {
   const cartItems = useAppSelector(selectCartItems);
   const totalItems = useAppSelector(selectCartTotalItems);
   const totalPrice = useAppSelector(selectCartTotalPrice);
-  const discountAmount = useAppSelector(selectCartDiscountAmount);  
+  const discountAmount = useAppSelector(selectCartDiscountAmount);
   const discountType = useAppSelector(selectCartDiscountType);
 
   const handleAddToCart = useCallback((item: CartItem): boolean => {
@@ -32,9 +32,9 @@ export const useCart = () => {
     }
   }, [dispatch]);
 
-  const handleUpdateQuantity = useCallback((identifier: number, quantity: number): boolean => {
+  const handleUpdateQuantity = useCallback((identifier: number, orderable: "product" | "offer", quantity: number): boolean => {
     try {
-      dispatch(updateQuantity({ identifier, quantity }));
+      dispatch(updateQuantity({ identifier, orderable, quantity }));
       return true;
     } catch (error) {
       console.error(error);
@@ -42,9 +42,9 @@ export const useCart = () => {
     }
   }, [dispatch]);
 
-  const handleRemoveItem = useCallback((identifier: number): boolean => {
+  const handleRemoveItem = useCallback((identifier: number, orderable: "product" | "offer"): boolean => {
     try {
-      dispatch(removeFromCart(identifier));
+      dispatch(removeFromCart({ identifier, orderable }));
       return true;
     } catch (error) {
       console.error(error);
@@ -63,20 +63,20 @@ export const useCart = () => {
   }, [dispatch]);
 
 
-  const getCartItem = useCallback((identifier: number) => {
-    return cartItems.find((item) => item.identifier === identifier);
+  const getCartItem = useCallback((identifier: number, orderable: "product" | "offer") => {
+    return cartItems.find((item) => item.identifier === identifier && item.orderable === orderable);
   }, [cartItems]);
 
-  const isInCart = useCallback((identifier: number) => {
-    return cartItems.some((item) => item.identifier === identifier);
+  const isInCart = useCallback((identifier: number, orderable: "product" | "offer") => {
+    return cartItems.some((item) => item.identifier === identifier && item.orderable === orderable);
   }, [cartItems]);
 
-  const getProductCartItemQuantity = useCallback((identifier: number) => {
-    const itemInCart = isInCart(identifier);
+  const getProductCartItemQuantity = useCallback((identifier: number, orderable: "product" | "offer") => {
+    const itemInCart = isInCart(identifier, orderable);
 
     if (!itemInCart) return 0;
 
-    return cartItems.find((item) => item.identifier === identifier)?.quantity || 0;
+    return cartItems.find((item) => item.identifier === identifier && item.orderable === orderable)?.quantity || 0;
   }, [cartItems, isInCart]);
 
   const isEmpty = useMemo(() => {
@@ -101,7 +101,7 @@ export const useCart = () => {
     const subtotal: number = cartItems.reduce((acc: number, item: CartItem) => acc + (item.orderable === "product" ? item.amount_discount_price || item.price : item.price) * item.quantity, 0);
     const shipping: number = 0; // Temporary value
     const tax: number = 0;
-    const total: number = ( discountType && discountAmount ? discountType === "fixed" ? subtotal - discountAmount : subtotal - (subtotal * discountAmount / 100) : subtotal) + shipping + tax;
+    const total: number = (discountType && discountAmount ? discountType === "fixed" ? subtotal - discountAmount : subtotal - (subtotal * discountAmount / 100) : subtotal) + shipping + tax;
     return {
       subtotal,
       shipping,

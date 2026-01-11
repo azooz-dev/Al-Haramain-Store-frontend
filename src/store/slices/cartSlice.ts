@@ -26,8 +26,10 @@ const cartSlice = createSlice({
 	initialState,
 	reducers: {
 		addToCart: (state, action: PayloadAction<CartItem>) => {
+			// Check both identifier AND orderable type to distinguish products from offers
 			const existingItem = state.items.find(
-				(item) => item.identifier === action.payload.identifier
+				(item) => item.identifier === action.payload.identifier &&
+					item.orderable === action.payload.orderable
 			);
 			if (existingItem) {
 				existingItem.quantity += action.payload.quantity;
@@ -37,18 +39,28 @@ const cartSlice = createSlice({
 			cartSlice.caseReducers.calculateTotals(state);
 		},
 
-		removeFromCart: (state, action: PayloadAction<number>) => {
-			state.items = state.items.filter((item) => item.identifier !== action.payload);
+		removeFromCart: (state, action: PayloadAction<{ identifier: number; orderable: "product" | "offer" }>) => {
+			// Check both identifier AND orderable type to distinguish products from offers
+			state.items = state.items.filter(
+				(item) => !(item.identifier === action.payload.identifier &&
+					item.orderable === action.payload.orderable)
+			);
 			cartSlice.caseReducers.calculateTotals(state);
 		},
 
-		updateQuantity: (state, action: PayloadAction<{ identifier: number; quantity: number }>) => {
-			const { identifier, quantity } = action.payload;
-			const item = state.items.find((item) => item.identifier === identifier);
+		updateQuantity: (state, action: PayloadAction<{ identifier: number; orderable: "product" | "offer"; quantity: number }>) => {
+			const { identifier, orderable, quantity } = action.payload;
+			// Check both identifier AND orderable type to distinguish products from offers
+			const item = state.items.find(
+				(item) => item.identifier === identifier && item.orderable === orderable
+			);
 
 			if (item) {
 				if (quantity <= 0) {
-					cartSlice.actions.removeFromCart(identifier);
+					cartSlice.caseReducers.removeFromCart(state, {
+						payload: { identifier, orderable },
+						type: "cart/removeFromCart"
+					});
 				} else {
 					item.quantity = quantity;
 				}
@@ -116,7 +128,7 @@ export const selectCartIsLoading = (state: { cart: CartState }) => state.cart.is
 export const selectCartError = (state: { cart: CartState }) => state.cart.error;
 export const selectCartDiscountAmount = (state: { cart: CartState }) => state.cart.discountAmount;
 export const selectCartDiscountType = (state: { cart: CartState }) => state.cart.discountType;
-export const selectCartItemById = (state: { cart: CartState }, identifier: number) =>
-	state.cart.items.find((item) => item.identifier === identifier);
+export const selectCartItemById = (state: { cart: CartState }, identifier: number, orderable: "product" | "offer") =>
+	state.cart.items.find((item) => item.identifier === identifier && item.orderable === orderable);
 
 export default cartSlice.reducer;

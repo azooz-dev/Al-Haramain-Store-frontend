@@ -45,6 +45,8 @@ const PUBLIC_PATHS = [
   "/forgot-password",
   "/reset-password",
   "/verify-email",
+  "/verify-otp",
+  "/",  // Home page - don't auto-logout here, let user see the page
 ];
 
 /**
@@ -58,8 +60,10 @@ export const baseQueryWithReauth: BaseQueryFn<
   unknown,
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
-  // Get current language from state
-  const language = (api.getState() as RootState)?.ui?.language || "en";
+  // Get current language and auth state from state
+  const state = api.getState() as RootState;
+  const language = state?.ui?.language || "en";
+  const authState = state?.auth;
 
   // Normalize args to object format
   if (typeof args === "string") {
@@ -83,8 +87,14 @@ export const baseQueryWithReauth: BaseQueryFn<
       currentPath.startsWith(path)
     );
 
-    // Only auto-logout if not on public pages
-    if (!isPublicPath) {
+    // Don't auto-logout if:
+    // 1. On a public page, OR
+    // 2. User just verified OTP (session might not be fully established), OR
+    // 3. User is currently authenticated in Redux (might be a momentary cookie issue)
+    const justVerified = authState?.otpVerified === true;
+    const isCurrentlyAuthenticated = authState?.isAuthenticated === true;
+
+    if (!isPublicPath && !justVerified && !isCurrentlyAuthenticated) {
       api.dispatch(logout());
     }
   }

@@ -34,7 +34,6 @@ const favoritesSlice = createSlice({
 		},
 
 		removeFromFavorites: (state, action: PayloadAction<number>) => {
-			console.log("removeFromFavorites", state.items);
 			state.items = state.items.filter((item) => item.identifier !== action.payload);
 		},
 

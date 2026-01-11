@@ -43,7 +43,7 @@ export const OffersDetailsPage: React.FC = () => {
   const { toast } = useToast();
 
   const onAddToCart = useCallback(() => {
-    const cartItem = getCartItem(offer?.identifier as number);
+    const cartItem = getCartItem(offer?.identifier as number, 'offer');
     const quantityToAdded = cartItem ? 1 : 1;
 
     const success = handleAddToCart({
@@ -69,7 +69,7 @@ export const OffersDetailsPage: React.FC = () => {
   }
 
   if (error || !offer) {
-        return (
+    return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
@@ -86,12 +86,12 @@ export const OffersDetailsPage: React.FC = () => {
     );
   }
 
-    return (
+  return (
     <div className="min-h-screen  from-amber-50 via-orange-50 to-yellow-50 dark:bg-card dark:from-card dark:via-card dark:to-card">
       {/* Back Button */}
       <div className={`container mx-auto px-4 pt-8 ${isRTL ? 'text-right' : 'text-left'}`}>
-        <Button 
-          variant="ghost" 
+        <Button
+          variant="ghost"
           onClick={() => navigateToOffers()}
           className="mb-6 text-amber-600 hover:text-amber-700 dark:text-amber-400 dark:hover:text-amber-300 hover:bg-amber-50 dark:hover:bg-amber-900/20"
         >
@@ -121,7 +121,7 @@ export const OffersDetailsPage: React.FC = () => {
                   alt={isRTL ? offer.ar.title : offer.en.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                 />
-                
+
                 {/* Glassmorphism Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
@@ -143,7 +143,7 @@ export const OffersDetailsPage: React.FC = () => {
               <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white">
                 {isRTL ? offer.ar.title : offer.en.title}
               </h1>
-              
+
               <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
                 {isRTL ? offer.ar.details : offer.en.details}
               </p>
@@ -159,7 +159,7 @@ export const OffersDetailsPage: React.FC = () => {
                       {offersT("details.offerEndsIn")}
                     </h3>
                   </div>
-                  
+
                   <div className="grid grid-cols-3 gap-4 text-center">
                     <div className="bg-white/50 dark:bg-gray-800/50 rounded-lg p-3 backdrop-blur-sm">
                       <div className="text-2xl font-bold text-red-600 dark:text-red-400">
@@ -216,7 +216,7 @@ export const OffersDetailsPage: React.FC = () => {
                       ${parseFloat(offer.productsTotalPrice).toFixed(2)}
                     </span>
                   </div>
-                  
+
                   <div className="flex items-center gap-4 text-green-600 dark:text-green-400">
                     <TrendingDown className="w-5 h-5" />
                     <span className="text-lg font-semibold">
@@ -233,7 +233,7 @@ export const OffersDetailsPage: React.FC = () => {
             </Card>
 
             {/* CTA Button */}
-            <Button 
+            <Button
               size="lg"
               className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 text-lg py-6"
               onClick={() => onAddToCart()}
@@ -253,7 +253,7 @@ export const OffersDetailsPage: React.FC = () => {
               {/* Decorative background pattern */}
               <div className="absolute inset-0 bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-amber-500/10 rounded-xl" />
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(251,191,36,0.1)_0%,transparent_50%)]" />
-              
+
               <div className="relative flex items-center justify-between p-6">
                 <div className="flex items-center gap-4">
                   <div className="p-3  from-amber-500 to-orange-500 rounded-xl shadow-lg">
@@ -268,7 +268,7 @@ export const OffersDetailsPage: React.FC = () => {
                     </p>
                   </div>
                 </div>
-                
+
                 {/* Floating decorative elements */}
                 <div className="hidden lg:flex items-center gap-3">
                   <div className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-emerald-100 to-green-100 dark:from-emerald-900/30 dark:to-green-900/30 rounded-full border border-emerald-200 dark:border-emerald-800/30">
@@ -294,7 +294,7 @@ export const OffersDetailsPage: React.FC = () => {
               {/* Subtle background decoration */}
               <div className="absolute top-4 right-4 w-32 h-32  from-amber-100/50 to-orange-100/50 dark:from-amber-900/10 dark:to-orange-900/10 rounded-full blur-3xl" />
               <div className="absolute bottom-4 left-4 w-24 h-24  from-orange-100/50 to-amber-100/50 dark:from-orange-900/10 dark:to-amber-900/10 rounded-full blur-2xl" />
-              
+
               <div className="relative grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {offer.products.map((product, index) => {
                   return (
@@ -307,11 +307,11 @@ export const OffersDetailsPage: React.FC = () => {
                     >
                       {/* Product highlight ring */}
                       <div className="absolute -inset-1 bg-gradient-to-r from-amber-300 via-orange-300 to-amber-300 rounded-2xl opacity-0 group-hover:opacity-30 transition-opacity duration-300 blur-sm" />
-                      
+
                       <ProductCard
                         product={product}
                       />
-                      
+
                       {/* Floating offer badge */}
                       {index === 0 && (
                         <div className="absolute -top-2 -right-2 z-10">
@@ -330,7 +330,7 @@ export const OffersDetailsPage: React.FC = () => {
                   );
                 })}
               </div>
-              
+
               {/* Collection summary card */}
               <div className="mt-12 p-6 bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50 dark:from-amber-900/20 dark:via-orange-900/20 dark:to-amber-900/20 rounded-2xl border border-amber-200/50 dark:border-amber-800/30">
                 <div className="flex items-center justify-between flex-wrap gap-4">

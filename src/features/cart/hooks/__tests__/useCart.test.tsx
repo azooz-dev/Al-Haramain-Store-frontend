@@ -100,7 +100,7 @@ describe("useCart", () => {
       });
 
       act(() => {
-        result.current.handleUpdateQuantity(1, 5);
+        result.current.handleUpdateQuantity(1, "product", 5);
       });
 
       expect(result.current.cartItems[0].quantity).toBe(5);
@@ -125,7 +125,7 @@ describe("useCart", () => {
       });
 
       act(() => {
-        result.current.handleRemoveItem(1);
+        result.current.handleRemoveItem(1, "product");
       });
 
       expect(result.current.cartItems).toHaveLength(0);
@@ -178,8 +178,8 @@ describe("useCart", () => {
         wrapper: createWrapper(store),
       });
 
-      expect(result.current.isInCart(1)).toBe(true);
-      expect(result.current.isInCart(999)).toBe(false);
+      expect(result.current.isInCart(1, "product")).toBe(true);
+      expect(result.current.isInCart(999, "product")).toBe(false);
     });
 
     it("getCartItem should return item by identifier", () => {
@@ -188,7 +188,7 @@ describe("useCart", () => {
         wrapper: createWrapper(store),
       });
 
-      const item = result.current.getCartItem(1);
+      const item = result.current.getCartItem(1, "product");
       expect(item).toBeDefined();
       expect(item?.identifier).toBe(1);
     });
@@ -199,8 +199,8 @@ describe("useCart", () => {
         wrapper: createWrapper(store),
       });
 
-      expect(result.current.getProductCartItemQuantity(1)).toBe(3);
-      expect(result.current.getProductCartItemQuantity(999)).toBe(0);
+      expect(result.current.getProductCartItemQuantity(1, "product")).toBe(3);
+      expect(result.current.getProductCartItemQuantity(999, "product")).toBe(0);
     });
   });
 
