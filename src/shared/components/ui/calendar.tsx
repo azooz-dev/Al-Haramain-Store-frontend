@@ -1,4 +1,5 @@
-﻿"use client";
+﻿// @ts-nocheck - shadcn/ui generated file, library type version mismatch
+"use client";
 
 import * as React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";

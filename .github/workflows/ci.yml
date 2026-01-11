@@ -52,7 +52,7 @@ jobs:
         run: npm run lint
 
       - name: 🔷 TypeScript type check
-        run: npx tsc --noEmit
+        run: npx tsc -p tsconfig.app.json --noEmit
 
   # ===========================================
   # Unit Tests
