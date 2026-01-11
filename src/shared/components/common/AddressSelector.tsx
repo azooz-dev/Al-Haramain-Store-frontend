@@ -101,72 +101,60 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({
     );
   }
 
-  if (addresses && addresses?.length === 0) {
-    return (
-      <div className={className}>
+  const renderContent = () => {
+    if (addresses && addresses.length === 0) {
+      return (
         <AddressEmptyState
           mode={mode}
           onAddAddress={handleOpenAddressForm}
           showAddButton={showAddButtons}
         />
-        
-        <AddressForm
-          isOpen={isAddressFormOpen}
-          onClose={() => {
-            handleCloseAddressForm();
-            setEditingAddress(null);
-          }}
-          createAddress={createAddress}
-          updateAddress={updateAddress}
-          isCreatingAddress={isCreatingAddress}
-          isUpdatingAddress={isUpdatingAddress}
-          editingAddress={editingAddress}
-          userId={userId} 
-          onSuccess={() => {
-            // Address will be automatically updated in the list via the query
-            handleCloseAddressForm();
-          }}
-        />
-      </div>
-    );
-  }
+      );
+    }
 
     return (
-    <div className={`space-y-4 ${className}`}>
-      <div className={`flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
-        <h4 className={`text-lg font-semibold flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
-          <MapPin className="h-5 w-5 text-amber-600" />
-          {mode === 'selection' 
-            ? sharedT("address.selection.title")
-            : sharedT("address.display.title")
-          }
-        </h4>
-        {showAddButtons && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleOpenAddressForm}
-            className="flex items-center gap-2 border-amber-300 text-amber-700 hover:bg-amber-50 dark:border-amber-700 dark:text-amber-400 dark:hover:bg-amber-900/20"
-          >
-            <Plus className="w-4 h-4" />
-            {sharedT("address.selection.addNewAddress")}
-          </Button>
-        )}
-      </div>
+      <div className="space-y-4">
+        <div className={`flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
+          <h4 className={`text-lg font-semibold flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+            <MapPin className="h-5 w-5 text-amber-600" />
+            {mode === 'selection' 
+              ? sharedT("address.selection.title")
+              : sharedT("address.display.title")
+            }
+          </h4>
+          {showAddButtons && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleOpenAddressForm}
+              className="flex items-center gap-2 border-amber-300 text-amber-700 hover:bg-amber-50 dark:border-amber-700 dark:text-amber-400 dark:hover:bg-amber-900/20"
+            >
+              <Plus className="w-4 h-4" />
+              {sharedT("address.selection.addNewAddress")}
+            </Button>
+          )}
+        </div>
 
-      <div className="transition-all duration-300 ease-in-out">
-        <AddressList
-          addresses={addresses || []}
-          selectedAddressId={selectedAddressId}
-          onAddressSelect={onAddressSelect}
-          onEditAddress={handleEditAddress}
-          onDeleteAddress={handleDeleteAddress}
-          isDeletingAddress={isDeletingAddress}
-          mode={mode}
-          showEditButtons={showEditButtons}
-          showDeleteButtons={showDeleteButtons}
-        />
+        <div className="transition-all duration-300 ease-in-out">
+          <AddressList
+            addresses={addresses || []}
+            selectedAddressId={selectedAddressId}
+            onAddressSelect={onAddressSelect}
+            onEditAddress={handleEditAddress}
+            onDeleteAddress={handleDeleteAddress}
+            isDeletingAddress={isDeletingAddress}
+            mode={mode}
+            showEditButtons={showEditButtons}
+            showDeleteButtons={showDeleteButtons}
+          />
+        </div>
       </div>
+    );
+  };
+
+  return (
+    <div className={className}>
+      {renderContent()}
 
       <AddressForm
         isOpen={isAddressFormOpen}
