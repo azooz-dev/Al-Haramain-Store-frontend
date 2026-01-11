@@ -93,8 +93,8 @@ export const useProducts = () => {
 		let apiProducts: Product[] = [];
 		if (Array.isArray(productsData.data)) {
 			apiProducts = productsData.data;
-		} else if (productsData.data && Array.isArray((productsData.data as any).data)) {
-			apiProducts = (productsData.data as any).data;
+		} else if (productsData.data && Array.isArray((productsData.data as { data?: Product[] }).data)) {
+			apiProducts = (productsData.data as { data: Product[] }).data;
 		} else if (typeof productsData.data === 'object' && productsData.data !== null) {
 			apiProducts = Object.values(productsData.data.data).filter(item =>
 				typeof item === 'object' && item !== null && 'identifier' in item

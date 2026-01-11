@@ -23,7 +23,8 @@ describe("cn (class name utility)", () => {
 
   describe("conditional classes", () => {
     it("should filter out falsy values", () => {
-      const result = cn("always", false && "never", "also-always");
+      const shouldShowNever = false;
+      const result = cn("always", shouldShowNever && "never", "also-always");
 
       expect(result).toBe("always also-always");
     });
