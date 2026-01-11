@@ -53,7 +53,7 @@ export const OTPPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    let timer: NodeJS.Timeout;
+    let timer: ReturnType<typeof setTimeout>;
 
     if (resendTimer > 0) {
       timer = setTimeout(() => {

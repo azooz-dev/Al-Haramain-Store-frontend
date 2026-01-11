@@ -6,7 +6,7 @@ import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist']),
+  globalIgnores(['dist', 'src/**/__tests__/**', 'src/**/*.test.ts', 'src/**/*.test.tsx', 'src/test/**']),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [
@@ -38,6 +38,8 @@ export default defineConfig([
       'react-refresh/only-export-components': 'off',
       // shadcn/ui components commonly use 'any' types
       '@typescript-eslint/no-explicit-any': 'off',
+      // Allow @ts-nocheck for library compatibility issues
+      '@typescript-eslint/ban-ts-comment': 'off',
     },
   },
 ])

@@ -95,7 +95,7 @@ describe("authSlice", () => {
             message: { email: ["Email is invalid"] },
             status: "error",
           },
-        } as Parameters<typeof loginFailure>[0])
+        } as unknown as Parameters<typeof loginFailure>[0])
       );
 
       expect(state.error).toBe("Email is invalid");

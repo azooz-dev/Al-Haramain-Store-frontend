@@ -27,25 +27,36 @@ import { Category } from "@/features/categories/types";
 // Mock product factory
 const createMockProduct = (overrides: Partial<Product> = {}): Product =>
   ({
-    id: 1,
-    name: "Test Product",
+    identifier: 1,
     slug: "test-product",
-    description: "Test description",
-    price: 100,
-    amount_discount_price: 80,
-    quantity: 10,
-    image: "/test.jpg",
+    sku: "TEST-001",
+    stock: 10,
+    en: { title: "Test Product", details: "Test description" },
+    ar: { title: "منتج اختبار", details: "وصف اختبار" },
+    colors: [],
+    reviews: [],
     categories: [1],
+    min_price: 80,
+    max_price: 100,
+    price_range: "$80 - $100",
+    createdDate: "2024-01-01T00:00:00Z",
+    lastChange: "2024-01-01T00:00:00Z",
+    total_images_count: 1,
+    available_sizes: ["S", "M", "L"],
+    available_colors: ["Red", "Blue"],
     ...overrides,
   }) as Product;
 
 // Mock category factory
 const createMockCategory = (overrides: Partial<Category> = {}): Category =>
   ({
-    id: 1,
-    name: "Electronics",
+    identifier: 1,
     slug: "electronics",
+    en: { title: "Electronics", details: "Electronic products" },
+    ar: { title: "إلكترونيات", details: "المنتجات الإلكترونية" },
     image: "/electronics.jpg",
+    createdDate: "2024-01-01T00:00:00Z",
+    lastChange: "2024-01-01T00:00:00Z",
     ...overrides,
   }) as Category;
 
@@ -68,7 +79,7 @@ describe("productSlice", () => {
 
   describe("setProducts", () => {
     it("should set products array", () => {
-      const products = [createMockProduct({ id: 1 }), createMockProduct({ id: 2 })];
+      const products = [createMockProduct({ identifier: 1 }), createMockProduct({ identifier: 2 })];
 
       const state = productsReducer(initialState, setProducts(products));
 
@@ -79,7 +90,7 @@ describe("productSlice", () => {
 
   describe("setCategories", () => {
     it("should set categories array", () => {
-      const categories = [createMockCategory({ id: 1 }), createMockCategory({ id: 2 })];
+      const categories = [createMockCategory({ identifier: 1 }), createMockCategory({ identifier: 2 })];
 
       const state = productsReducer(initialState, setCategories(categories));
 
