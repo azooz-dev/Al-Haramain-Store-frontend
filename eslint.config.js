@@ -19,5 +19,25 @@ export default defineConfig([
       ecmaVersion: 2020,
       globals: globals.browser,
     },
+    rules: {
+      // Allow exports of non-components in UI library files (shadcn/ui pattern)
+      'react-refresh/only-export-components': [
+        'warn',
+        { allowConstantExport: true },
+      ],
+    },
+  },
+  // Disable react-refresh rule for specific shadcn/ui component files and contexts
+  {
+    files: [
+      'src/shared/components/ui/**/*.{ts,tsx}',
+      'src/shared/contexts/**/*.{ts,tsx}',
+      'src/test/**/*.{ts,tsx}',
+    ],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+      // shadcn/ui components commonly use 'any' types
+      '@typescript-eslint/no-explicit-any': 'off',
+    },
   },
 ])
