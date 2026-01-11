@@ -73,12 +73,13 @@ RUN addgroup -g 1001 -S frontend && \
   touch /var/run/nginx.pid && \
   chown -R frontend:frontend /var/run/nginx.pid
 
-# Health check
+# Health check (uses PORT env var, defaults to 80 for local testing)
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:80/health || exit 1
+  CMD wget --no-verbose --tries=1 --spider http://localhost:${PORT:-80}/health || exit 1
 
-# Expose port 80
-EXPOSE 80
+# Expose port (Railway assigns dynamic PORT)
+EXPOSE ${PORT:-80}
 
-# Run nginx in foreground
-CMD ["nginx", "-g", "daemon off;"]
+# Run nginx in foreground with PORT substitution for Railway
+# envsubst replaces ${PORT} in nginx config at container startup
+CMD ["/bin/sh", "-c", "envsubst '$$PORT' < /etc/nginx/conf.d/default.conf > /tmp/default.conf && mv /tmp/default.conf /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"]
