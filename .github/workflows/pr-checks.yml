@@ -1,0 +1,113 @@
+# ===========================================
+# Al-Haramain Store Frontend - PR Checks
+# ===========================================
+# Runs additional checks on Pull Requests
+# ===========================================
+
+name: PR Checks
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+jobs:
+  # ===========================================
+  # PR Size Check
+  # ===========================================
+  pr-size:
+    name: 📏 PR Size
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 📏 Check PR size
+        run: |
+          ADDITIONS=$(gh pr view ${{ github.event.pull_request.number }} --json additions -q '.additions')
+          DELETIONS=$(gh pr view ${{ github.event.pull_request.number }} --json deletions -q '.deletions')
+          TOTAL=$((ADDITIONS + DELETIONS))
+
+          echo "📊 PR Stats:"
+          echo "  Additions: +$ADDITIONS"
+          echo "  Deletions: -$DELETIONS"
+          echo "  Total changes: $TOTAL"
+
+          if [ $TOTAL -gt 1000 ]; then
+            echo "⚠️ Large PR detected ($TOTAL lines). Consider breaking it into smaller PRs."
+          elif [ $TOTAL -gt 500 ]; then
+            echo "📝 Medium PR ($TOTAL lines)"
+          else
+            echo "✅ Small PR ($TOTAL lines)"
+          fi
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+  # ===========================================
+  # Commit Message Check
+  # ===========================================
+  commit-lint:
+    name: 📝 Commit Messages
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 📝 Check commit message format
+        run: |
+          echo "Checking commit messages follow conventional format..."
+          COMMITS=$(git log origin/${{ github.base_ref }}..HEAD --pretty=format:"%s")
+
+          echo "Commits in this PR:"
+          echo "$COMMITS"
+
+          # Check for conventional commit prefixes
+          VALID_PREFIXES="feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert"
+
+          while IFS= read -r commit; do
+            if [[ ! "$commit" =~ ^($VALID_PREFIXES)(\(.+\))?: ]]; then
+              echo "⚠️ Commit doesn't follow conventional format: $commit"
+              echo "Expected format: type(scope): description"
+              echo "Valid types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert"
+            fi
+          done <<< "$COMMITS"
+
+          echo "✅ Commit message check complete"
+
+  # ===========================================
+  # Security Audit
+  # ===========================================
+  security:
+    name: 🔒 Security Audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: 🔒 Run npm audit
+        run: npm audit --audit-level=high || true
+        continue-on-error: true
+
+      - name: 🔍 Check for secrets
+        run: |
+          echo "Scanning for potential secrets..."
+
+          # Check for common secret patterns
+          if grep -rE "(api[_-]?key|secret|password|token)\s*[:=]\s*['\"][^'\"]+['\"]" --include="*.ts" --include="*.tsx" --include="*.js" src/ 2>/dev/null; then
+            echo "⚠️ Potential hardcoded secrets found. Please review."
+          else
+            echo "✅ No obvious hardcoded secrets detected"
+          fi

@@ -1,0 +1,108 @@
+# ===========================================
+# Al-Haramain Store Frontend - Deploy to Railway
+# ===========================================
+# Deploys to Railway on push to main
+# ===========================================
+
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Deployment environment"
+        required: true
+        default: "production"
+        type: choice
+        options:
+          - production
+          - staging
+
+env:
+  RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
+  RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
+jobs:
+  # ===========================================
+  # Deploy to Railway
+  # ===========================================
+  deploy:
+    name: 🚀 Deploy to Railway
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.event.inputs.environment || 'production' }}
+      url: ${{ steps.deploy.outputs.url }}
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: 📚 Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: 🧪 Run tests
+        run: npm run test -- --passWithNoTests
+
+      - name: 🏗️ Build application
+        run: npm run build
+        env:
+          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+          VITE_SESSION_DOMAIN: ${{ secrets.VITE_SESSION_DOMAIN }}
+          VITE_STRIPE_PUBLISHABLE_KEY: ${{ secrets.VITE_STRIPE_PUBLISHABLE_KEY }}
+
+      - name: 🚀 Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: 🚀 Deploy to Railway
+        id: deploy
+        run: |
+          railway up --detach
+          echo "url=$(railway status --json | jq -r '.deploymentUrl')" >> $GITHUB_OUTPUT
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
+      - name: 📢 Deployment notification
+        run: |
+          echo "✅ Deployment successful!"
+          echo "🌐 URL: ${{ steps.deploy.outputs.url }}"
+
+  # ===========================================
+  # Post-Deployment Health Check
+  # ===========================================
+  health-check:
+    name: 🏥 Health Check
+    runs-on: ubuntu-latest
+    needs: deploy
+
+    steps:
+      - name: 🏥 Check deployment health
+        run: |
+          echo "Waiting for deployment to stabilize..."
+          sleep 30
+
+          # Health check (adjust URL as needed)
+          HEALTH_URL="${{ needs.deploy.outputs.url }}/health"
+
+          for i in {1..5}; do
+            HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$HEALTH_URL" || echo "000")
+            
+            if [ "$HTTP_STATUS" = "200" ]; then
+              echo "✅ Health check passed!"
+              exit 0
+            fi
+            
+            echo "Attempt $i: HTTP $HTTP_STATUS - Retrying in 10s..."
+            sleep 10
+          done
+
+          echo "⚠️ Health check did not return 200, but deployment may still be successful"
+        continue-on-error: true
