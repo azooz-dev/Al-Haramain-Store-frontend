@@ -65,7 +65,7 @@ jobs:
       - name: 🚀 Deploy to Railway
         id: deploy
         run: |
-          railway up --detach
+          railway up --detach --service "Al-Haramain-Store-frontend"
           echo "url=$(railway status --json | jq -r '.deploymentUrl')" >> $GITHUB_OUTPUT
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
