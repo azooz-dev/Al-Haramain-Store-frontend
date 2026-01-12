@@ -65,10 +65,12 @@ jobs:
       - name: 🚀 Deploy to Railway
         id: deploy
         run: |
+          railway link --environment production
           railway up --detach
           echo "url=$(railway status --json | jq -r '.deploymentUrl')" >> $GITHUB_OUTPUT
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
 
       - name: 📢 Deployment notification
         run: |
