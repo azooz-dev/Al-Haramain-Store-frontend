@@ -75,12 +75,14 @@ export const AddressFormFields: React.FC<AddressFormFieldsProps> = ({
                 disabled={disabled}
                 className={`${disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
               />
-              <Label 
-                htmlFor={`addressType-${type.value}`}
-                className={disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"}
-              >
-                {type.label}
-              </Label>
+              <div className='mb-4'>
+                <Label 
+                  htmlFor={`addressType-${type.value}`}
+                  className={disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"}
+                >
+                  {type.label}
+                </Label>
+              </div>
             </div>
           ))}
             </div>
