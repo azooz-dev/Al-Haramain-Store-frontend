@@ -1,5 +1,5 @@
-import { persistReducer, persistStore } from "redux-persist";
-import { configureStore, combineReducers } from "@reduxjs/toolkit";
+import { persistReducer, persistStore, createTransform, PersistConfig } from "redux-persist";
+import { configureStore, combineReducers, Reducer, UnknownAction } from "@reduxjs/toolkit";
 import storage from "redux-persist/lib/storage";
 // Import slices
 import uiSlice from "./slices/uiSlice";
@@ -20,11 +20,21 @@ import { addressApi } from "@/shared/services/addressesApi";
 import { usersApi } from "@/features/user/services/usersApi";
 import { stripeApi } from "@/features/payments/services/stripeApi";
 
-const persistConfig = {
-	key: "root",
-	storage,
-	whitelist: ["auth", "cart", "favorites", "ui"],
-};
+const authTransform = createTransform<unknown, unknown>(
+	// Transform state being saved to storage (outbound) - save as-is
+	(inboundState) => inboundState,
+	// Transform state being rehydrated from storage (inbound)
+	(outboundState) => {
+		if (!outboundState) return outboundState;
+		return {
+			...(outboundState as object),
+			isLoading: false,
+			error: null,
+		};
+	},
+	// Only apply to auth slice
+	{ whitelist: ["auth"] }
+);
 
 const rootReducer = combineReducers({
 	// Slices
@@ -49,8 +59,22 @@ const rootReducer = combineReducers({
 	[usersApi.reducerPath]: usersApi.reducer,
 });
 
-// Persisted reducer
-const persistedReducer = persistReducer(persistConfig, rootReducer);
+// Extract root state type from the non-persisted reducer
+type RootReducerState = ReturnType<typeof rootReducer>;
+
+// Type the persist config properly
+const persistConfig: PersistConfig<RootReducerState> = {
+	key: "root",
+	storage,
+	whitelist: ["auth", "cart", "favorites", "ui"],
+	transforms: [authTransform],
+};
+
+// Create the persisted reducer with proper typing
+const persistedReducer = persistReducer(persistConfig, rootReducer) as unknown as Reducer<
+	RootReducerState,
+	UnknownAction
+>;
 
 // Configure store
 export const store = configureStore({
