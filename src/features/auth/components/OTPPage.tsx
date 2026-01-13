@@ -15,6 +15,7 @@ import { useSharedTranslations, useFeatureTranslations } from "@/shared/hooks/us
 export const OTPPage: React.FC = () => {
   const {
     error,
+    isLoading,
     handleVerifyEmail,
     handleResendOTP,
     handleClearError,
@@ -106,6 +107,11 @@ export const OTPPage: React.FC = () => {
       handleVerifyOTP(otp);
     }
   }
+
+  const goToSignIn = () => {
+      if (isLoading) return;
+      navigateToSignIn();
+    }
 
   const handleKeyDown = (index: number, event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Backspace') {
@@ -367,7 +373,7 @@ export const OTPPage: React.FC = () => {
             {/* Back Button */}
             <Button
               variant="ghost"
-              onClick={navigateToSignIn}
+              onClick={goToSignIn}
               className="w-full text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
             >
               <ArrowLeft className={`w-4 h-4 ${isRTL ? 'rotate-180' : ''}`} />
