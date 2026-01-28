@@ -128,6 +128,7 @@ export const Header: React.FC = () => {
             closeMobileMenu={closeMobileMenu}
             isMobileMenuAnimating={isMobileMenuAnimating}
             navigationItems={navigationItems}
+            navigateTo={navigateTo}
           />
         )}
 
