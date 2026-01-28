@@ -15,6 +15,7 @@ interface MobileMenuProps {
   closeMobileMenu: () => void;
   isMobileMenuAnimating: boolean;
   navigationItems: NavigationItem[];
+  navigateTo: (path: string) => void;
 }
 
 
@@ -23,6 +24,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
   closeMobileMenu,
   isMobileMenuAnimating,
   navigationItems,
+  navigateTo,
 }) => {
   const { isRTL } = useApp();
   const { t: shared } = useSharedTranslations('shared');
@@ -72,7 +74,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
 
             <div className="space-y-2 mb-6">
               {navigationItems.map((item: NavigationItem) => (
-                <button key={item.key} onClick={() => false } className={`block w-full px-4 py-3 rounded-lg transition-all duration-200 hover:scale-[1.02] hover:translate-x-1 ${isRTL ? 'text-right' : 'text-left'} ${location.pathname === item.path ? 'bg-primary text-primary-foreground' : 'text-foreground hover:bg-muted'}`}>
+                <button key={item.key} onClick={() => navigateTo(item.path)} className={`block w-full px-4 py-3 rounded-lg transition-all duration-200 hover:scale-[1.02] hover:translate-x-1 ${isRTL ? 'text-right' : 'text-left'} ${location.pathname === item.path ? 'bg-primary text-primary-foreground' : 'text-foreground hover:bg-muted'}`}>
                   {item.label}
                 </button>
               ))}
@@ -85,15 +87,15 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
                   <p className="text-xs text-muted-foreground">{currentUser.email}</p>
                 </div>
                 <div className="space-y-2 mb-4">
-                  <button onClick={() => false } className={`block w-full px-4 py-3 rounded-lg text-foreground hover:bg-muted transition-all duration-200 hover:scale-[1.02] hover:translate-x-1 ${isRTL ? 'text-right' : 'text-left'}`}>
+                  <button onClick={() => false} className={`block w-full px-4 py-3 rounded-lg text-foreground hover:bg-muted transition-all duration-200 hover:scale-[1.02] hover:translate-x-1 ${isRTL ? 'text-right' : 'text-left'}`}>
                     <User className={`h-4 w-4 inline ${isRTL ? 'ml-2' : 'mr-2'}`} />
                     {shared('dashboard.title')}
                   </button>
-                  <button onClick={() => false } className={`block w-full px-4 py-3 rounded-lg text-foreground hover:bg-muted transition-all duration-200 hover:scale-[1.02] hover:translate-x-1 ${isRTL ? 'text-right' : 'text-left'}`}>
+                  <button onClick={() => false} className={`block w-full px-4 py-3 rounded-lg text-foreground hover:bg-muted transition-all duration-200 hover:scale-[1.02] hover:translate-x-1 ${isRTL ? 'text-right' : 'text-left'}`}>
                     <Package className={`h-4 w-4 inline ${isRTL ? 'ml-2' : 'mr-2'}`} />
                     {shared('orders.title')}
                   </button>
-                  <button onClick={() => false } className={`block w-full px-4 py-3 rounded-lg text-foreground hover:bg-muted transition-all duration-200 hover:scale-[1.02] hover:translate-x-1 ${isRTL ? 'text-right' : 'text-left'}`}>
+                  <button onClick={() => false} className={`block w-full px-4 py-3 rounded-lg text-foreground hover:bg-muted transition-all duration-200 hover:scale-[1.02] hover:translate-x-1 ${isRTL ? 'text-right' : 'text-left'}`}>
                     <Settings className={`h-4 w-4 inline ${isRTL ? 'ml-2' : 'mr-2'}`} />
                     {shared('settings.title')}
                   </button>
